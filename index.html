@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Join exclusive clubs or create your own. Connect with like-minded people.">
+  <meta name="keywords" content="clubs, community, events, social, activities">
+  <title>WATERETTE - Join & Create Exclusive Clubs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <!-- Splash Screen -->
+  <div class="splash-screen">
+    <div class="splash-content">
+      <div class="splash-logo">💧</div>
+      <div class="splash-title">WATERETTE</div>
+      <div class="splash-subtitle">Connect. Create. Celebrate.</div>
+    </div>
+  </div>
+
+  <header class="header">
+    <nav class="nav-container">
+      <div class="logo">
+        <span class="logo-icon">💧</span>
+        <span>WATERETTE</span>
+      </div>
+      <div class="nav-actions">
+        <span class="user-greeting" id="userGreeting">👋 <span id="userName"></span></span>
+        <button class="btn btn-secondary" id="viewMyClubsBtn">My Clubs</button>
+        <button class="btn btn-primary" id="createClubBtn">+ Create</button>
+      </div>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h1>Discover Your Community</h1>
+    <p>Join exclusive clubs or create your own</p>
+  </section>
+
+  <div class="filter-bar">
+    <input type="text" class="search-input" id="searchInput" placeholder="🔍 Search clubs..." aria-label="Search clubs">
+    <button class="btn btn-secondary" id="filterAvailableBtn">Available</button>
+    <button class="btn btn-secondary" id="showAllBtn">All</button>
+  </div>
+
+  <main class="container">
+    <div class="clubs-grid" id="clubsGrid"></div>
+    <div class="empty-state hidden" id="emptyState">
+      <div class="empty-state-icon">🎪</div>
+      <h3>No clubs yet</h3>
+      <p>Be the first to create a club!</p>
+      <button class="btn btn-primary mt-2" onclick="document.getElementById('createClubBtn').click()">Create First
+        Club</button>
+    </div>
+  </main>
+
+  <!-- Modals -->
+  <div class="modal" id="createClubModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Create New Club</h2>
+        <button class="close-btn" id="closeCreateModal">&times;</button>
+      </div>
+      <form id="createClubForm">
+        <div class="form-group">
+          <label for="clubTitle" class="form-label">Club Title *</label>
+          <input type="text" id="clubTitle" class="form-input" placeholder="Morning Runners" required maxlength="50">
+        </div>
+        <div class="form-group">
+          <label for="clubDescription" class="form-label">Description</label>
+          <textarea id="clubDescription" class="form-textarea" placeholder="What's your club about..."
+            maxlength="200"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="clubDate" class="form-label">Date *</label>
+            <input type="date" id="clubDate" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label for="clubTime" class="form-label">Time *</label>
+            <input type="time" id="clubTime" class="form-input" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="clubLocation" class="form-label">Location *</label>
+          <input type="text" id="clubLocation" class="form-input" placeholder="Central Park" required maxlength="100">
+        </div>
+        <div class="form-group">
+          <label for="clubCapacity" class="form-label">Max Participants *</label>
+          <input type="number" id="clubCapacity" class="form-input" placeholder="10" min="2" max="100" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Create Club</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal" id="clubDetailsModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="detailsClubTitle">Club Details</h2>
+        <button class="close-btn" id="closeDetailsModal">&times;</button>
+      </div>
+      <div id="clubDetailsContent"></div>
+    </div>
+  </div>
+
+  <div class="modal" id="authModal">
+    <div class="modal-content auth-modal">
+      <div class="auth-form" id="loginForm">
+        <h2 class="modal-title">Welcome Back! 👋</h2>
+        <p class="auth-subtitle">Sign in to continue</p>
+        <form id="loginFormElement">
+          <div class="form-group">
+            <label for="loginEmail" class="form-label">Email</label>
+            <input type="email" id="loginEmail" class="form-input" placeholder="your@email.com" required>
+          </div>
+          <div class="form-group">
+            <label for="loginPassword" class="form-label">Password</label>
+            <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" required>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Sign In</button>
+        </form>
+        <p class="auth-switch">
+          Don't have an account?
+          <button class="auth-link" id="showSignup">Sign up</button>
+        </p>
+      </div>
+      <div class="auth-form hidden" id="signupForm">
+        <h2 class="modal-title">Join WATERETTE! 🎉</h2>
+        <p class="auth-subtitle">Create your account</p>
+        <form id="signupFormElement">
+          <div class="form-group">
+            <label for="signupName" class="form-label">Full Name</label>
+            <input type="text" id="signupName" class="form-input" placeholder="John Doe" required maxlength="50">
+          </div>
+          <div class="form-group">
+            <label for="signupEmail" class="form-label">Email</label>
+            <input type="email" id="signupEmail" class="form-input" placeholder="your@email.com" required>
+          </div>
+          <div class="form-group">
+            <label for="signupPassword" class="form-label">Password</label>
+            <input type="password" id="signupPassword" class="form-input" placeholder="••••••••" required minlength="6">
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Create Account</button>
+        </form>
+        <p class="auth-switch">
+          Already have an account?
+          <button class="auth-link" id="showLogin">Sign in</button>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <div class="nav-item active" id="navHome">
+      <div class="nav-icon">🏠</div>
+      <div class="nav-label">Home</div>
+    </div>
+    <div class="nav-item" id="navExplore">
+      <div class="nav-icon">🔍</div>
+      <div class="nav-label">Explore</div>
+    </div>
+    <div class="nav-item" id="navMyClubs">
+      <div class="nav-icon">🎯</div>
+      <div class="nav-label">My Clubs</div>
+    </div>
+    <div class="nav-item" id="navProfile">
+      <div class="nav-icon">👤</div>
+      <div class="nav-label">Profile</div>
+    </div>
+  </nav>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
