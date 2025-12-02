@@ -68,8 +68,10 @@
       --bg-body: #020617; /* Deep rich black/blue */
       --bg-surface: #1e293b; /* Slate 800 */
       --bg-card-subtle: #0f172a; /* Darker inset */
-      --bg-glass: rgba(30, 41, 59, 0.85);
-      --bg-glass-strong: rgba(30, 41, 59, 0.95);
+      
+      /* Dark mode glass improvements */
+      --bg-glass: rgba(2, 6, 23, 0.85); /* Darker, richer glass */
+      --bg-glass-strong: rgba(15, 23, 42, 0.95);
 
       --text-main: #f1f5f9;
       --text-muted: #94a3b8;
@@ -112,11 +114,18 @@
       right: 0;
       z-index: 100;
       background: var(--bg-glass);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
       height: var(--header-height);
       transition: all 0.3s ease;
+    }
+    
+    /* Specific Header Improvements for Dark Mode */
+    [data-theme="dark"] .header {
+        background: rgba(2, 6, 23, 0.85); /* Darker for better text contrast */
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08); /* Subtle lighting edge */
+        box-shadow: 0 4px 24px rgba(0,0,0,0.4); /* Stronger separation */
     }
 
     .nav-container {
@@ -146,6 +155,13 @@
       -webkit-text-fill-color: transparent;
     }
     
+    /* Brighter logo gradient in dark mode */
+    [data-theme="dark"] .logo-text {
+        background: linear-gradient(135deg, #fff 20%, var(--accent) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
     .nav-actions {
         display: flex;
         align-items: center;
@@ -167,6 +183,11 @@
         font-size: 1rem;
         cursor: pointer;
         transition: transform 0.2s;
+    }
+    
+    [data-theme="dark"] .user-avatar {
+        border-color: rgba(255,255,255,0.1);
+        background: rgba(255,255,255,0.05);
     }
     
     .user-avatar:active { transform: scale(0.95); }
@@ -329,6 +350,12 @@
         transition: background-color 0.3s ease;
     }
     
+    /* Filter bar improvement for dark mode */
+    [data-theme="dark"] .filter-section {
+        background: rgba(2, 6, 23, 0.85);
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    
     .filter-container {
         max-width: 800px;
         margin: 0 auto;
@@ -365,6 +392,11 @@
       box-shadow: var(--shadow-sm);
       appearance: none;
     }
+    
+    [data-theme="dark"] .search-input {
+        background: rgba(255,255,255,0.05);
+        border-color: rgba(255,255,255,0.1);
+    }
 
     .search-input:focus {
       outline: none;
@@ -384,6 +416,11 @@
         white-space: nowrap;
         cursor: pointer;
         transition: all 0.2s;
+    }
+    
+    [data-theme="dark"] .filter-pill {
+        background: rgba(255,255,255,0.05);
+        border-color: rgba(255,255,255,0.1);
     }
     
     .filter-pill.active {
@@ -512,52 +549,135 @@
     }
 
     /* ===================================
-       FLOATING BOTTOM NAV
+       FLOATING BOTTOM NAV (REDESIGNED)
        =================================== */
     .bottom-nav-container {
       position: fixed;
-      bottom: 30px;
+      bottom: 24px; /* Lower position */
       left: 0;
       right: 0;
       display: flex;
       justify-content: center;
       z-index: 1000;
       pointer-events: none;
+      padding: 0 16px; /* Safe area */
     }
 
     .floating-nav {
-      background: rgba(15, 23, 42, 0.95);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      padding: 8px;
-      border-radius: 30px;
-      display: flex;
-      gap: 16px; /* Spaced out icons */
-      box-shadow: var(--shadow-float);
-      pointer-events: auto;
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-    
-    .nav-item {
-      width: 52px;
-      height: 52px;
-      border-radius: 50%;
+      /* Base size & Layout */
+      width: 100%;
+      max-width: 360px; /* Optimal mobile width */
+      height: 72px; /* Taller for better touch */
+      padding: 0 8px;
       display: flex;
       align-items: center;
-      justify-content: center;
-      color: rgba(255,255,255,0.6);
-      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-      cursor: pointer;
+      justify-content: space-between;
+      
+      /* Glassmorphism - Light Mode Default */
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 24px; /* Modern Squircle-ish */
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      box-shadow: 
+        0 4px 6px -1px rgba(0, 0, 0, 0.05),
+        0 20px 40px -4px rgba(0, 0, 0, 0.1); /* Deep soft shadow */
+        
+      pointer-events: auto;
+      transition: all 0.3s ease;
     }
 
-    .nav-item.active {
-      background: var(--accent);
-      color: white;
-      transform: translateY(-6px);
-      box-shadow: 0 6px 16px rgba(99, 102, 241, 0.5);
+    /* Dark Mode Redesign */
+    [data-theme="dark"] .floating-nav {
+        background: rgba(15, 15, 20, 0.65); /* Darker, clearer glass */
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 
+            0 0 0 1px rgba(0,0,0,0.2), /* Extra definition */
+            0 20px 50px rgba(0, 0, 0, 0.5); /* Ambient glow */
+    }
+
+    .nav-item {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      cursor: pointer;
+      color: var(--text-light); /* Muted by default */
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 16px;
     }
     
-    .nav-item svg { width: 24px; height: 24px; stroke-width: 2.5px; }
+    .nav-item svg {
+        width: 26px;
+        height: 26px;
+        stroke-width: 2px;
+        transition: all 0.3s ease;
+    }
+
+    /* Active State - "Glow & Scale" */
+    .nav-item.active {
+      color: var(--accent);
+    }
+    
+    .nav-item.active svg {
+        transform: translateY(-2px);
+        filter: drop-shadow(0 4px 12px var(--accent-soft));
+    }
+
+    /* Active Indicator Dot */
+    .nav-item.active::after {
+        content: '';
+        position: absolute;
+        bottom: 12px;
+        width: 4px;
+        height: 4px;
+        background: var(--accent);
+        border-radius: 50%;
+        box-shadow: 0 0 8px var(--accent);
+        animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes popIn {
+        from { transform: scale(0); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+
+    /* The Center "Create" Button - Floating & Prominent */
+    .nav-create-btn {
+        width: 56px;
+        height: 56px;
+        background: var(--accent);
+        border-radius: 18px; /* Matching squircle aesthetic */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        margin: 0 4px;
+        position: relative;
+        top: -12px; /* Pop out slightly */
+        border: 4px solid var(--bg-body); /* Cutout illusion */
+    }
+    
+    /* Update border color for cutout in dark mode */
+    [data-theme="dark"] .nav-create-btn {
+        border-color: #020617; /* Matches dark body bg */
+        box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+    }
+
+    .nav-create-btn:active {
+        transform: scale(0.9);
+    }
+    
+    .nav-create-btn svg {
+        width: 28px;
+        height: 28px;
+        stroke: white;
+    }
 
     /* ===================================
        FLOATING ACTION BUTTON (The Fix)
@@ -1001,14 +1121,17 @@
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
         </div>
-        <div class="nav-item" id="navCreate" onclick="document.getElementById('createClubModal').classList.add('active')">
-            <div style="background: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; color: var(--primary);">
+        
+        <!-- Redesigned Prominent Create Button -->
+        <div class="nav-create-wrapper" id="navCreate" onclick="document.getElementById('createClubModal').classList.add('active')">
+            <div class="nav-create-btn">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="12" y1="5" x2="12" y2="19"></line>
                     <line x1="5" y1="12" x2="19" y2="12"></line>
                 </svg>
             </div>
         </div>
+        
         <div class="nav-item" id="navMyClubs">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
