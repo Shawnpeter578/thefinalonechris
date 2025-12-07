@@ -1,1801 +1,1521 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>WATERETTE - Exclusive Clubs</title>
+  <title>WATERETTE</title>
+  
+  <!-- Fonts: Manrope for a more 'Tech/Modern' feel, 'Libre Barcode 39' for the ticket look -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Libre+Barcode+39+Text&display=swap" rel="stylesheet">
   
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
   <style>
-    /* ===================================
-       WATERETTE - FINAL POLISHED UI
-       =================================== */
-
+    /* =========================================
+       THEME: DYNAMIC (Dark Default)
+       ========================================= */
     :root {
-      /* LIGHT THEME (Default) */
-      --primary: #0f172a;
+      --font-main: 'Manrope', sans-serif;
+      --font-barcode: 'Libre Barcode 39 Text', cursive;
       
-      /* "Blurple" - trendy & vibrant */
-      --accent: #6366f1; 
-      --accent-rgb: 99, 102, 241;
-      --accent-dark: #4f46e5;
-      --accent-soft: #e0e7ff;
+      /* --- DARK MODE VARIABLES (Default) --- */
+      --bg-body: #050505;
+      --bg-surface: #121212;
+      --bg-surface-2: #1E1E1E;
+      
+      --gradient-primary: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+      --gradient-text: linear-gradient(135deg, #fff 0%, #a5f3fc 100%);
+      --gradient-glow: conic-gradient(from 180deg at 50% 50%, #00F2FE 0deg, #4FACFE 180deg, #00F2FE 360deg);
+      
+      --accent: #4facfe;
+      --accent-glow: rgba(79, 172, 254, 0.4);
+      
+      --text-main: #ffffff;
+      --text-muted: #888888;
+      --border: rgba(255, 255, 255, 0.08);
+      
+      --glass-panel: rgba(20, 20, 20, 0.7);
+      --glass-nav: rgba(20, 20, 20, 0.8);
+      --blur: blur(24px);
 
-      --bg-body: #f8fafc;
+      --radius-sm: 12px;
+      --radius-md: 20px;
+      --radius-lg: 32px;
+      
+      --header-height: 70px;
+      --safe-bottom: env(safe-area-inset-bottom, 20px);
+      
+      --shadow-card: 0 10px 30px -5px rgba(0,0,0,0.5);
+    }
+
+    /* --- LIGHT MODE VARIABLES --- */
+    [data-theme="light"] {
+      --bg-body: #f3f4f6;
       --bg-surface: #ffffff;
-      --bg-card-subtle: #f1f5f9;
-      --bg-glass: rgba(255, 255, 255, 0.9);
-      --bg-glass-strong: rgba(255, 255, 255, 0.95);
-
-      --text-main: #0f172a;
-      --text-muted: #64748b;
-      --text-light: #94a3b8;
-      --text-inverse: #ffffff;
-
-      --border: #e2e8f0;
+      --bg-surface-2: #f9fafb;
       
-      --success: #10b981;
-      --error: #ef4444;
-
-      /* Shadows - Soft & Modern */
-      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
-      --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-      --shadow-float: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
-      --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.25);
-
-      --radius-lg: 16px;
-      --radius-xl: 24px;
-      --radius-pill: 9999px;
-
-      --header-height: 68px; 
-      --nav-height: 70px; 
+      /* More saturated gradient for light mode visibility */
+      --gradient-primary: linear-gradient(135deg, #2563eb 0%, #00f2fe 100%);
+      --gradient-text: linear-gradient(135deg, #1e293b 0%, #3b82f6 100%);
+      --gradient-glow: conic-gradient(from 180deg at 50% 50%, #2563eb 0deg, #00f2fe 180deg, #2563eb 360deg);
+      
+      --accent: #2563eb;
+      --accent-glow: rgba(37, 99, 235, 0.25);
+      
+      --text-main: #111827;
+      --text-muted: #6b7280;
+      --border: rgba(0, 0, 0, 0.08);
+      
+      --glass-panel: rgba(255, 255, 255, 0.85);
+      --glass-nav: rgba(255, 255, 255, 0.8);
+      
+      --shadow-card: 0 10px 25px -5px rgba(0,0,0,0.05), 0 4px 6px -2px rgba(0,0,0,0.02);
     }
 
-    /* DARK THEME OVERRIDES */
-    [data-theme="dark"] {
-      --primary: #f8fafc; 
-      
-      --accent: #818cf8; 
-      --accent-rgb: 129, 140, 248;
-      --accent-dark: #6366f1;
-      --accent-soft: rgba(99, 102, 241, 0.2);
-
-      --bg-body: #020617; /* Deep rich black/blue */
-      --bg-surface: #1e293b; /* Slate 800 */
-      --bg-card-subtle: #0f172a; /* Darker inset */
-      
-      /* Dark mode glass improvements */
-      --bg-glass: rgba(2, 6, 23, 0.85); /* Darker, richer glass */
-      --bg-glass-strong: rgba(15, 23, 42, 0.95);
-
-      --text-main: #f1f5f9;
-      --text-muted: #94a3b8;
-      --text-light: #64748b;
-      --text-inverse: #0f172a;
-
-      --border: #334155;
-      
-      /* Dark mode specific visibility fixes */
-      --shadow-sm: none;
-      --shadow-card: 0 0 0 1px rgba(255,255,255,0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.5); /* Border glow + deep shadow */
-      --shadow-float: 0 0 0 1px rgba(255,255,255,0.1), 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+    
     body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      background: var(--bg-body);
+      background-color: var(--bg-body);
       color: var(--text-main);
-      line-height: 1.6;
-      padding-top: var(--header-height);
-      padding-bottom: 110px; /* Space for nav */
+      font-family: var(--font-main);
       overflow-x: hidden;
+      padding-bottom: calc(100px + var(--safe-bottom));
       transition: background-color 0.3s ease, color 0.3s ease;
     }
 
-    /* ===================================
-       HEADER
-       =================================== */
-    .header {
-      position: fixed;
+    /* =========================================
+       ANIMATIONS
+       ========================================= */
+    @keyframes aurora {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    .hidden { display: none !important; }
+
+    /* =========================================
+       COMPONENTS
+       ========================================= */
+    
+    /* Splash Screen */
+    #splashScreen {
+      position: fixed; inset: 0;
+      background: var(--bg-body);
+      z-index: 9999;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      transition: opacity 0.8s ease-in-out, visibility 0.8s;
+    }
+    #splashScreen.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+    
+    .splash-content { text-align: center; position: relative; z-index: 2; }
+    
+    .splash-title {
+      font-size: 3rem; font-weight: 800; letter-spacing: -0.05em;
+      background: var(--gradient-text); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 10px;
+      opacity: 0; animation: fadeUp 0.8s ease-out forwards 0.2s;
+    }
+    .splash-subtitle {
+      font-size: 0.8rem; letter-spacing: 0.3em; color: var(--text-muted); text-transform: uppercase;
+      opacity: 0; animation: fadeUp 0.8s ease-out forwards 0.5s;
+    }
+    .splash-glow {
+        position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        width: 300px; height: 300px; background: var(--gradient-glow);
+        filter: blur(80px); opacity: 0; animation: pulseGlow 2s ease-in-out forwards;
+        z-index: -1;
+    }
+    
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulseGlow {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+      50% { opacity: 0.4; }
+      100% { opacity: 0.2; transform: translate(-50%, -50%) scale(1.1); }
+    }
+
+    /* Header */
+    .app-header {
+      position: sticky;
       top: 0;
-      left: 0;
-      right: 0;
-      z-index: 100;
-      background: var(--bg-glass);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border);
+      z-index: 50;
       height: var(--header-height);
-      transition: all 0.3s ease;
-    }
-    
-    /* Specific Header Improvements for Dark Mode */
-    [data-theme="dark"] .header {
-        background: rgba(2, 6, 23, 0.85); /* Darker for better text contrast */
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08); /* Subtle lighting edge */
-        box-shadow: 0 4px 24px rgba(0,0,0,0.4); /* Stronger separation */
-    }
-
-    .nav-container {
-      max-width: 100%;
-      margin: 0 auto;
-      height: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 24px; /* Increased padding */
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
-      color: var(--text-main);
-    }
-
-    .logo-text {
-      font-weight: 800;
-      font-size: 1.3rem;
-      letter-spacing: -0.02em;
-      background: linear-gradient(135deg, var(--text-main) 0%, var(--accent) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    
-    /* Brighter logo gradient in dark mode */
-    [data-theme="dark"] .logo-text {
-        background: linear-gradient(135deg, #fff 20%, var(--accent) 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-    
-    .nav-actions {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-
-    .user-avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: var(--bg-surface);
-        border: 1px solid var(--border);
-        box-shadow: var(--shadow-sm);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--text-main);
-        font-weight: 700;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: transform 0.2s;
-    }
-    
-    [data-theme="dark"] .user-avatar {
-        border-color: rgba(255,255,255,0.1);
-        background: rgba(255,255,255,0.05);
-    }
-    
-    .user-avatar:active { transform: scale(0.95); }
-
-    /* ===================================
-       BUTTONS - IMPROVED
-       =================================== */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      height: 48px;
       padding: 0 24px;
-      border-radius: var(--radius-pill);
-      font-weight: 700;
-      font-size: 0.95rem;
-      border: none;
-      cursor: pointer;
-      transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-    }
-
-    .btn:active { transform: scale(0.96); }
-
-    .btn-primary {
-      background: var(--accent);
-      color: white;
-      box-shadow: var(--shadow-glow);
-    }
-    
-    .btn-secondary {
-        background: var(--bg-surface);
-        color: var(--text-main);
-        border: 1px solid var(--border);
-        box-shadow: var(--shadow-sm);
-    }
-    
-    /* Dark mode button fix - prevent them from looking disabled/invisible */
-    [data-theme="dark"] .btn-secondary {
-        background: rgba(255, 255, 255, 0.1); 
-        border-color: rgba(255, 255, 255, 0.1);
-        color: #fff;
-    }
-    
-    [data-theme="dark"] .btn-secondary:active {
-        background: rgba(255, 255, 255, 0.15);
-    }
-
-    .btn-icon {
-      width: 40px;
-      height: 40px;
-      padding: 0;
-      background: transparent;
-      color: var(--text-main);
       display: flex;
       align-items: center;
-      justify-content: center;
-      border: none;
-      cursor: pointer;
-    }
-    
-    .btn-sm {
-        height: 32px;
-        padding: 0 16px;
-        font-size: 0.8rem;
+      justify-content: space-between;
+      background: var(--glass-nav);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.3s, border-color 0.3s;
     }
 
-    /* ===================================
-       HERO CAROUSEL
-       =================================== */
-    .hero-wrapper {
-      padding: 24px 20px; /* More vertical space */
-      max-width: 800px;
-      margin: 0 auto;
-    }
-
-    .hero-carousel {
-      position: relative;
-      border-radius: 32px;
-      overflow: hidden;
-      background-color: #0f172a;
-      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-      color: white;
-      min-height: 240px; /* Taller */
-      display: flex;
-      align-items: center;
-      box-shadow: var(--shadow-card);
-    }
-    
-    .carousel-container {
-      width: 100%;
-      height: 100%;
-      padding: 32px;
-      text-align: left;
-      z-index: 2;
-    }
-
-    .carousel-slide {
-      display: none;
-      animation: fadeScale 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .carousel-slide.active { display: block; }
-
-    @keyframes fadeScale {
-      from { opacity: 0; transform: translateY(10px) scale(0.98); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    .carousel-slide h1 {
-      font-size: 2rem;
-      font-weight: 800;
-      margin-bottom: 8px;
-      line-height: 1.1;
-      letter-spacing: -0.02em;
-    }
-
-    .carousel-slide p {
-      font-size: 1.05rem;
-      color: rgba(255, 255, 255, 0.9);
-      font-weight: 500;
-      max-width: 90%;
-    }
-
-    .carousel-indicators {
-      position: absolute;
-      bottom: 24px;
-      left: 32px;
-      display: flex;
-      gap: 8px;
-      z-index: 3;
-    }
-
-    .indicator {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.3);
-      transition: all 0.3s;
-    }
-
-    .indicator.active {
-      background: var(--accent);
-      width: 28px;
-      border-radius: 10px;
-    }
-
-    /* ===================================
-       FILTERS
-       =================================== */
-    .filter-section {
-        position: sticky;
-        top: var(--header-height);
-        z-index: 90;
-        background: var(--bg-glass-strong);
-        backdrop-filter: blur(12px);
-        padding: 12px 20px;
-        margin-bottom: 12px;
-        transition: background-color 0.3s ease;
-    }
-    
-    /* Filter bar improvement for dark mode */
-    [data-theme="dark"] .filter-section {
-        background: rgba(2, 6, 23, 0.85);
-        border-bottom: 1px solid rgba(255,255,255,0.05);
-    }
-    
-    .filter-container {
-        max-width: 800px;
-        margin: 0 auto;
-        display: flex;
-        gap: 12px;
-        align-items: center;
-    }
-
-    .search-wrapper {
-        flex: 1;
-        position: relative;
-    }
-
-    .search-icon {
-        position: absolute;
-        left: 16px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: var(--text-light);
-        pointer-events: none;
-    }
-
-    .search-input {
-      width: 100%;
-      height: 48px;
-      padding-left: 48px;
-      padding-right: 16px;
-      border-radius: var(--radius-pill);
-      border: 1px solid var(--border);
-      background: var(--bg-surface);
-      color: var(--text-main);
-      font-size: 1rem;
-      font-family: inherit;
-      box-shadow: var(--shadow-sm);
-      appearance: none;
-    }
-    
-    [data-theme="dark"] .search-input {
-        background: rgba(255,255,255,0.05);
-        border-color: rgba(255,255,255,0.1);
-    }
-
-    .search-input:focus {
-      outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
-    }
-
-    .filter-pill {
-        height: 48px;
-        padding: 0 20px;
-        border-radius: var(--radius-pill);
-        background: var(--bg-surface);
-        border: 1px solid var(--border);
-        color: var(--text-muted);
-        font-weight: 700;
-        font-size: 0.9rem;
-        white-space: nowrap;
-        cursor: pointer;
-        transition: all 0.2s;
-    }
-    
-    [data-theme="dark"] .filter-pill {
-        background: rgba(255,255,255,0.05);
-        border-color: rgba(255,255,255,0.1);
-    }
-    
-    .filter-pill.active {
-        background: var(--primary);
-        color: var(--bg-body);
-        border-color: var(--primary);
-    }
-    
-    [data-theme="dark"] .filter-pill.active {
-        color: #0f172a; 
-    }
-
-    /* ===================================
-       CLUBS GRID - SPACIOUS
-       =================================== */
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-
-    .clubs-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 24px; /* More vertical space between cards */
-    }
-    
-    @media (min-width: 768px) {
-        .clubs-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-
-    /* ===================================
-       CLUB CARD
-       =================================== */
-    .club-card {
-      background: var(--bg-surface);
-      border-radius: 24px;
-      padding: 24px; /* More internal breathing room */
-      box-shadow: var(--shadow-card);
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      border: 1px solid var(--border);
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    
-    .club-card:active { transform: scale(0.98); }
-
-    .club-top {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 12px;
-    }
-
-    .club-title {
+    .brand {
       font-size: 1.4rem;
       font-weight: 800;
-      color: var(--text-main);
-      line-height: 1.2;
-      letter-spacing: -0.02em;
-    }
-    
-    .owner-badge {
-        font-size: 0.7rem;
-        font-weight: 800;
-        letter-spacing: 0.05em;
-        color: var(--accent);
-        background: var(--accent-soft);
-        padding: 6px 10px;
-        border-radius: 8px;
-        text-transform: uppercase;
-        margin-bottom: 6px;
-        display: inline-block;
-    }
-
-    .club-desc {
-        color: var(--text-muted);
-        font-size: 1rem;
-        margin-bottom: 24px;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        line-height: 1.6;
-    }
-
-    .club-meta {
-        display: flex;
-        gap: 8px;
-        margin-bottom: 24px;
-        flex-wrap: wrap;
-    }
-    
-    .meta-tag {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        font-size: 0.9rem;
-        font-weight: 600;
-        color: var(--text-main);
-        background: var(--bg-card-subtle);
-        padding: 10px 14px;
-        border-radius: 12px;
-        border: 1px solid transparent;
-    }
-    
-    [data-theme="dark"] .meta-tag {
-        border: 1px solid rgba(255,255,255,0.05);
-    }
-    
-    .meta-tag svg { width: 16px; height: 16px; color: var(--text-muted); }
-
-    .card-actions {
-        display: flex;
-        gap: 12px;
-        margin-top: auto;
-    }
-    
-    .btn-card {
-        flex: 1;
-        height: 48px;
-        border-radius: 16px;
-        font-weight: 700;
-        font-size: 0.95rem;
-    }
-
-    /* ===================================
-       FLOATING BOTTOM NAV (REDESIGNED)
-       =================================== */
-    .bottom-nav-container {
-      position: fixed;
-      bottom: 24px; /* Lower position */
-      left: 0;
-      right: 0;
-      display: flex;
-      justify-content: center;
-      z-index: 1000;
-      pointer-events: none;
-      padding: 0 16px; /* Safe area */
-    }
-
-    .floating-nav {
-      /* Base size & Layout */
-      width: 100%;
-      max-width: 360px; /* Optimal mobile width */
-      height: 72px; /* Taller for better touch */
-      padding: 0 8px;
+      letter-spacing: -0.03em;
+      background: var(--gradient-text);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      
-      /* Glassmorphism - Light Mode Default */
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-radius: 24px; /* Modern Squircle-ish */
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      box-shadow: 
-        0 4px 6px -1px rgba(0, 0, 0, 0.05),
-        0 20px 40px -4px rgba(0, 0, 0, 0.1); /* Deep soft shadow */
-        
-      pointer-events: auto;
-      transition: all 0.3s ease;
+      gap: 12px;
+      text-decoration: none;
+    }
+    
+    .brand-dot {
+      width: 8px; height: 8px; background: var(--accent);
+      border-radius: 50%; box-shadow: 0 0 12px var(--accent);
     }
 
-    /* Dark Mode Redesign */
-    [data-theme="dark"] .floating-nav {
-        background: rgba(15, 15, 20, 0.65); /* Darker, clearer glass */
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        box-shadow: 
-            0 0 0 1px rgba(0,0,0,0.2), /* Extra definition */
-            0 20px 50px rgba(0, 0, 0, 0.5); /* Ambient glow */
+    .user-avatar-btn {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: var(--bg-surface-2);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      overflow: hidden;
+      position: relative;
+    }
+    .user-avatar-btn img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
+    .user-avatar-btn.has-img { background: transparent; border: none; }
+
+    /* Hero Section */
+    .hero { padding: 24px; position: relative; }
+    
+    .hero-banner {
+      height: 220px;
+      border-radius: var(--radius-lg);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+      padding: 24px;
+      background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e);
+      background-size: 400% 400%;
+      animation: aurora 10s ease infinite;
+      box-shadow: var(--shadow-card);
+    }
+    
+    /* Adjust hero text color for light mode legibility inside the dark banner */
+    .hero-banner h2, .hero-banner p { color: white !important; }
+    
+    .hero-glow {
+      position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+      background: radial-gradient(circle, rgba(79,172,254,0.15) 0%, rgba(0,0,0,0) 60%);
+      pointer-events: none;
     }
 
-    .nav-item {
-      flex: 1;
-      height: 100%;
+    .hero-content { position: relative; z-index: 2; width: 100%; }
+    .hero-badge {
+      display: inline-block; padding: 6px 12px;
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+      backdrop-filter: blur(10px); border-radius: 20px;
+      font-size: 0.75rem; font-weight: 700; color: #fff;
+      margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .hero-title { font-size: 1.8rem; font-weight: 800; line-height: 1.1; margin-bottom: 6px; }
+    .hero-subtitle { font-size: 0.95rem; opacity: 0.9; max-width: 80%; }
+
+    /* Filter Pills */
+    .filter-row {
+      display: flex; gap: 12px; padding: 0 24px 24px;
+      overflow-x: auto; scrollbar-width: none;
+    }
+    .filter-pill {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      padding: 10px 20px;
+      border-radius: 100px;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.9rem;
+      white-space: nowrap;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      cursor: pointer;
+    }
+    .filter-pill.active {
+      background: var(--text-main);
+      color: var(--bg-surface); /* Inverted for contrast */
+      border-color: var(--text-main);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    /* Ticket Style Club Cards */
+    .cards-grid { padding: 0 24px; display: flex; flex-direction: column; gap: 20px; }
+    
+    .club-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      position: relative;
+      transition: transform 0.2s;
+      box-shadow: var(--shadow-card);
       display: flex;
       flex-direction: column;
+    }
+    .club-card:active { transform: scale(0.98); }
+    
+    .card-top {
+      padding: 24px 24px 16px 24px;
+      display: flex; 
+      justify-content: space-between; 
+      align-items: flex-start;
+      gap: 16px;
+      position: relative;
+    }
+    
+    /* Side text decoration for Ticket Feel */
+    .card-top::after {
+        content: 'NO. 00142'; 
+        position: absolute; right: 14px; top: 50%; transform: translateY(-50%) rotate(90deg);
+        font-family: monospace; font-size: 0.6rem; letter-spacing: 0.1em; 
+        color: var(--text-muted); opacity: 0.3;
+    }
+    
+    .card-info { flex: 1; min-width: 0; padding-right: 20px; }
+    
+    .card-info h3 { 
+        font-size: 1.5rem; 
+        font-weight: 800; 
+        margin-bottom: 8px; 
+        color: var(--text-main); 
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+        text-transform: uppercase;
+    }
+    .card-info p { 
+        font-size: 0.9rem; 
+        color: var(--text-muted); 
+        line-height: 1.5; 
+        display: -webkit-box; 
+        -webkit-line-clamp: 2; 
+        -webkit-box-orient: vertical; 
+        overflow: hidden;
+        font-family: monospace; 
+    }
+
+    /* Deep Perforated Line Effect */
+    .card-divider {
+      position: relative; 
+      height: 30px; 
+      display: flex; 
       align-items: center;
-      justify-content: center;
-      position: relative;
-      cursor: pointer;
-      color: var(--text-light); /* Muted by default */
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      border-radius: 16px;
+      margin: 0; 
+      overflow: hidden;
     }
-    
-    .nav-item svg {
-        width: 26px;
-        height: 26px;
-        stroke-width: 2px;
-        transition: all 0.3s ease;
-    }
-
-    /* Active State - "Glow & Scale" */
-    .nav-item.active {
-      color: var(--accent);
-    }
-    
-    .nav-item.active svg {
-        transform: translateY(-2px);
-        filter: drop-shadow(0 4px 12px var(--accent-soft));
-    }
-
-    /* Active Indicator Dot */
-    .nav-item.active::after {
-        content: '';
-        position: absolute;
-        bottom: 12px;
-        width: 4px;
-        height: 4px;
-        background: var(--accent);
-        border-radius: 50%;
-        box-shadow: 0 0 8px var(--accent);
-        animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    @keyframes popIn {
-        from { transform: scale(0); opacity: 0; }
-        to { transform: scale(1); opacity: 1; }
-    }
-
-    /* The Center "Create" Button - Floating & Prominent */
-    .nav-create-btn {
-        width: 56px;
-        height: 56px;
-        background: var(--accent);
-        border-radius: 18px; /* Matching squircle aesthetic */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
-        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        margin: 0 4px;
-        position: relative;
-        top: -12px; /* Pop out slightly */
-        border: 4px solid var(--bg-body); /* Cutout illusion */
-    }
-    
-    /* Update border color for cutout in dark mode */
-    [data-theme="dark"] .nav-create-btn {
-        border-color: #020617; /* Matches dark body bg */
-        box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
-    }
-
-    .nav-create-btn:active {
-        transform: scale(0.9);
-    }
-    
-    .nav-create-btn svg {
-        width: 28px;
-        height: 28px;
-        stroke: white;
-    }
-
-    /* ===================================
-       FLOATING ACTION BUTTON (The Fix)
-       =================================== */
-    .fab-create {
-        position: fixed;
-        bottom: 110px; /* Above bottom nav */
-        right: 20px;
-        width: 56px;
-        height: 56px;
-        border-radius: 50%;
-        background: var(--accent);
-        color: white;
-        display: none; /* Default hidden */
-        align-items: center;
-        justify-content: center;
-        box-shadow: var(--shadow-float);
-        cursor: pointer;
-        z-index: 100;
-        transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    /* Only show FAB on desktop where bottom nav is hidden, OR handle via media query */
-    @media (min-width: 768px) {
-        .fab-create { display: flex; bottom: 40px; right: 40px; }
-    }
-    
-    /* Make sure svg inside fab is white */
-    .fab-create svg { stroke: white; }
-    .fab-create:hover { transform: scale(1.1); }
-    .fab-create:active { transform: scale(0.95); }
-
-    /* ===================================
-       MODALS
-       =================================== */
-    .modal {
-      display: none;
-      position: fixed;
+    .card-divider::before, .card-divider::after {
+      content: ''; 
+      position: absolute; 
+      width: 30px; height: 30px; /* Bigger notches */
+      background: var(--bg-body); 
+      border-radius: 50%; 
       top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.65);
-      backdrop-filter: blur(6px);
-      z-index: 2000;
-      align-items: flex-end;
-      justify-content: center;
+      z-index: 2;
+    }
+    .card-divider::before { left: -18px; box-shadow: inset -2px 0 4px rgba(0,0,0,0.2); }
+    .card-divider::after { right: -18px; box-shadow: inset 2px 0 4px rgba(0,0,0,0.2); }
+    
+    .card-divider-line { 
+        flex: 1; 
+        border-top: 2px dashed var(--border); 
+        margin: 0 20px; 
+        opacity: 0.4;
     }
 
-    .modal.active { display: flex; }
+    .card-bottom {
+      padding: 10px 24px 24px;
+      display: flex; justify-content: space-between; align-items: flex-end;
+    }
+    
+    .meta-column {
+        display: flex; flex-direction: column; gap: 8px;
+    }
+    .meta-row { display: flex; gap: 16px; font-size: 0.85rem; color: var(--text-muted); font-weight: 600; font-family: monospace; text-transform: uppercase;}
+    
+    .barcode-area {
+        font-family: var(--font-barcode);
+        font-size: 2.5rem;
+        line-height: 0.8;
+        color: var(--text-muted);
+        opacity: 0.5;
+        margin-top: 4px;
+    }
 
-    .modal-content {
-      background: var(--bg-surface);
-      width: 100%;
-      max-width: 600px;
-      max-height: 85vh;
-      overflow-y: auto;
-      border-radius: 32px 32px 0 0;
-      padding: 32px 24px;
-      box-shadow: var(--shadow-float);
-      animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    /* Floating Navigation */
+    .nav-wrapper {
+      position: fixed; bottom: 30px; left: 0; right: 0;
+      display: flex; justify-content: center; pointer-events: none; z-index: 100;
+    }
+    .nav-capsule {
+      background: var(--glass-nav);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      padding: 6px 8px;
+      border-radius: 100px;
+      display: flex; gap: 8px;
+      pointer-events: auto;
+      box-shadow: var(--shadow-card);
+    }
+    
+    .nav-btn {
+      width: 50px; height: 50px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.3s;
       position: relative;
+    }
+    .nav-btn.active { color: var(--text-main); background: var(--bg-surface-2); }
+    .nav-btn svg { width: 22px; height: 22px; }
+
+    .nav-btn-main {
+      width: 58px; height: 50px;
+      background: var(--gradient-primary);
+      border-radius: 20px;
+      color: #fff;
+      margin: 0 8px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+    
+    /* Buttons */
+    .btn {
+      height: 52px; border-radius: 16px;
+      font-weight: 700; font-size: 1rem;
+      border: none; cursor: pointer; width: 100%;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      transition: 0.2s;
+    }
+    .btn-glow {
+      background: var(--gradient-primary);
+      color: #fff;
+      box-shadow: 0 8px 24px -6px var(--accent-glow);
+    }
+    .btn-glow:active { transform: scale(0.97); }
+    
+    .btn-glass {
+      background: var(--bg-surface-2);
+      border: 1px solid var(--border);
       color: var(--text-main);
     }
+    .btn-glass:hover { background: var(--border); }
 
-    @media (min-width: 768px) {
-        .modal { align-items: center; }
-        .modal-content { border-radius: 32px; padding: 40px; height: auto; }
+    /* Modals */
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(8px);
+      z-index: 200;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s;
     }
+    .modal-backdrop.open { opacity: 1; pointer-events: auto; }
+    
+    /* Special Z-Index for Settings over Profile */
+    #settingsModal { z-index: 220; }
+    #editProfileModal { z-index: 215; }
+    
+    .sheet {
+      position: fixed; bottom: 0; left: 0; width: 100%;
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border);
+      border-radius: 32px 32px 0 0;
+      padding: 32px 24px calc(32px + var(--safe-bottom));
+      transform: translateY(100%);
+      transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+      z-index: 201;
+      max-height: 92vh; overflow-y: auto;
+      box-shadow: 0 -10px 40px rgba(0,0,0,0.2);
+    }
+    .modal-backdrop.open .sheet { transform: translateY(0); }
+    
+    .drag-handle { width: 40px; height: 4px; background: var(--border); border-radius: 10px; margin: 0 auto 24px; }
 
-    @keyframes slideUp {
-        from { transform: translateY(100%); }
-        to { transform: translateY(0); }
+    /* Inputs */
+    .input-group label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .input-field {
+      width: 100%; height: 56px;
+      background: var(--bg-surface-2);
+      border: 1px solid transparent;
+      border-radius: 16px;
+      padding: 0 20px;
+      color: var(--text-main); font-size: 1rem; font-family: inherit;
+      transition: 0.2s;
+    }
+    .input-field:focus { border-color: var(--accent); background: var(--bg-surface); }
+
+    /* Chat */
+    .chat-bubble { padding: 14px 18px; border-radius: 20px; max-width: 80%; font-size: 0.95rem; line-height: 1.5; margin-bottom: 12px; }
+    .chat-bubble.them { background: var(--bg-surface-2); color: var(--text-main); border-bottom-left-radius: 4px; }
+    .chat-bubble.me { background: var(--gradient-primary); color: #fff; border-bottom-right-radius: 4px; align-self: flex-end; font-weight: 600; }
+
+    /* Toast */
+    .toast-box {
+      position: fixed; top: 20px; left: 50%; transform: translate(-50%, -100px);
+      background: var(--glass-nav); backdrop-filter: blur(10px);
+      border: 1px solid var(--border); color: var(--text-main);
+      padding: 12px 24px; border-radius: 100px;
+      display: flex; align-items: center; gap: 10px;
+      z-index: 1000; transition: 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    .toast-box.show { transform: translate(-50%, 0); }
+
+    /* Settings List */
+    .setting-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 18px 0; border-bottom: 1px solid var(--border);
+      cursor: pointer;
+    }
+    .setting-left { display: flex; align-items: center; gap: 14px; color: var(--text-main); font-weight: 500; }
+    .setting-icon { width: 36px; height: 36px; background: var(--bg-surface-2); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--accent); }
+    
+    /* Toggle Switch */
+    .toggle-switch {
+      width: 44px; height: 24px;
+      background: var(--bg-surface-2);
+      border-radius: 20px;
+      position: relative;
+      transition: 0.3s;
+      border: 1px solid var(--border);
+    }
+    .toggle-switch::after {
+      content: ''; position: absolute; left: 2px; top: 2px;
+      width: 18px; height: 18px; background: #fff; border-radius: 50%;
+      transition: 0.3s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    .toggle-switch.active { background: var(--accent); border-color: var(--accent); }
+    .toggle-switch.active::after { transform: translateX(20px); }
+
+    /* Auth Screen specific */
+    .auth-bg {
+        position: fixed; inset: 0; background: var(--bg-body); z-index: 2000;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        padding: 30px;
+        transition: transform 0.6s cubic-bezier(0.7,0,0.3,1);
+    }
+    .auth-bg.out { transform: translateY(-100%); }
+    
+    .glow-circle {
+        width: 120px; height: 120px; border-radius: 50%;
+        background: var(--gradient-glow);
+        filter: blur(40px); opacity: 0.5;
+        position: absolute; top: 20%;
     }
     
-    .modal-handle {
-        width: 48px;
-        height: 5px;
-        background: var(--border);
-        border-radius: 4px;
-        margin: 0 auto 24px auto;
+    /* Creation Map Styles */
+    #createMap {
+        width: 100%; height: 200px; 
+        background: var(--bg-surface-2); 
+        border-radius: 16px; 
+        margin-bottom: 32px;
+        display: none; /* Hidden until verified */
+        border: 2px solid var(--accent);
+        z-index: 10;
+        overflow: hidden;
     }
+    #createMap.visible { display: block; }
 
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 32px;
+    /* Attendee List in Details */
+    .attendee-list-container {
+        margin-top: 24px;
+        background: var(--bg-surface-2);
+        border-radius: 16px;
+        padding: 16px;
+        display: none; /* Hidden by default unless host */
     }
-
-    .modal-title { font-size: 1.75rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.03em; }
-
-    .close-btn {
-        width: 40px;
-        height: 40px;
+    .attendee-list-container.visible { display: block; }
+    
+    .attendee-row {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border);
+    }
+    .attendee-row:last-child { border-bottom: none; }
+    
+    .attendee-info { display: flex; align-items: center; gap: 12px; }
+    .attendee-avatar {
+        width: 32px; height: 32px; border-radius: 50%;
+        background: var(--gradient-primary);
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 700; color: #fff; font-size: 0.8rem;
+        overflow: hidden;
+    }
+    .attendee-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    
+    /* Profile Edit Avatar */
+    .avatar-upload {
+        width: 100px; height: 100px;
         border-radius: 50%;
-        background: var(--bg-card-subtle);
-        color: var(--text-main);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.25rem;
-        border: none;
+        background: var(--bg-surface-2);
+        border: 2px dashed var(--border);
+        margin: 0 auto 20px;
+        display: flex; align-items: center; justify-content: center;
         cursor: pointer;
-        transition: background 0.2s;
+        position: relative;
+        overflow: hidden;
     }
+    .avatar-upload img { width: 100%; height: 100%; object-fit: cover; display: none; }
+    .avatar-upload.has-img img { display: block; }
+    .avatar-upload.has-img .upload-icon { display: none; }
     
-    .close-btn:hover { background: var(--border); }
-
-    /* ===================================
-       SETTINGS UI
-       =================================== */
-    .settings-group { margin-bottom: 32px; }
-    .settings-label { font-size: 0.9rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; padding-left: 8px; }
-    
-    .settings-item {
-        background: var(--bg-card-subtle);
-        padding: 20px;
-        border-radius: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 12px;
-        border: 1px solid transparent;
-        transition: all 0.2s;
-        cursor: pointer;
-    }
-    
-    [data-theme="dark"] .settings-item { border: 1px solid rgba(255,255,255,0.05); }
-    
-    .settings-item:active { transform: scale(0.98); background: var(--border); }
-    
-    .settings-item-content { display: flex; align-items: center; gap: 16px; }
-    
-    .settings-icon {
-        width: 40px;
-        height: 40px;
-        border-radius: 12px;
-        background: var(--bg-surface);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--accent);
-        box-shadow: var(--shadow-sm);
-    }
-    
-    .settings-text { font-weight: 700; font-size: 1rem; color: var(--text-main); }
-    .settings-sub { font-size: 0.85rem; color: var(--text-muted); margin-top: 2px; }
-    
-    .toggle-switch { position: relative; width: 52px; height: 32px; }
-    .toggle-switch input { opacity: 0; width: 0; height: 0; }
-    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--border); transition: .4s; border-radius: 34px; }
-    .slider:before { position: absolute; content: ""; height: 24px; width: 24px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-    input:checked + .slider { background-color: var(--accent); }
-    input:checked + .slider:before { transform: translateX(20px); }
-
-    /* ===================================
-       CHAT
-       =================================== */
-    .chat-modal .modal-content { height: 100vh; max-height: 100vh; border-radius: 0; padding: 0; display: flex; flex-direction: column; }
-    @media (min-width: 768px) { .chat-modal .modal-content { height: 600px; max-height: 80vh; border-radius: 32px; } }
-
-    .chat-header { padding: 16px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--bg-glass-strong); backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 10; color: var(--text-main); }
-    .chat-info h3 { font-size: 1.15rem; font-weight: 800; margin: 0; }
-    .chat-members { font-size: 0.9rem; color: var(--success); font-weight: 600; display: flex; align-items: center; gap: 6px; }
-    .status-dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; display: inline-block; }
-
-    .chat-container { flex: 1; display: flex; flex-direction: column; background: var(--bg-body); overflow: hidden; }
-    .chat-messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
-    .chat-message { max-width: 80%; padding: 14px 18px; border-radius: 20px; font-size: 1rem; line-height: 1.5; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-    .chat-message.others-message { align-self: flex-start; background: var(--bg-surface); border-bottom-left-radius: 4px; color: var(--text-main); border: 1px solid var(--border); }
-    .chat-message.own-message { align-self: flex-end; background: var(--accent); color: white; border-bottom-right-radius: 4px; box-shadow: var(--shadow-glow); }
-    .message-author { font-size: 0.75rem; margin-bottom: 4px; font-weight: 700; color: var(--text-muted); }
-    .own-message .message-author { display: none; }
-
-    .chat-input-area { padding: 16px 20px; background: var(--bg-surface); border-top: 1px solid var(--border); display: flex; gap: 12px; align-items: center; padding-bottom: max(16px, env(safe-area-inset-bottom)); }
-    .chat-input { flex: 1; height: 52px; border-radius: 26px; background: var(--bg-body); border: 1px solid transparent; padding: 0 24px; font-size: 1rem; font-family: inherit; transition: all 0.2s; color: var(--text-main); }
-    .chat-input:focus { outline: none; background: var(--bg-surface); border-color: var(--accent); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); }
-
-    /* Forms */
-    .form-group { margin-bottom: 20px; }
-    .form-label { display: block; margin-bottom: 8px; font-weight: 700; font-size: 0.9rem; color: var(--text-main); }
-    .form-input, .form-textarea { width: 100%; padding: 16px; border: 2px solid var(--bg-card-subtle); background: var(--bg-card-subtle); border-radius: 16px; font-family: inherit; font-weight: 600; font-size: 1rem; transition: all 0.2s; color: var(--text-main); }
-    .form-input:focus, .form-textarea:focus { outline: none; background: var(--bg-surface); border-color: var(--accent); }
-    
-    .club-map-container { height: 220px; border-radius: 20px; overflow: hidden; margin: 20px 0; background: var(--bg-card-subtle); position: relative; z-index: 1;}
-    .club-map { width: 100%; height: 100%; }
-    
-    .notification { position: fixed; top: 120px; left: 50%; transform: translateX(-50%); background: var(--primary); color: var(--bg-body); padding: 14px 28px; border-radius: var(--radius-pill); font-weight: 700; box-shadow: var(--shadow-float); z-index: 3000; animation: slideDown 0.3s ease-out; font-size: 0.95rem; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
-    @keyframes slideDown { from { transform: translate(-50%, -20px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
-    .hidden { display: none !important; }
-    
-    .joined-club-item { background: var(--bg-card-subtle); padding: 16px; border-radius: 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; border: 1px solid transparent; }
-    [data-theme="dark"] .joined-club-item { border: 1px solid rgba(255,255,255,0.05); }
   </style>
 </head>
-
 <body>
-  <div class="header">
-    <div class="nav-container">
-      <a href="#" class="logo">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="url(#paint0_linear)" />
-          <path d="M12 18C15.3137 18 18 15.3137 18 12C18 8.68629 15.3137 6 12 6C8.68629 6 6 8.68629 6 12C6 15.3137 8.68629 18 12 18Z" fill="white" />
-          <defs>
-            <linearGradient id="paint0_linear" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
-              <stop stop-color="#0F172A" />
-              <stop offset="1" stop-color="#6366F1" />
-            </linearGradient>
-          </defs>
-        </svg>
-        <span class="logo-text">WATERETTE</span>
-      </a>
-      <div class="nav-actions">
-        <!-- Desktop Create Button -->
-        <button class="btn btn-primary btn-sm" id="createClubBtn" style="display: none;">Create</button>
-        <div class="user-avatar" id="userAvatar">G</div>
-      </div>
+
+  <!-- Splash Screen -->
+  <div id="splashScreen">
+    <div class="splash-glow"></div>
+    <div class="splash-content">
+        <h1 class="splash-title">WATERETTE</h1>
+        <div class="splash-subtitle">BY KENBRISELLERIS</div>
     </div>
   </div>
 
-  <div class="hero-wrapper">
-      <div class="hero-carousel">
-        <div class="carousel-container">
-          <div class="carousel-slide active">
-            <h1>Join Exclusive<br>Communities</h1>
-            <p>Connect with people who share your vibe.</p>
-          </div>
-          <div class="carousel-slide">
-            <h1>Start Your<br>Own Club</h1>
-            <p>Gather your crew and make it official.</p>
-          </div>
-          <div class="carousel-slide">
-            <h1>Events &<br>Meetups</h1>
-            <p>Never miss out on what's happening.</p>
-          </div>
-    
-          <div class="carousel-indicators">
-            <div class="indicator active"></div>
-            <div class="indicator"></div>
-            <div class="indicator"></div>
-          </div>
+  <!-- Auth Screen -->
+  <div id="authScreen" class="auth-bg">
+    <div class="glow-circle"></div>
+    <div style="position: relative; z-index: 2; width: 100%; max-width: 360px; text-align: center;">
+        <h1 class="brand" style="justify-content: center; font-size: 2.5rem; margin-bottom: 8px;">
+            WATERETTE <div class="brand-dot" style="width: 12px; height: 12px;"></div>
+        </h1>
+        <p style="color: var(--text-muted); margin-bottom: 40px;">Curated communities.</p>
+        
+        <form id="authForm" onsubmit="handleAuth(event)" style="display: flex; flex-direction: column; gap: 16px;">
+            <div id="nameGroup" class="hidden">
+                <input type="text" id="authName" class="input-field" placeholder="Full Name" style="text-align: center;">
+            </div>
+            <input type="email" id="authEmail" class="input-field" placeholder="Email Address" required style="text-align: center;">
+            <input type="password" id="authPass" class="input-field" placeholder="Password" required style="text-align: center;">
+            
+            <button class="btn btn-glow" style="margin-top: 10px;">Enter The Club</button>
+        </form>
+        
+        <div style="margin-top: 30px; font-size: 0.9rem; color: var(--text-muted);">
+            <span id="authSwitchLabel">First time? </span>
+            <span onclick="toggleAuthMode()" style="color: var(--accent); cursor: pointer; font-weight: 700;">Get Access</span>
         </div>
-      </div>
+    </div>
   </div>
 
-  <!-- Filter Bar -->
-  <div class="filter-section">
-      <div class="filter-container">
-        <div class="search-wrapper">
-            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-            <input type="text" id="searchInput" class="search-input" placeholder="Find clubs...">
-        </div>
-        <button class="filter-pill active" id="showAllBtn">All</button>
-        <button class="filter-pill" id="filterAvailableBtn">Open</button>
-      </div>
-  </div>
+  <!-- Header -->
+  <header class="app-header">
+    <a href="#" class="brand">
+      WATERETTE <div class="brand-dot"></div>
+    </a>
+    <div class="user-avatar-btn" id="headerAvatar" onclick="openProfile()">
+      <span id="userInitials">G</span>
+    </div>
+  </header>
 
-  <!-- Main Content -->
-  <main class="container">
-    <div id="clubsGrid" class="clubs-grid">
-      <!-- Clubs will be inserted here -->
+  <!-- Main View -->
+  <main id="mainView">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-banner">
+        <div class="hero-glow"></div>
+        <div class="hero-content">
+          <span class="hero-badge">Featured</span>
+          <h2 class="hero-title">Find Your<br>Inner Circle.</h2>
+          <p class="hero-subtitle">Real connections in a digital world.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filter Pills -->
+    <div class="filter-row">
+      <div class="filter-pill active" onclick="filterClubs('all', this)">All Access</div>
+      <div class="filter-pill" onclick="filterClubs('joined', this)">My List</div>
+      <div class="filter-pill" onclick="filterClubs('new', this)">Fresh Drops</div>
     </div>
 
-    <div id="emptyState" class="empty-state hidden">
-      <div style="font-size: 3rem; margin-bottom: 1rem;">👀</div>
-      <h3>Nothing here yet</h3>
-      <p style="color: var(--text-light);">Try a different search or start something new!</p>
+    <!-- Cards Grid -->
+    <div id="clubsContainer" class="cards-grid">
+      <!-- Injected via JS -->
     </div>
   </main>
-  
-  <!-- Floating Action Button (The "Plus" Sign fixed) -->
-  <div class="fab-create" onclick="document.getElementById('createClubModal').classList.add('active')">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="12" y1="5" x2="12" y2="19"></line>
-        <line x1="5" y1="12" x2="19" y2="12"></line>
-    </svg>
-  </div>
 
-  <!-- Create Club Modal -->
-  <div class="modal" id="createClubModal">
-    <div class="modal-content">
-      <div class="modal-handle"></div>
-      <div class="modal-header">
-        <h2 class="modal-title">New Club</h2>
-        <button class="close-btn" id="closeCreateModal">✕</button>
+  <!-- Navigation -->
+  <div class="nav-wrapper">
+    <div class="nav-capsule">
+      <div class="nav-btn active" onclick="switchTab('home')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
       </div>
-      <form id="createClubForm">
-        <div class="form-group">
-          <label class="form-label">Name</label>
-          <input type="text" class="form-input" id="clubTitle" required placeholder="e.g. Sunday Run Club">
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Vibe (Description)</label>
-          <textarea class="form-input form-textarea" id="clubDescription" rows="3"
-            placeholder="What's this club about?"></textarea>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-          <div class="form-group">
-            <label class="form-label">Date</label>
-            <input type="date" class="form-input" id="clubDate" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Time</label>
-            <input type="time" class="form-input" id="clubTime" required>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Location</label>
-          <input type="text" class="form-input" id="clubLocation" required placeholder="Where we meeting?">
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Spots</label>
-          <input type="number" class="form-input" id="clubCapacity" min="2" max="50" value="10" required>
-        </div>
-
-        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">Launch Club 🚀</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Club Details / Profile Modal (Reused Container) -->
-  <div class="modal" id="clubDetailsModal">
-    <div class="modal-content">
-      <div class="modal-handle"></div>
-      <div class="modal-header">
-        <h2 class="modal-title" id="detailsClubTitle">Details</h2>
-        <button class="close-btn" id="closeDetailsModal">✕</button>
+      <div class="nav-btn" onclick="switchTab('explore')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
       </div>
-      <div id="clubDetailsContent">
-        <!-- Details injected via JS -->
+      <div class="nav-btn-main" onclick="openCreateModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
       </div>
-    </div>
-  </div>
-  
-  <!-- Generic Modal for Privacy/Info -->
-  <div class="modal" id="genericModal">
-    <div class="modal-content">
-        <div class="modal-handle"></div>
-        <div class="modal-header">
-            <h2 class="modal-title" id="genericModalTitle">Info</h2>
-            <button class="close-btn" onclick="document.getElementById('genericModal').classList.remove('active')">✕</button>
-        </div>
-        <div id="genericModalContent" style="color: var(--text-muted); line-height: 1.6; font-size: 1rem;"></div>
-    </div>
-  </div>
-
-  <!-- Chat Modal (Full Screen on Mobile) -->
-  <div class="modal chat-modal" id="chatModal">
-    <div class="modal-content">
-      <div class="chat-header">
-        <div class="chat-info">
-            <h3 id="chatClubTitle">Run Club Chat</h3>
-            <div class="chat-members"><span class="status-dot"></span> Online Members</div>
-        </div>
-        <button class="close-btn" id="closeChatModal">✕</button>
+      <div class="nav-btn" onclick="switchTab('chats')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
       </div>
-      <div class="chat-container">
-        <div class="chat-messages" id="chatMessages">
-          <!-- Messages will appear here -->
-        </div>
-        <div class="chat-input-area">
-          <input type="text" class="chat-input" id="chatInput" placeholder="Message...">
-          <button class="btn btn-primary" id="sendMessageBtn" style="width: 48px; height: 48px; padding: 0; border-radius: 50%;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="22" y1="2" x2="11" y2="13"></line>
-              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-            </svg>
-          </button>
-        </div>
+      <div class="nav-btn" onclick="openProfile()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
       </div>
     </div>
   </div>
 
-  <!-- Auth Modal -->
-  <div class="modal active" id="authModal" style="align-items: center;">
-    <div class="modal-content auth-modal" style="text-align: center; max-width: 400px; border-radius: 32px;">
-      <div style="margin-bottom: 24px; display: inline-flex; padding: 20px; background: var(--bg-card-subtle); border-radius: 50%;">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="#0F172A" />
-            <path d="M12 18C15.3137 18 18 15.3137 18 12C18 8.68629 15.3137 6 12 6C8.68629 6 6 8.68629 6 12C6 15.3137 8.68629 18 12 18Z" fill="white" />
-        </svg>
-      </div>
-      
-      <!-- Login Form -->
-      <form id="loginForm" class="auth-form">
-        <h2 class="modal-title" style="margin-bottom: 8px;">Welcome Back</h2>
-        <p style="color: var(--text-muted); margin-bottom: 24px;">Let's get you signed in.</p>
-        <div class="form-group">
-          <input type="email" class="form-input" id="loginEmail" placeholder="Email" required>
+  <!-- Create Modal -->
+  <div id="createModal" class="modal-backdrop">
+    <div class="sheet">
+      <div class="drag-handle"></div>
+      <h2 style="font-size: 1.5rem; margin-bottom: 24px;">New Drop</h2>
+      <form onsubmit="handleCreate(event)">
+        <div class="input-group" style="margin-bottom: 16px;">
+            <label>Title</label>
+            <input type="text" id="cName" class="input-field" placeholder="Ex: Midnight Run" required>
         </div>
-        <div class="form-group">
-          <input type="password" class="form-input" id="loginPassword" placeholder="Password" required>
+        <div class="input-group" style="margin-bottom: 16px;">
+            <label>Manifesto</label>
+            <textarea id="cDesc" class="input-field" style="height: 100px; padding-top: 16px; resize: none;" placeholder="What's the vibe?" required></textarea>
         </div>
-        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">Log In</button>
-        <div style="margin-top: 24px; font-size: 0.9rem;">
-          New here? <a href="#" id="showSignup" style="color: var(--accent); font-weight: 700; text-decoration: none;">Create account</a>
-        </div>
-      </form>
-
-      <!-- Signup Form -->
-      <form id="signupForm" class="auth-form hidden">
-        <h2 class="modal-title" style="margin-bottom: 8px;">Join Waterette</h2>
-        <p style="color: var(--text-muted); margin-bottom: 24px;">Find your people.</p>
-        <div class="form-group">
-          <input type="text" class="form-input" id="signupName" placeholder="Name" required>
-        </div>
-        <div class="form-group">
-          <input type="email" class="form-input" id="signupEmail" placeholder="Email" required>
-        </div>
-        <div class="form-group">
-          <input type="password" class="form-input" id="signupPassword" placeholder="Password" required>
-        </div>
-        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">Sign Up</button>
-        <div style="margin-top: 24px; font-size: 0.9rem;">
-          Have an account? <a href="#" id="showLogin" style="color: var(--accent); font-weight: 700; text-decoration: none;">Log in</a>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- Floating Bottom Nav (Mobile) -->
-  <nav class="bottom-nav-container">
-    <div class="floating-nav">
-        <div class="nav-item active" id="navHome">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-            <polyline points="9 22 9 12 15 12 15 22"></polyline>
-          </svg>
-        </div>
-        <div class="nav-item" id="navExplore">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-        </div>
-        
-        <!-- Redesigned Prominent Create Button -->
-        <div class="nav-create-wrapper" id="navCreate" onclick="document.getElementById('createClubModal').classList.add('active')">
-            <div class="nav-create-btn">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="12" y1="5" x2="12" y2="19"></line>
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                </svg>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+            <div class="input-group">
+                <label>Date</label>
+                <input type="date" id="cDate" class="input-field" required>
+            </div>
+            <div class="input-group">
+                <label>Time</label>
+                <input type="time" id="cTime" class="input-field" required>
             </div>
         </div>
         
-        <div class="nav-item" id="navMyClubs">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-            <circle cx="9" cy="7" r="4"></circle>
-            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-          </svg>
+        <!-- Updated Location Logic -->
+        <div class="input-group" style="margin-bottom: 16px;">
+            <label>Location Name</label>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="cLoc" class="input-field" placeholder="Ex: Central Park, NY" required style="border-radius: 16px 4px 4px 16px;">
+                <button type="button" class="btn btn-glass" onclick="verifyLocation()" style="width: auto; padding: 0 20px; border-radius: 4px 16px 16px 4px; font-size: 0.9rem;">
+                    Verify On Map
+                </button>
+            </div>
         </div>
-        <div class="nav-item" id="navProfile">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-            <circle cx="12" cy="7" r="4"></circle>
-          </svg>
-        </div>
+        
+        <div id="createMap"></div>
+        
+        <button class="btn btn-glow">Launch Club</button>
+      </form>
     </div>
-  </nav>
+  </div>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-  
-  <script>
-    // ===================================
-    // WATERETTE - LOGIC
-    // ===================================
+  <!-- Details Modal -->
+  <div id="detailsModal" class="modal-backdrop">
+    <div class="sheet" style="height: 90vh;">
+      <div class="drag-handle"></div>
+      <div id="detailsContent"></div>
+    </div>
+  </div>
 
-    let clubs = [];
-    let currentUser = null;
-    let filterMode = 'all';
-    let clubMap = null;
-    let currentChatClubId = null;
+  <!-- Chat Modal -->
+  <div id="chatModal" class="modal-backdrop">
+    <div class="sheet" style="height: 90vh; display: flex; flex-direction: column;">
+      <div class="drag-handle"></div>
+      <div style="display: flex; justify-content: space-between; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 16px;">
+        <h3 id="chatTitle">Club Chat</h3>
+        <span style="color: var(--accent); font-size: 0.8rem; font-weight: 700;">● Live</span>
+      </div>
+      <div id="chatHistory" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; padding-bottom: 20px;"></div>
+      <form onsubmit="sendChat(event)" style="display: flex; gap: 10px; margin-top: auto;">
+        <input type="text" id="chatInput" class="input-field" placeholder="Message..." autocomplete="off">
+        <button class="btn btn-glow" style="width: 56px; border-radius: 16px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+        </button>
+      </form>
+    </div>
+  </div>
 
-    document.addEventListener('DOMContentLoaded', () => {
-      // THEME INIT - Auto System Detect
-      initializeTheme();
+  <!-- Profile Modal -->
+  <div id="profileModal" class="modal-backdrop">
+    <div class="sheet">
+      <div class="drag-handle"></div>
+      <div style="text-align: center; margin-bottom: 30px;">
+        <div style="width: 80px; height: 80px; border-radius: 50%; background: var(--gradient-primary); display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 800; color: #fff; margin: 0 auto 16px; overflow:hidden; position:relative;" id="profileAvatarBig">
+            <span id="profileAvatarInitial">G</span>
+            <img id="profileAvatarImg" style="width:100%; height:100%; object-fit:cover; display:none;">
+        </div>
+        <h2 id="profileName" style="margin-bottom: 4px;">Guest</h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Club Member</p>
+      </div>
       
-      checkAuthentication();
-      loadClubsFromStorage();
-      renderClubs();
-      initializeEventListeners();
-      initializeBottomNav();
-      initializeAuthListeners();
-      setMinDate();
-      initializeCarousel();
+      <div>
+        <div class="setting-row" onclick="openEditProfile()">
+            <div class="setting-left">
+                <div class="setting-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></div>
+                Edit Profile
+            </div>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-muted)"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </div>
+
+        <!-- New Settings Entry Point -->
+        <div class="setting-row" onclick="openSettings()">
+            <div class="setting-left">
+                <div class="setting-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
+                App Settings
+            </div>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-muted)"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </div>
+
+        <div class="setting-row" onclick="logout()">
+            <div class="setting-left" style="color: #ff5252;">
+                <div class="setting-icon" style="color: #ff5252; background: rgba(255,82,82,0.1);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg></div>
+                Disconnect
+            </div>
+        </div>
+      </div>
+      <div style="text-align: center; color: var(--text-muted); opacity: 0.5; font-size: 0.75rem; margin-top: 40px; line-height: 1.6;">
+        WATERETTE 2.1<br>
+        <span style="font-weight: 600; letter-spacing: 0.05em;">Made by KENBRISELLERIS</span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Edit Profile Modal -->
+  <div id="editProfileModal" class="modal-backdrop">
+    <div class="sheet">
+        <div class="drag-handle"></div>
+        <h2 style="font-size: 1.5rem; margin-bottom: 24px; text-align: center;">Update Profile</h2>
+        
+        <label for="avatarInput">
+            <div class="avatar-upload" id="editAvatarPreview">
+                <div class="upload-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                </div>
+                <img id="editAvatarImg" src="">
+            </div>
+        </label>
+        <input type="file" id="avatarInput" accept="image/*" style="display: none;" onchange="handleImageUpload(this)">
+        
+        <form onsubmit="saveProfile(event)">
+            <div class="input-group" style="margin-bottom: 24px;">
+                <label>Display Name</label>
+                <input type="text" id="editName" class="input-field" required>
+            </div>
+            <button class="btn btn-glow">Save Changes</button>
+            <button type="button" class="btn btn-glass" style="margin-top: 12px;" onclick="closeModal('editProfileModal')">Cancel</button>
+        </form>
+    </div>
+  </div>
+
+  <!-- Settings Page Modal -->
+  <div id="settingsModal" class="modal-backdrop">
+    <div class="sheet" style="height: 100vh; max-height: 100vh; border-radius: 0;">
+        <!-- Settings Header -->
+        <div style="display: flex; align-items: center; margin-bottom: 30px;">
+            <div onclick="closeSettings()" style="width: 40px; height: 40px; border-radius: 12px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; margin-right: 16px;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            </div>
+            <h2 style="font-size: 1.5rem;">Settings</h2>
+        </div>
+
+        <h3 style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px; letter-spacing: 0.05em;">Preferences</h3>
+        
+        <!-- Theme Toggle Row -->
+        <div class="setting-row" onclick="toggleTheme()">
+            <div class="setting-left">
+                <div class="setting-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></div>
+                <div>
+                    <div>Dark Mode</div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 400;" id="themeLabel">Active</div>
+                </div>
+            </div>
+            <div class="toggle-switch" id="themeToggle"></div>
+        </div>
+
+        <div class="setting-row">
+            <div class="setting-left">
+                <div class="setting-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg></div>
+                Notifications
+            </div>
+            <div class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
+        </div>
+
+        <h3 style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px; margin-top: 30px; letter-spacing: 0.05em;">Account</h3>
+        
+        <div class="setting-row">
+            <div class="setting-left">
+                <div class="setting-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></div>
+                <div>
+                    <div>Email</div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 400;" id="settingsEmail">user@email.com</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="setting-row">
+            <div class="setting-left">
+                <div class="setting-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
+                Security
+            </div>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-muted)"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </div>
+
+        <h3 style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px; margin-top: 30px; letter-spacing: 0.05em;">About</h3>
+        
+        <div class="setting-row">
+            <div class="setting-left">
+                <div class="setting-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg></div>
+                Terms & Privacy
+            </div>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-muted)"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </div>
+
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast-box">
+    <div style="color: var(--accent);">●</div>
+    <span id="toastMsg" style="font-weight: 600; font-size: 0.9rem;">Action Successful</span>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    /* =========================================
+       APP LOGIC
+       ========================================= */
+    const MOCK_USERS = [
+        { name: "Kiera", color: "#f472b6" }, { name: "Jaxon", color: "#60a5fa" },
+        { name: "Zane", color: "#34d399" }, { name: "Nia", color: "#fbbf24" }
+    ];
+    
+    // Generate some fake attendees for the demo clubs so the Host View has something to show
+    const FAKE_ATTENDEES_DATA = [
+        { name: "Alice M.", avatar: null, initial: "A" },
+        { name: "Bob C.", avatar: null, initial: "B" },
+        { name: "Charlie", avatar: null, initial: "C" },
+        { name: "Dana S.", avatar: null, initial: "D" },
+        { name: "Evan", avatar: null, initial: "E" }
+    ];
+    
+    const BOT_RESPONSES = [
+        "Vibes are immaculate.", "Omg yes.", "What time we meeting?", 
+        "Count me in.", "Is there food?", "Sent invite to the crew.",
+        "Let's gooo!", "Anyone driving?"
+    ];
+
+    const DEFAULT_CLUBS = [
+        { id: 'c1', title: 'Neon Runners', desc: 'Midnight 5K through the city center. Pace is casual, outfits are bright.', date: '2025-10-15', time: '23:00', location: 'New York, NY', lat: 40.7128, lng: -74.0060, attendees: 42, capacity: 50 },
+        { id: 'c2', title: 'Film Grain', desc: 'Analog photography walk. Capture the brutalist structures at sunset.', date: '2025-10-18', time: '18:30', location: 'London, UK', lat: 51.5074, lng: -0.1278, attendees: 8, capacity: 12 },
+        { id: 'c3', title: 'Synthwave Yoga', desc: 'Deep stretching to heavy synth beats. Roof access included.', date: '2025-10-20', time: '19:00', location: 'Tokyo, Japan', lat: 35.6762, lng: 139.6503, attendees: 15, capacity: 20 }
+    ];
+
+    let clubs = JSON.parse(localStorage.getItem('waterette_clubs')) || DEFAULT_CLUBS;
+
+    // --- DATA MIGRATION FIXES ---
+    let needsSave = false;
+    
+    // Fix 2: Missing Attendee List (Generate mocks for display)
+    if (clubs.some(c => !c.attendeesList)) {
+        clubs = clubs.map(c => {
+            if(c.attendeesList) return c;
+            // Generate basic fake attendees based on count
+            const list = [];
+            const count = Math.min(c.attendees, 5); // Just generate up to 5 fakes
+            for(let i=0; i<count; i++) {
+                list.push(FAKE_ATTENDEES_DATA[i % FAKE_ATTENDEES_DATA.length]);
+            }
+            return { ...c, attendeesList: list };
+        });
+        needsSave = true;
+    }
+    
+    if(needsSave) localStorage.setItem('waterette_clubs', JSON.stringify(clubs));
+
+    let currentUser = JSON.parse(localStorage.getItem('waterette_user')) || null;
+    let myJoinedIds = JSON.parse(localStorage.getItem('waterette_joined')) || ['c1'];
+    let activeClubId = null;
+    let map = null;
+    
+    // Create Map Variables
+    let createMap = null;
+    let createMarker = null;
+    let tempCoordinates = null;
+
+    let isSignUp = false;
+    let tempAvatarBase64 = null; // For editing profile
+
+    // --- Init ---
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => { document.getElementById('splashScreen').classList.add('hide'); }, 2200);
+
+        if(!localStorage.getItem('waterette_clubs')) localStorage.setItem('waterette_clubs', JSON.stringify(DEFAULT_CLUBS));
+        
+        initializeTheme(); 
+        checkAuth();
+        renderClubs();
+        updateProfileUI();
+        
+        document.querySelectorAll('.modal-backdrop').forEach(m => {
+            m.addEventListener('click', e => { if(e.target === m) closeModal(m.id); });
+        });
     });
     
+    // --- Theme Logic ---
     function initializeTheme() {
         const savedTheme = localStorage.getItem('waterette_theme');
-        if (savedTheme) {
-            // User has manually set a preference
-            if (savedTheme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
-        } else {
-            // Check system preference
-            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                document.documentElement.setAttribute('data-theme', 'dark');
-            }
-        }
+        const themeLabel = document.getElementById('themeLabel');
+        const themeToggle = document.getElementById('themeToggle');
         
-        // Listen for system changes if no manual override
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-            if (!localStorage.getItem('waterette_theme')) {
-                if (e.matches) document.documentElement.setAttribute('data-theme', 'dark');
-                else document.documentElement.removeAttribute('data-theme');
-            }
-        });
+        if (savedTheme === 'light') {
+            document.documentElement.setAttribute('data-theme', 'light');
+            themeLabel.textContent = 'Disabled';
+            themeToggle.classList.remove('active');
+        } else {
+            themeLabel.textContent = 'Active';
+            themeToggle.classList.add('active');
+        }
+    }
+
+    function toggleTheme() {
+        const current = document.documentElement.getAttribute('data-theme');
+        const themeLabel = document.getElementById('themeLabel');
+        const themeToggle = document.getElementById('themeToggle');
+        
+        if (current === 'light') {
+            document.documentElement.removeAttribute('data-theme');
+            localStorage.setItem('waterette_theme', 'dark');
+            themeLabel.textContent = 'Active';
+            themeToggle.classList.add('active');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            localStorage.setItem('waterette_theme', 'light');
+            themeLabel.textContent = 'Disabled';
+            themeToggle.classList.remove('active');
+        }
     }
 
     // --- Auth ---
-    function checkAuthentication() {
-      const user = localStorage.getItem('waterette_user');
-      if (user) {
-        currentUser = JSON.parse(user);
-        updateUserAvatar();
-      } else {
-        showAuthModal();
-      }
-    }
-
-    function showAuthModal() {
-      document.getElementById('authModal').classList.add('active');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function updateUserAvatar() {
-        if(currentUser) {
-            document.getElementById('userAvatar').textContent = currentUser.name.charAt(0).toUpperCase();
-            document.getElementById('createClubBtn').style.display = 'block';
-        }
-    }
-
-    function initializeAuthListeners() {
-      const showSignupBtn = document.getElementById('showSignup');
-      const showLoginBtn = document.getElementById('showLogin');
-      const loginForm = document.getElementById('loginForm');
-      const signupForm = document.getElementById('signupForm');
-
-      if (showSignupBtn) showSignupBtn.addEventListener('click', () => { loginForm.classList.add('hidden'); signupForm.classList.remove('hidden'); });
-      if (showLoginBtn) showLoginBtn.addEventListener('click', () => { signupForm.classList.add('hidden'); loginForm.classList.remove('hidden'); });
-
-      document.getElementById('loginForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const email = document.getElementById('loginEmail').value;
-        const password = document.getElementById('loginPassword').value;
-        const storedUsers = JSON.parse(localStorage.getItem('waterette_users') || '[]');
-        const user = storedUsers.find(u => u.email === email && u.password === password);
-
-        if (user) {
-          currentUser = user;
-          localStorage.setItem('waterette_user', JSON.stringify(currentUser));
-          updateUserAvatar();
-          document.getElementById('authModal').classList.remove('active');
-          document.body.style.overflow = '';
-          showNotification(`Welcome back, ${user.name}!`);
-          renderClubs();
+    function checkAuth() {
+        if (!currentUser) {
+            document.getElementById('authScreen').classList.remove('out');
         } else {
-          showNotification('Invalid login', 'error');
+            document.getElementById('authScreen').classList.add('out');
+            updateProfileUI();
         }
-      });
+    }
 
-      document.getElementById('signupForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const name = document.getElementById('signupName').value;
-        const email = document.getElementById('signupEmail').value;
-        const password = document.getElementById('signupPassword').value;
+    function toggleAuthMode() {
+        isSignUp = !isSignUp;
+        const nameGroup = document.getElementById('nameGroup');
+        const btn = document.querySelector('#authForm button');
+        const switchLabel = document.getElementById('authSwitchLabel');
         
-        const storedUsers = JSON.parse(localStorage.getItem('waterette_users') || '[]');
-        if (storedUsers.find(u => u.email === email)) { showNotification('Email taken', 'error'); return; }
+        if (isSignUp) {
+            nameGroup.classList.remove('hidden');
+            btn.textContent = 'Join The Club';
+            switchLabel.innerHTML = "Have an account? <span onclick='toggleAuthMode()' style='color: var(--accent); cursor: pointer; font-weight: 700;'>Sign In</span>";
+        } else {
+            nameGroup.classList.add('hidden');
+            btn.textContent = 'Enter The Club';
+            switchLabel.innerHTML = "First time? <span onclick='toggleAuthMode()' style='color: var(--accent); cursor: pointer; font-weight: 700;'>Get Access</span>";
+        }
+    }
 
-        const newUser = { id: 'user_' + Date.now(), name, email, password };
-        storedUsers.push(newUser);
-        localStorage.setItem('waterette_users', JSON.stringify(storedUsers));
-        currentUser = newUser;
+    function handleAuth(e) {
+        e.preventDefault();
+        const email = document.getElementById('authEmail').value;
+        const nameInput = document.getElementById('authName').value;
+        
+        let finalName = (isSignUp && nameInput.trim()) ? nameInput : email.split('@')[0];
+        finalName = finalName.charAt(0).toUpperCase() + finalName.slice(1);
+        
+        currentUser = { email, name: finalName, initial: finalName.charAt(0).toUpperCase(), avatar: null };
         localStorage.setItem('waterette_user', JSON.stringify(currentUser));
-        updateUserAvatar();
-        document.getElementById('authModal').classList.remove('active');
-        document.body.style.overflow = '';
-        showNotification(`Welcome, ${name}!`);
-        renderClubs();
-      });
-      
-      document.getElementById('userAvatar').addEventListener('click', showProfileInfo);
+        
+        checkAuth();
+        showToast(`Welcome in, ${currentUser.name}`);
     }
 
     function logout() {
-      localStorage.removeItem('waterette_user');
-      currentUser = null;
-      document.getElementById('clubDetailsModal').classList.remove('active');
-      showAuthModal();
-      showNotification('Logged out');
+        localStorage.removeItem('waterette_user');
+        currentUser = null;
+        closeModal('profileModal');
+        checkAuth();
     }
 
-    // --- Navigation ---
-    function initializeBottomNav() {
-      const navItems = document.querySelectorAll('.nav-item:not(#navCreate)');
-      navItems.forEach(item => {
-        item.addEventListener('click', () => {
-          navItems.forEach(i => i.classList.remove('active'));
-          item.classList.add('active');
-          const navId = item.id;
-          
-          if (navId === 'navHome') {
-            filterMode = 'all';
-            document.querySelector('.hero-wrapper').classList.remove('hidden');
-            document.querySelector('.filter-section').classList.remove('hidden');
-            document.querySelector('.container').classList.remove('hidden');
-            renderClubs();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          } else if (navId === 'navExplore') {
-             filterMode = 'available';
-             document.querySelector('.hero-wrapper').classList.remove('hidden');
-             document.querySelector('.filter-section').classList.remove('hidden');
-             renderClubs();
-             window.scrollTo({ top: 0, behavior: 'smooth' });
-          } else if (navId === 'navMyClubs') {
-            showMyClubsPage();
-          } else if (navId === 'navProfile') {
-            showProfileInfo();
-          }
-        });
-      });
-    }
-
-    function showMyClubsPage() {
-      if (!currentUser) return showNotification('Login required', 'error');
-      document.querySelector('.hero-wrapper').classList.add('hidden');
-      document.querySelector('.filter-section').classList.add('hidden');
-      
-      const myClubs = clubs.filter(c => c.participants.includes(currentUser.id));
-      const grid = document.getElementById('clubsGrid');
-      
-      if (myClubs.length === 0) {
-        grid.innerHTML = '';
-        document.getElementById('emptyState').classList.remove('hidden');
-      } else {
-        document.getElementById('emptyState').classList.add('hidden');
-        grid.innerHTML = `
-            <div style="margin-bottom: 24px;">
-                <h1 style="font-size: 2rem; font-weight: 800; color: var(--text-main);">My Clubs</h1>
-            </div>
-            ${myClubs.map(club => createClubCard(club)).join('')}
-        `;
-      }
-    }
-    
-    // --- Cards ---
-    function createClubCard(club) {
-      const isParticipant = currentUser && club.participants.includes(currentUser.id);
-      const isFull = club.participants.length >= club.capacity;
-      const progressPercent = (club.participants.length / club.capacity) * 100;
-
-      return `
-        <div class="club-card" onclick="openDetailsModal('${club.id}')">
-            <div class="club-top">
-                <div>
-                    ${club.createdBy === currentUser?.id ? '<span class="owner-badge">YOU</span>' : ''}
-                    <h3 class="club-title">${escapeHtml(club.title)}</h3>
-                </div>
-            </div>
+    // --- Profile & Avatar Handling ---
+    function updateProfileUI() {
+        if(currentUser) {
+            const initials = document.getElementById('userInitials');
+            const bigInitials = document.getElementById('profileAvatarInitial');
+            const bigImg = document.getElementById('profileAvatarImg');
             
-            <p class="club-desc">${escapeHtml(club.description || '')}</p>
+            // Header Avatar
+            if (currentUser.avatar) {
+                document.getElementById('headerAvatar').innerHTML = `<img src="${currentUser.avatar}">`;
+                document.getElementById('headerAvatar').classList.add('has-img');
+            } else {
+                document.getElementById('headerAvatar').innerHTML = `<span id="userInitials">${currentUser.initial}</span>`;
+                document.getElementById('headerAvatar').classList.remove('has-img');
+            }
+
+            // Profile Modal Avatar
+            document.getElementById('profileName').textContent = currentUser.name;
+            document.getElementById('settingsEmail').textContent = currentUser.email;
             
-            <div class="club-meta">
-                <div class="meta-tag">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                    ${formatDate(club.date)}
-                </div>
-                <div class="meta-tag">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                    ${formatTime(club.time)}
-                </div>
-            </div>
-            
-            <div class="card-actions">
-                ${isParticipant 
-                    ? `<button class="btn btn-secondary btn-card" onclick="event.stopPropagation(); leaveClub('${club.id}')">Leave</button>
-                       <button class="btn btn-primary btn-card" onclick="event.stopPropagation(); openChatModal('${club.id}')">Chat</button>`
-                    : `<button class="btn btn-primary btn-card" ${isFull ? 'disabled' : ''} onclick="event.stopPropagation(); joinClub('${club.id}')">${isFull ? 'Full' : 'Join'}</button>`
-                }
-            </div>
-        </div>
-      `;
+            if (currentUser.avatar) {
+                bigInitials.style.display = 'none';
+                bigImg.src = currentUser.avatar;
+                bigImg.style.display = 'block';
+            } else {
+                bigInitials.style.display = 'block';
+                bigInitials.textContent = currentUser.initial;
+                bigImg.style.display = 'none';
+            }
+        }
     }
 
-    // --- Profile & Settings ---
-    function showProfileInfo() {
-      if (!currentUser) return;
-      const myClubs = clubs.filter(c => c.participants.includes(currentUser.id));
-      
-      const content = document.getElementById('clubDetailsContent');
-      let html = `
-        <div style="position: absolute; top: 24px; right: 24px;">
-            <button class="btn-icon" onclick="showSettings()" style="background: var(--bg-body); border-radius: 50%; box-shadow: var(--shadow-sm);">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-            </button>
-        </div>
-
-        <div style="text-align: center; padding: 20px 0;">
-            <div style="width: 80px; height: 80px; background: var(--primary); color: var(--bg-body); font-size: 2rem; font-weight: 800; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto;">
-                ${currentUser.name.charAt(0).toUpperCase()}
-            </div>
-            <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--text-main);">${currentUser.name}</h2>
-            <p style="color: var(--text-muted); margin-bottom: 24px;">${currentUser.email}</p>
-        </div>
+    function openEditProfile() {
+        closeModal('profileModal');
+        document.getElementById('editName').value = currentUser.name;
         
-        <div style="margin-bottom: 24px;">
-            <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 16px; color: var(--text-main); padding-left: 8px;">Joined Clubs (${myClubs.length})</h3>
-            <div style="display: flex; flex-direction: column; gap: 12px;">
-      `;
+        const preview = document.getElementById('editAvatarPreview');
+        const img = document.getElementById('editAvatarImg');
+        
+        if (currentUser.avatar) {
+            img.src = currentUser.avatar;
+            preview.classList.add('has-img');
+            tempAvatarBase64 = currentUser.avatar;
+        } else {
+            preview.classList.remove('has-img');
+            tempAvatarBase64 = null;
+        }
+        
+        openModal('editProfileModal');
+    }
 
-      if (myClubs.length === 0) {
-        html += `<div style="text-align: center; color: var(--text-muted); padding: 24px; background: var(--bg-card-subtle); border-radius: 24px;">You haven't joined any clubs yet.</div>`;
-      } else {
-        myClubs.forEach(club => {
-            html += `
-                <div class="joined-club-item">
-                    <div style="flex: 1; padding-right: 12px;">
-                        <div style="font-weight: 700; font-size: 1rem; margin-bottom: 4px; color: var(--text-main);">${escapeHtml(club.title)}</div>
-                        <div style="font-size: 0.85rem; color: var(--text-muted); display: flex; gap: 8px; align-items: center;">
-                            <span>📅 ${formatDate(club.date)}</span>
+    function handleImageUpload(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.getElementById('editAvatarImg');
+                const preview = document.getElementById('editAvatarPreview');
+                
+                // Basic compression/resize logic could go here to save space
+                img.src = e.target.result;
+                preview.classList.add('has-img');
+                tempAvatarBase64 = e.target.result;
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function saveProfile(e) {
+        e.preventDefault();
+        const newName = document.getElementById('editName').value;
+        
+        if(newName) {
+            currentUser.name = newName;
+            currentUser.initial = newName.charAt(0).toUpperCase();
+        }
+        if(tempAvatarBase64) {
+            currentUser.avatar = tempAvatarBase64;
+        }
+        
+        localStorage.setItem('waterette_user', JSON.stringify(currentUser));
+        updateProfileUI();
+        closeModal('editProfileModal');
+        showToast("Profile Updated");
+    }
+
+    // --- Main UI ---
+    function renderClubs(filter = 'all') {
+        const container = document.getElementById('clubsContainer');
+        container.innerHTML = '';
+        
+        let filtered = clubs;
+        if(filter === 'joined') filtered = clubs.filter(c => myJoinedIds.includes(c.id));
+        if(filter === 'new') filtered = [...clubs].reverse();
+        
+        if(filtered.length === 0) {
+            container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-muted);">No clubs found here.</div>`;
+            return;
+        }
+
+        filtered.forEach(club => {
+            const isJoined = myJoinedIds.includes(club.id);
+            const isFull = club.attendees >= club.capacity;
+            const isHost = club.hostEmail === (currentUser ? currentUser.email : '');
+            
+            const html = `
+                <div class="club-card" onclick="openDetails('${club.id}')">
+                    <div class="card-top">
+                        <div class="card-info">
+                            ${isHost ? '<span style="color:var(--accent); font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:0.1em; display:block; margin-bottom:4px;">Hosted by You</span>' : ''}
+                            <h3>${club.title}</h3>
+                            <p>${club.desc}</p>
                         </div>
                     </div>
-                    <button class="btn-sm btn-secondary" style="color: var(--error); border-color: #fee2e2; white-space: nowrap; height: 36px; padding: 0 16px; border-radius: 12px; font-weight: 600;" onclick="leaveClubFromProfile('${club.id}')">Leave</button>
+                    
+                    <div class="card-divider">
+                        <div class="card-divider-line"></div>
+                    </div>
+                    
+                    <div class="card-bottom">
+                        <div class="meta-column">
+                            <div class="meta-row">
+                                <div class="meta-point">
+                                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                    ${new Date(club.date).toLocaleDateString('en-US', {month:'short', day:'numeric'})}
+                                </div>
+                                <div class="meta-point">
+                                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                    ${club.time}
+                                </div>
+                            </div>
+                            <div class="barcode-area">
+                                *${club.id.toUpperCase()}*
+                            </div>
+                        </div>
+                        
+                        <div style="width: 140px; display: flex; justify-content: flex-end;">
+                        ${isJoined 
+                            ? `<div style="display:flex; gap:8px; width:100%;">
+                                 <button class="btn-glass" onclick="event.stopPropagation(); openChat('${club.id}')" style="flex:1; padding: 0 16px; border-radius: 14px; font-size: 0.9rem; font-weight:700;">Chat</button>
+                                 <button class="btn-glass" onclick="event.stopPropagation(); leaveClub('${club.id}')" style="flex:1; color:#ff5252; padding: 0 16px; border-radius: 14px; font-size: 0.9rem; font-weight:700;">Unjoin</button>
+                               </div>`
+                            : `<button class="btn-glow" style="width:100%; height:46px; border-radius: 14px; font-size: 0.95rem; font-weight:800;" onclick="event.stopPropagation(); joinClub('${club.id}')" ${isFull?'disabled':''}>${isFull?'FULL':'JOIN'}</button>`
+                        }
+                        </div>
+                    </div>
                 </div>
             `;
+            container.insertAdjacentHTML('beforeend', html);
         });
-      }
-
-      html += `
-            </div>
-        </div>
-      `;
-
-      content.innerHTML = html;
-      document.getElementById('detailsClubTitle').textContent = 'Profile';
-      document.getElementById('clubDetailsModal').classList.add('active');
     }
 
-    function showSettings() {
-        const content = document.getElementById('clubDetailsContent');
-        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-        const notifEnabled = localStorage.getItem('waterette_notifications') === 'true';
+    function filterClubs(type, el) {
+        document.querySelectorAll('.filter-pill').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+        renderClubs(type);
+    }
+    
+    function switchTab(tab) {
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        event.currentTarget.classList.add('active');
         
-        content.innerHTML = `
-            <div style="margin-bottom: 20px;">
-                <button class="btn-icon" onclick="showProfileInfo()" style="display: flex; align-items: center; gap: 8px; width: auto; padding: 0;">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                    Back to Profile
-                </button>
-            </div>
-            
-            <div class="settings-group">
-                <div class="settings-label">Account Info</div>
-                <div class="settings-item" style="cursor: default;">
-                    <div class="settings-item-content">
-                        <div class="settings-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
-                        <div>
-                            <div class="settings-text">Name</div>
-                            <div class="settings-sub">${currentUser.name}</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="settings-item" style="cursor: default;">
-                    <div class="settings-item-content">
-                        <div class="settings-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></div>
-                        <div>
-                            <div class="settings-text">Email</div>
-                            <div class="settings-sub">${currentUser.email}</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="settings-group">
-                <div class="settings-label">Appearance</div>
-                <div class="settings-item" onclick="document.getElementById('themeToggle').click()">
-                    <div class="settings-item-content">
-                        <div class="settings-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg></div>
-                        <div>
-                            <div class="settings-text">Dark Mode</div>
-                            <div class="settings-sub">Easy on the eyes</div>
-                        </div>
-                    </div>
-                    <label class="toggle-switch" onclick="event.stopPropagation()">
-                        <input type="checkbox" id="themeToggle" ${isDark ? 'checked' : ''} onchange="toggleTheme(this)">
-                        <span class="slider"></span>
-                    </label>
-                </div>
-            </div>
-            
-            <div class="settings-group">
-                <div class="settings-label">General</div>
-                <div class="settings-item" onclick="document.getElementById('notifToggle').click()">
-                    <div class="settings-item-content">
-                        <div class="settings-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg></div>
-                        <div class="settings-text">Notifications</div>
-                    </div>
-                    <label class="toggle-switch" onclick="event.stopPropagation()">
-                        <input type="checkbox" id="notifToggle" ${notifEnabled ? 'checked' : ''} onchange="toggleNotifications(this)">
-                        <span class="slider"></span>
-                    </label>
-                </div>
-                <div class="settings-item" onclick="openPrivacyModal()">
-                    <div class="settings-item-content">
-                        <div class="settings-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
-                        <div class="settings-text">Privacy Policy</div>
-                    </div>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--text-light);"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                </div>
-            </div>
-            
-            <div style="padding-top: 20px; border-top: 1px solid var(--border);">
-                <button class="btn btn-secondary" onclick="logout()" style="width: 100%; color: var(--error); border-color: #fee2e2; background: var(--bg-surface);">Sign Out</button>
-            </div>
-        `;
-        document.getElementById('detailsClubTitle').textContent = 'Settings';
-    }
-
-    function toggleTheme(checkbox) {
-        if (checkbox.checked) {
-            document.documentElement.setAttribute('data-theme', 'dark');
-            localStorage.setItem('waterette_theme', 'dark');
-        } else {
-            document.documentElement.removeAttribute('data-theme');
-            localStorage.setItem('waterette_theme', 'light');
-        }
-    }
-    
-    function toggleNotifications(checkbox) {
-        localStorage.setItem('waterette_notifications', checkbox.checked);
-        showNotification(checkbox.checked ? 'Notifications Enabled' : 'Notifications Disabled');
-    }
-    
-    function openPrivacyModal() {
-        const modal = document.getElementById('genericModal');
-        document.getElementById('genericModalTitle').textContent = 'Privacy Policy';
-        document.getElementById('genericModalContent').innerHTML = `
-            <p style="margin-bottom: 1rem;"><strong>Your privacy matters to us.</strong></p>
-            <p style="margin-bottom: 1rem;">This is a demo application. In a real-world scenario, this section would outline how we collect, use, and protect your data.</p>
-            <ul style="padding-left: 1.5rem; margin-bottom: 1rem;">
-                <li>We do not sell your data.</li>
-                <li>Data is stored locally on your device for this demo.</li>
-                <li>You can clear your data by signing out.</li>
-            </ul>
-            <p>Last updated: Dec 2023</p>
-        `;
-        modal.classList.add('active');
-    }
-
-    function leaveClubFromProfile(clubId) {
-        const club = clubs.find(c => c.id === clubId);
-        if (club) {
-            club.participants = club.participants.filter(p => p !== currentUser.id);
-            saveClubs();
-            renderClubs(); // Update main grid
-            showNotification('Left club 👋');
-            showProfileInfo(); // Refresh profile modal content
+        if(tab === 'home') {
+            document.getElementById('mainView').classList.remove('hidden');
+            renderClubs('all');
+            window.scrollTo({top:0, behavior:'smooth'});
+        } else if(tab === 'explore') {
+            renderClubs('new');
+            window.scrollTo({top:0, behavior:'smooth'});
+        } else if(tab === 'chats') {
+            renderClubs('joined');
+            showToast('Your Access List');
         }
     }
 
-    // --- CRUD ---
-    function loadClubsFromStorage() {
-      clubs = JSON.parse(localStorage.getItem('waterette_clubs') || '[]');
-    }
-
-    function saveClubs() {
-      localStorage.setItem('waterette_clubs', JSON.stringify(clubs));
-    }
-
-    function initializeEventListeners() {
-      document.getElementById('createClubBtn').addEventListener('click', () => document.getElementById('createClubModal').classList.add('active'));
-      
-      // Close Modals
-      document.querySelectorAll('.close-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => e.target.closest('.modal').classList.remove('active'));
-      });
-      
-      // Filter logic
-      document.getElementById('searchInput').addEventListener('input', renderClubs);
-      document.getElementById('showAllBtn').addEventListener('click', () => {
-          filterMode = 'all'; 
-          document.getElementById('showAllBtn').classList.add('active');
-          document.getElementById('filterAvailableBtn').classList.remove('active');
-          renderClubs();
-      });
-      document.getElementById('filterAvailableBtn').addEventListener('click', () => {
-          filterMode = 'available';
-          document.getElementById('filterAvailableBtn').classList.add('active');
-          document.getElementById('showAllBtn').classList.remove('active');
-          renderClubs();
-      });
-
-      document.getElementById('createClubForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        if(!currentUser) return;
-        const newClub = {
-            id: 'club_' + Date.now(),
-            title: document.getElementById('clubTitle').value,
-            description: document.getElementById('clubDescription').value,
-            date: document.getElementById('clubDate').value,
-            time: document.getElementById('clubTime').value,
-            location: document.getElementById('clubLocation').value,
-            capacity: parseInt(document.getElementById('clubCapacity').value),
-            participants: [currentUser.id],
-            createdBy: currentUser.id
-        };
-        clubs.unshift(newClub);
-        saveClubs();
-        renderClubs();
-        document.getElementById('createClubModal').classList.remove('active');
-        document.getElementById('createClubForm').reset();
-        showNotification('Club launched! 🚀');
-      });
-      
-      // Chat
-      document.getElementById('sendMessageBtn').addEventListener('click', sendMessage);
-    }
-
-    function renderClubs() {
-      const grid = document.getElementById('clubsGrid');
-      const search = document.getElementById('searchInput').value.toLowerCase();
-      
-      let filtered = clubs;
-      if (filterMode === 'available') filtered = clubs.filter(c => c.participants.length < c.capacity);
-      if (search) filtered = filtered.filter(c => c.title.toLowerCase().includes(search) || c.location.toLowerCase().includes(search));
-
-      if (filtered.length === 0) {
-        grid.innerHTML = '';
-        document.getElementById('emptyState').classList.remove('hidden');
-      } else {
-        document.getElementById('emptyState').classList.add('hidden');
-        grid.innerHTML = filtered.map(c => createClubCard(c)).join('');
-      }
-    }
-    
-    async function openDetailsModal(clubId) {
-        const club = clubs.find(c => c.id === clubId);
-        if(!club) return;
-        
-        const isParticipant = currentUser && club.participants.includes(currentUser.id);
-        const isFull = club.participants.length >= club.capacity;
-        
-        const content = document.getElementById('clubDetailsContent');
-        content.innerHTML = `
-            <div style="font-size: 1.1rem; line-height: 1.6; color: var(--text-main); margin-bottom: 24px;">
-                ${escapeHtml(club.description)}
-            </div>
-            
-            <div class="club-meta" style="flex-direction: column; gap: 12px; margin-bottom: 24px;">
-                <div class="meta-tag" style="width: 100%; justify-content: space-between; padding: 12px 16px; background: var(--bg-body);">
-                    <span style="font-weight: 500; color: var(--text-muted);">When</span>
-                    <span>${formatDate(club.date)} @ ${formatTime(club.time)}</span>
-                </div>
-                <div class="meta-tag" style="width: 100%; justify-content: space-between; padding: 12px 16px; background: var(--bg-body);">
-                    <span style="font-weight: 500; color: var(--text-muted);">Where</span>
-                    <span>${escapeHtml(club.location)}</span>
-                </div>
-            </div>
-            
-            <div class="club-map-container" id="detailsMapContainer">
-                <div class="map-loading" style="height: 100%; display: flex; align-items: center; justify-content: center; color: var(--text-muted);">Loading Map...</div>
-            </div>
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px;">
-                 ${isParticipant
-                  ? `<button class="btn btn-secondary" onclick="leaveClub('${club.id}'); document.getElementById('clubDetailsModal').classList.remove('active')">Leave</button>
-                     <button class="btn btn-primary" onclick="document.getElementById('clubDetailsModal').classList.remove('active'); openChatModal('${club.id}')">Chat</button>`
-                  : `<button class="btn btn-primary" style="grid-column: span 2;" ${isFull ? 'disabled' : ''} onclick="joinClub('${club.id}'); document.getElementById('clubDetailsModal').classList.remove('active')">${isFull ? 'Full' : 'Join Club'}</button>`
-                }
-            </div>
-        `;
-        
-        document.getElementById('detailsClubTitle').textContent = club.title;
-        document.getElementById('clubDetailsModal').classList.add('active');
-        
-        // Map Logic - Force redraw after modal transition
-        setTimeout(async () => {
-            const mapContainer = document.getElementById('detailsMapContainer');
-            if (!mapContainer) return;
-            
-            const location = await geocodeLocation(club.location);
-            
-            if (location) {
-                mapContainer.innerHTML = '<div id="clubMap" class="club-map"></div>';
-                // Initialize map with a slight delay to ensure container has dimensions
-                if(clubMap) { clubMap.remove(); clubMap = null; }
-                
-                // DISABLED ZOOM CONTROLS HERE
-                clubMap = L.map('clubMap', { zoomControl: false }).setView([location.lat, location.lon], 15);
-                L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { 
-                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-                    subdomains: 'abcd',
-                    maxZoom: 20
-                }).addTo(clubMap);
-                
-                L.marker([location.lat, location.lon]).addTo(clubMap)
-                    .bindPopup(`<b>${escapeHtml(club.location)}</b>`)
-                    .openPopup();
-                    
-                // Fix for map rendering in modal
-                setTimeout(() => { clubMap.invalidateSize(); }, 200);
-            } else {
-                mapContainer.innerHTML = `<div style="height: 100%; display: flex; flex-direction: column; gap: 8px; align-items: center; justify-content: center; background: var(--bg-body); font-weight: 600; color: var(--text-muted);">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.5;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                    <span>Location not found on map</span>
-                    <span style="font-size: 0.8em; opacity: 0.8;">${escapeHtml(club.location)}</span>
-                </div>`;
-            }
-        }, 300); // Wait for modal animation
-    }
-    
     // --- Actions ---
     function joinClub(id) {
-        if(!currentUser) return showNotification('Login first', 'error');
+        if(myJoinedIds.includes(id)) return;
+        
         const club = clubs.find(c => c.id === id);
-        if(club && !club.participants.includes(currentUser.id)) {
-            club.participants.push(currentUser.id);
-            saveClubs();
-            renderClubs();
-            showNotification('Joined! 🎉');
-        }
-    }
-    
-    function leaveClub(id) {
-        const club = clubs.find(c => c.id === id);
-        if(club) {
-            club.participants = club.participants.filter(p => p !== currentUser.id);
-            saveClubs();
-            renderClubs();
-            showNotification('Left club 👋');
-        }
-    }
-    
-    // --- Chat ---
-    function openChatModal(id) {
-        currentChatClubId = id;
-        document.getElementById('chatClubTitle').textContent = clubs.find(c => c.id === id)?.title || 'Chat';
-        document.getElementById('chatModal').classList.add('active');
-        loadChat();
-    }
-    
-    function loadChat() {
-        const msgs = JSON.parse(localStorage.getItem('chat_' + currentChatClubId) || '[]');
-        const container = document.getElementById('chatMessages');
-        container.innerHTML = msgs.length ? msgs.map(m => `
-            <div class="chat-message ${m.userId === currentUser.id ? 'own-message' : 'others-message'}">
-                <div class="message-author">${escapeHtml(m.userName)}</div>
-                ${escapeHtml(m.text)}
-            </div>
-        `).join('') : '<div style="text-align: center; color: var(--text-muted); margin-top: 40px; display: flex; flex-direction: column; align-items: center;"><div style="font-size: 2rem; margin-bottom: 8px;">👋</div>Say hello to the group!</div>';
-        container.scrollTop = container.scrollHeight;
-    }
-    
-    function sendMessage() {
-        const txt = document.getElementById('chatInput').value.trim();
-        if(!txt || !currentChatClubId) return;
-        const msgs = JSON.parse(localStorage.getItem('chat_' + currentChatClubId) || '[]');
-        msgs.push({ id: Date.now(), userId: currentUser.id, userName: currentUser.name, text: txt, timestamp: Date.now() });
-        localStorage.setItem('chat_' + currentChatClubId, JSON.stringify(msgs));
-        document.getElementById('chatInput').value = '';
-        loadChat();
+        if(!club) return;
+        
+        myJoinedIds.push(id);
+        club.attendees++;
+        
+        // Add current user to attendee list
+        if(!club.attendeesList) club.attendeesList = [];
+        club.attendeesList.push({
+            name: currentUser.name,
+            avatar: currentUser.avatar,
+            initial: currentUser.initial,
+            email: currentUser.email
+        });
+        
+        localStorage.setItem('waterette_joined', JSON.stringify(myJoinedIds));
+        localStorage.setItem('waterette_clubs', JSON.stringify(clubs));
+        
+        renderClubs();
+        showToast('Ticket Confirmed');
+        
+        setTimeout(() => {
+            if(!club.chat) club.chat = [];
+            club.chat.push({ user: 'Bot', text: 'Welcome to the inner circle.', type: 'them' });
+            localStorage.setItem('waterette_clubs', JSON.stringify(clubs));
+        }, 1000);
     }
 
-    // --- Utils ---
-    function escapeHtml(text) { return text ? document.createElement('div').appendChild(document.createTextNode(text)).parentNode.innerHTML : ''; }
-    function formatDate(d) { return new Date(d).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }); }
-    function formatTime(t) { return new Date('2000-01-01T' + t).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }); }
-    function setMinDate() { document.getElementById('clubDate').min = new Date().toISOString().split('T')[0]; }
-    
-    function showNotification(msg, type='success') {
-        const n = document.createElement('div');
-        n.className = 'notification';
-        if(type==='error') n.style.background = 'var(--error)';
-        n.innerHTML = msg;
-        document.body.appendChild(n);
-        setTimeout(() => n.remove(), 3000);
+    function leaveClub(id) {
+        if(!myJoinedIds.includes(id)) return;
+        
+        // Remove ID
+        myJoinedIds = myJoinedIds.filter(itemId => itemId !== id);
+        
+        // Update count and remove user from list
+        const club = clubs.find(c => c.id === id);
+        if(club) {
+            club.attendees--;
+            if(club.attendeesList) {
+                club.attendeesList = club.attendeesList.filter(u => u.email !== currentUser.email);
+            }
+        }
+        
+        localStorage.setItem('waterette_joined', JSON.stringify(myJoinedIds));
+        localStorage.setItem('waterette_clubs', JSON.stringify(clubs));
+        
+        renderClubs();
+        showToast('Left Club');
+    }
+
+    // --- New Create Logic ---
+    function initCreateMap() {
+        if (!createMap) {
+            createMap = L.map('createMap', { zoomControl: false }).setView([51.505, -0.09], 13);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { attribution: '' }).addTo(createMap);
+            createMap.on('click', function(e) {
+                setCreateMarker(e.latlng.lat, e.latlng.lng);
+            });
+        }
     }
     
-    // --- Map ---
-    async function geocodeLocation(name) {
-        try {
-            const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(name)}&limit=1`);
-            const data = await res.json();
-            return data[0] ? { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) } : null;
-        } catch { return null; }
+    function verifyLocation() {
+        const query = document.getElementById('cLoc').value;
+        if(!query) { showToast("Enter a location first"); return; }
+        
+        const mapDiv = document.getElementById('createMap');
+        mapDiv.classList.add('visible');
+        if(!createMap) initCreateMap();
+        
+        setTimeout(() => {
+            createMap.invalidateSize();
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}`)
+                .then(r => r.json())
+                .then(d => {
+                    if(d[0]) {
+                        setCreateMarker(parseFloat(d[0].lat), parseFloat(d[0].lon));
+                        showToast("Location Found");
+                    } else {
+                        showToast("Location not found");
+                    }
+                })
+                .catch(() => showToast("Error finding location"));
+        }, 200);
     }
     
-    function initializeMap(id, lat, lon, name) {
-        if(clubMap) { clubMap.remove(); clubMap = null; }
-        clubMap = L.map(id).setView([lat, lon], 15);
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { attribution: '' }).addTo(clubMap);
-        L.marker([lat, lon]).addTo(clubMap).bindPopup(name).openPopup();
+    function setCreateMarker(lat, lng) {
+        if(createMarker) createMap.removeLayer(createMarker);
+        createMarker = L.marker([lat, lng], {draggable: true}).addTo(createMap);
+        createMap.setView([lat, lng], 14);
+        tempCoordinates = { lat, lng };
+        createMarker.on('dragend', function(event) {
+            var position = event.target.getLatLng();
+            tempCoordinates = { lat: position.lat, lng: position.lng };
+        });
+    }
+
+    function handleCreate(e) {
+        e.preventDefault();
+        
+        const finalLat = tempCoordinates ? tempCoordinates.lat : 51.5074;
+        const finalLng = tempCoordinates ? tempCoordinates.lng : -0.1278;
+
+        const newClub = {
+            id: 'c' + Date.now(),
+            title: document.getElementById('cName').value,
+            desc: document.getElementById('cDesc').value,
+            date: document.getElementById('cDate').value,
+            time: document.getElementById('cTime').value,
+            location: document.getElementById('cLoc').value,
+            lat: finalLat,
+            lng: finalLng,
+            attendees: 1, 
+            capacity: 20, 
+            chat: [],
+            hostEmail: currentUser.email, // MARK AS HOST
+            attendeesList: [{
+                name: currentUser.name,
+                avatar: currentUser.avatar,
+                initial: currentUser.initial,
+                email: currentUser.email
+            }]
+        };
+        
+        clubs.unshift(newClub);
+        myJoinedIds.push(newClub.id);
+        
+        localStorage.setItem('waterette_clubs', JSON.stringify(clubs));
+        localStorage.setItem('waterette_joined', JSON.stringify(myJoinedIds));
+        
+        closeModal('createModal');
+        
+        document.getElementById('createMap').classList.remove('visible');
+        tempCoordinates = null;
+        if(createMarker && createMap) { createMap.removeLayer(createMarker); createMarker = null; }
+
+        renderClubs();
+        showToast('Club Launched');
+        e.target.reset();
+    }
+
+    // --- Details & Map (Including Host View) ---
+    function openDetails(id) {
+        const club = clubs.find(c => c.id === id);
+        activeClubId = id;
+        const isJoined = myJoinedIds.includes(id);
+        const isHost = club.hostEmail === currentUser.email;
+
+        // Generate Attendee List HTML if Host
+        let attendeeHtml = '';
+        if (isHost && club.attendeesList && club.attendeesList.length > 0) {
+            attendeeHtml = `
+                <div class="attendee-list-container visible">
+                    <h3 style="font-size:0.9rem; text-transform:uppercase; color:var(--text-muted); margin-bottom:12px; letter-spacing:0.05em;">Guest List (${club.attendeesList.length})</h3>
+                    ${club.attendeesList.map(u => `
+                        <div class="attendee-row">
+                            <div class="attendee-info">
+                                <div class="attendee-avatar">
+                                    ${u.avatar ? `<img src="${u.avatar}">` : u.initial}
+                                </div>
+                                <span style="font-weight:600; font-size:0.9rem;">${u.name}</span>
+                            </div>
+                            ${u.email === currentUser.email ? '<span style="font-size:0.7rem; color:var(--accent); font-weight:700;">YOU</span>' : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        } else if (isHost) {
+            attendeeHtml = `<div class="attendee-list-container visible" style="text-align:center; color:var(--text-muted);">No guests yet.</div>`;
+        }
+
+        const html = `
+            ${isHost ? '<div style="background:var(--accent); color:#fff; display:inline-block; padding:4px 12px; border-radius:100px; font-size:0.75rem; font-weight:700; margin-bottom:12px;">YOU ARE HOSTING</div>' : ''}
+            <h1 style="font-size: 2rem; margin-bottom: 12px; line-height: 1.1;">${club.title}</h1>
+            <p style="color: var(--text-muted); font-size: 1.1rem; line-height: 1.6; margin-bottom: 32px;">${club.desc}</p>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;">
+                <div style="background: var(--bg-surface-2); padding: 16px; border-radius: 16px;">
+                    <div style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 4px;">DATE</div>
+                    <div style="font-weight: 700;">${new Date(club.date).toLocaleDateString()}</div>
+                </div>
+                <div style="background: var(--bg-surface-2); padding: 16px; border-radius: 16px;">
+                    <div style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 4px;">LOC</div>
+                    <div style="font-weight: 700;">${club.location}</div>
+                </div>
+            </div>
+
+            <div id="map" style="height: 200px; width: 100%; border-radius: 20px; margin-bottom: 24px; z-index: 1;"></div>
+            
+            ${isJoined 
+              ? `<div style="display:flex; gap:12px;">
+                    <button class="btn btn-glass" style="flex:1" onclick="openChat('${id}')">Chat</button>
+                    <button class="btn btn-glass" style="flex:1; color:#ff5252; border-color:rgba(255,82,82,0.3);" onclick="leaveClub('${id}'); closeModal('detailsModal')">Unjoin</button>
+                 </div>`
+              : `<button class="btn btn-glow" onclick="joinClub('${id}'); closeModal('detailsModal')">Join Club</button>`
+            }
+            
+            ${attendeeHtml}
+        `;
+        
+        document.getElementById('detailsContent').innerHTML = html;
+        openModal('detailsModal');
+        
+        setTimeout(() => {
+            if(map) { map.remove(); map = null; }
+            map = L.map('map', {zoomControl: false}).setView([51.505, -0.09], 13);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { attribution: '' }).addTo(map);
+            
+            if (club.lat && club.lng) {
+                map.setView([club.lat, club.lng], 14); 
+                L.marker([club.lat, club.lng]).addTo(map);
+            } else {
+                fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${club.location}`).then(r=>r.json()).then(d => {
+                    if(d[0]) { map.setView([d[0].lat, d[0].lon], 14); L.marker([d[0].lat, d[0].lon]).addTo(map); }
+                }).catch(()=>{});
+            }
+        }, 300);
+    }
+
+    // --- Chat ---
+    function openChat(id) {
+        closeModal('detailsModal');
+        activeClubId = id;
+        document.getElementById('chatTitle').textContent = clubs.find(c => c.id === id).title;
+        renderChatMessages();
+        openModal('chatModal');
+    }
+
+    function renderChatMessages() {
+        const club = clubs.find(c => c.id === activeClubId);
+        const container = document.getElementById('chatHistory');
+        container.innerHTML = '';
+        
+        if(!club.chat || club.chat.length === 0) {
+            container.innerHTML = `<div style="text-align:center; padding-top: 40px; color: var(--text-muted);">Quiet in here...</div>`;
+            return;
+        }
+        
+        club.chat.forEach(m => {
+            const div = document.createElement('div');
+            div.className = `chat-bubble ${m.type}`;
+            div.textContent = m.type === 'them' ? `${m.user}: ${m.text}` : m.text;
+            container.appendChild(div);
+        });
+        container.scrollTop = container.scrollHeight;
+    }
+
+    function sendChat(e) {
+        e.preventDefault();
+        const input = document.getElementById('chatInput');
+        const text = input.value.trim();
+        if(!text) return;
+        
+        const club = clubs.find(c => c.id === activeClubId);
+        if(!club.chat) club.chat = [];
+        
+        club.chat.push({ user: 'Me', text, type: 'me' });
+        localStorage.setItem('waterette_clubs', JSON.stringify(clubs));
+        renderChatMessages();
+        input.value = '';
+        
+        setTimeout(() => {
+            const rUser = MOCK_USERS[Math.floor(Math.random()*MOCK_USERS.length)];
+            const rResp = BOT_RESPONSES[Math.floor(Math.random()*BOT_RESPONSES.length)];
+            club.chat.push({ user: rUser.name, text: rResp, type: 'them' });
+            localStorage.setItem('waterette_clubs', JSON.stringify(clubs));
+            if(document.getElementById('chatModal').classList.contains('open')) renderChatMessages();
+            else showToast(`New msg: ${club.title}`);
+        }, 2500);
+    }
+
+    // --- Helpers ---
+    function openModal(id) { document.getElementById(id).classList.add('open'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+    function openCreateModal() { openModal('createModal'); }
+    function openProfile() { openModal('profileModal'); }
+    
+    // Settings Navigation Helpers
+    function openSettings() {
+        document.getElementById('settingsModal').classList.add('open');
+    }
+    function closeSettings() {
+        document.getElementById('settingsModal').classList.remove('open');
     }
     
-    // --- Carousel ---
-    function initializeCarousel() {
-        let idx = 0;
-        const slides = document.querySelectorAll('.carousel-slide');
-        const dots = document.querySelectorAll('.indicator');
-        setInterval(() => {
-            slides[idx].classList.remove('active');
-            dots[idx].classList.remove('active');
-            idx = (idx + 1) % slides.length;
-            slides[idx].classList.add('active');
-            dots[idx].classList.add('active');
-        }, 4000);
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        document.getElementById('toastMsg').textContent = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 3000);
     }
   </script>
 </body>
