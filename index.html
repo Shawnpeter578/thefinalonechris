@@ -3,75 +3,82 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>WATERETTE</title>
+  <title>PROJECT FIDA</title>
   
-  <!-- Fonts: Manrope for a more 'Tech/Modern' feel, 'Libre Barcode 39' for the ticket look -->
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Libre+Barcode+39+Text&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Libre+Barcode+39+Text&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 
   <style>
     /* =========================================
-       THEME: DYNAMIC (Dark Default)
+       THEME: PREMIUM OBSIDIAN GLASS (RED EDITION)
        ========================================= */
     :root {
-      --font-main: 'Manrope', sans-serif;
+      --font-main: 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
       --font-barcode: 'Libre Barcode 39 Text', cursive;
       
-      /* --- DARK MODE VARIABLES (Default) --- */
+      /* --- PALETTE (Dark) --- */
       --bg-body: #050505;
-      --bg-surface: #121212;
-      --bg-surface-2: #1E1E1E;
+      --bg-surface: #111111;
+      --bg-surface-glass: rgba(20, 20, 20, 0.7);
+      --bg-ticket: #1a1a1a;
       
-      --gradient-primary: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
-      --gradient-text: linear-gradient(135deg, #fff 0%, #a5f3fc 100%);
-      --gradient-glow: conic-gradient(from 180deg at 50% 50%, #00F2FE 0deg, #4FACFE 180deg, #00F2FE 360deg);
-      
-      --accent: #4facfe;
-      --accent-glow: rgba(79, 172, 254, 0.4);
+      /* Accent: Crimson / Vibrant Red */
+      --accent: #FF3B30;
+      --accent-dark: #C41E3A;
+      --accent-glow: rgba(255, 59, 48, 0.4);
+      --accent-grad: linear-gradient(135deg, #FF3B30 0%, #D70015 100%);
       
       --text-main: #ffffff;
-      --text-muted: #888888;
-      --border: rgba(255, 255, 255, 0.08);
+      --text-sec: #a3a3a3;
+      --text-muted: #52525b;
       
-      --glass-panel: rgba(20, 20, 20, 0.7);
-      --glass-nav: rgba(20, 20, 20, 0.8);
-      --blur: blur(24px);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-highlight: rgba(255, 69, 58, 0.25);
+      
+      --nav-glass: rgba(10, 10, 10, 0.85);
+      --blur: blur(20px);
 
-      --radius-sm: 12px;
+      --radius-sm: 8px;
       --radius-md: 20px;
       --radius-lg: 32px;
       
       --header-height: 70px;
       --safe-bottom: env(safe-area-inset-bottom, 20px);
       
-      --shadow-card: 0 10px 30px -5px rgba(0,0,0,0.5);
+      --shadow-sm: 0 4px 20px -2px rgba(0,0,0,0.3);
+      --shadow-glow: 0 0 40px -10px rgba(255, 59, 48, 0.25);
     }
 
-    /* --- LIGHT MODE VARIABLES --- */
+    /* --- LIGHT MODE (Crimson Daybreak) --- */
     [data-theme="light"] {
-      --bg-body: #f3f4f6;
+      --bg-body: #f2f2f7; /* Clean platinum */
       --bg-surface: #ffffff;
-      --bg-surface-2: #f9fafb;
+      --bg-surface-glass: rgba(255, 255, 255, 0.85);
+      --bg-ticket: #ffffff;
       
-      /* More saturated gradient for light mode visibility */
-      --gradient-primary: linear-gradient(135deg, #2563eb 0%, #00f2fe 100%);
-      --gradient-text: linear-gradient(135deg, #1e293b 0%, #3b82f6 100%);
-      --gradient-glow: conic-gradient(from 180deg at 50% 50%, #2563eb 0deg, #00f2fe 180deg, #2563eb 360deg);
+      /* Crisp, Bold Red Accents */
+      --accent: #E02424; 
+      --accent-dark: #9B1C1C;
+      --accent-glow: rgba(224, 36, 36, 0.1);
+      --accent-grad: linear-gradient(135deg, #E02424 0%, #F05252 100%);
       
-      --accent: #2563eb;
-      --accent-glow: rgba(37, 99, 235, 0.25);
+      --text-main: #0f172a; /* Deep Slate for contrast */
+      --text-sec: #475569;
+      --text-muted: #94a3b8;
       
-      --text-main: #111827;
-      --text-muted: #6b7280;
-      --border: rgba(0, 0, 0, 0.08);
+      --border: #e2e8f0;
+      --border-highlight: #fda4af;
       
-      --glass-panel: rgba(255, 255, 255, 0.85);
-      --glass-nav: rgba(255, 255, 255, 0.8);
+      --nav-glass: rgba(255, 255, 255, 0.9);
       
-      --shadow-card: 0 10px 25px -5px rgba(0,0,0,0.05), 0 4px 6px -2px rgba(0,0,0,0.02);
+      /* Soft, realistic shadows for depth on light bg */
+      --shadow-sm: 0 2px 4px -1px rgba(0, 0, 0, 0.06), 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      --shadow-glow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
@@ -82,533 +89,406 @@
       font-family: var(--font-main);
       overflow-x: hidden;
       padding-bottom: calc(100px + var(--safe-bottom));
-      transition: background-color 0.3s ease, color 0.3s ease;
+      transition: background 0.4s ease, color 0.4s ease;
+      letter-spacing: -0.01em;
+      /* Subtle ambient gradient */
+      background-image: radial-gradient(circle at 50% -20%, var(--accent-glow), transparent 70%);
+      background-attachment: fixed;
     }
 
-    /* =========================================
-       ANIMATIONS
-       ========================================= */
-    @keyframes aurora {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-    
     .hidden { display: none !important; }
 
     /* =========================================
        COMPONENTS
        ========================================= */
     
-    /* Splash Screen */
+    /* Splash Screen - Simplified */
     #splashScreen {
-      position: fixed; inset: 0;
-      background: var(--bg-body);
-      z-index: 9999;
+      position: fixed; inset: 0; background: var(--bg-body); z-index: 9999;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      transition: opacity 0.8s ease-in-out, visibility 0.8s;
+      transition: opacity 0.6s ease-in-out, visibility 0.6s;
     }
     #splashScreen.hide { opacity: 0; visibility: hidden; pointer-events: none; }
     
-    .splash-content { text-align: center; position: relative; z-index: 2; }
-    
-    .splash-title {
-      font-size: 3rem; font-weight: 800; letter-spacing: -0.05em;
-      background: var(--gradient-text); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      margin-bottom: 10px;
-      opacity: 0; animation: fadeUp 0.8s ease-out forwards 0.2s;
+    .splash-logo {
+      font-size: 4rem; font-weight: 800; letter-spacing: -0.05em;
+      background: var(--text-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      opacity: 0; animation: fadeUpSplash 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.2s;
+      position: relative;
     }
-    .splash-subtitle {
-      font-size: 0.8rem; letter-spacing: 0.3em; color: var(--text-muted); text-transform: uppercase;
-      opacity: 0; animation: fadeUp 0.8s ease-out forwards 0.5s;
-    }
-    .splash-glow {
-        position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-        width: 300px; height: 300px; background: var(--gradient-glow);
-        filter: blur(80px); opacity: 0; animation: pulseGlow 2s ease-in-out forwards;
-        z-index: -1;
+    .splash-logo::after {
+        content: ''; position: absolute; bottom: 10px; right: -12px;
+        width: 8px; height: 8px; background: var(--accent); border-radius: 50%;
+        box-shadow: 0 0 12px var(--accent);
     }
     
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+    @keyframes fadeUpSplash { 
+        0% { opacity: 0; transform: scale(0.95); } 
+        100% { opacity: 1; transform: scale(1); } 
     }
-    @keyframes pulseGlow {
-      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
-      50% { opacity: 0.4; }
-      100% { opacity: 0.2; transform: translate(-50%, -50%) scale(1.1); }
+
+    /* Auth Screen - Redesigned */
+    .auth-container {
+        position: fixed; inset: 0; background: var(--bg-body); z-index: 2000;
+        display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px;
+        transition: transform 0.5s cubic-bezier(0.8, 0, 0.2, 1);
+        /* Deep ambient background */
+        background-image: radial-gradient(circle at 50% 100%, rgba(255, 59, 48, 0.1), transparent 60%);
     }
+    .auth-container.out { transform: translateY(-100%); }
+
+    .auth-card {
+        width: 100%; max-width: 380px;
+        background: var(--bg-surface-glass); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+        border: 1px solid var(--border);
+        border-radius: 24px; padding: 40px 32px;
+        box-shadow: 0 20px 40px -10px rgba(0,0,0,0.3);
+        text-align: center; position: relative; overflow: hidden;
+    }
+    /* Top accent line */
+    .auth-card::before {
+        content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+        background: var(--accent-grad);
+    }
+
+    .auth-title { font-size: 1.8rem; font-weight: 800; color: var(--text-main); margin-bottom: 8px; letter-spacing: -0.03em; }
+    .auth-subtitle { color: var(--text-sec); font-size: 0.9rem; margin-bottom: 32px; }
+    
+    .auth-input-group { margin-bottom: 16px; position: relative; text-align: left; }
+    .auth-input {
+        width: 100%; height: 52px; background: var(--bg-body);
+        border: 1px solid var(--border); border-radius: 12px; padding: 0 16px;
+        color: var(--text-main); font-family: var(--font-main); font-size: 1rem;
+        transition: all 0.2s; outline: none;
+    }
+    .auth-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); background: var(--bg-surface); }
+    .auth-input::placeholder { color: var(--text-muted); }
+
+    .btn-auth {
+        width: 100%; height: 52px; background: var(--accent-grad); color: #fff;
+        border: none; border-radius: 12px; font-weight: 700; font-size: 1rem;
+        cursor: pointer; transition: 0.2s; margin-top: 8px;
+        box-shadow: 0 4px 20px var(--accent-glow);
+    }
+    .btn-auth:active { transform: scale(0.98); }
+
+    .auth-footer { margin-top: 24px; font-size: 0.85rem; color: var(--text-sec); }
+    .auth-link { color: var(--text-main); font-weight: 600; cursor: pointer; text-decoration: none; margin-left: 4px; }
+    .auth-link:hover { text-decoration: underline; color: var(--accent); }
 
     /* Header */
     .app-header {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      height: var(--header-height);
-      padding: 0 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: var(--glass-nav);
-      backdrop-filter: var(--blur);
-      -webkit-backdrop-filter: var(--blur);
+      position: sticky; top: 0; z-index: 50; height: var(--header-height);
+      padding: 0 24px; display: flex; align-items: center; justify-content: space-between;
+      background: var(--nav-glass); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
       border-bottom: 1px solid var(--border);
       transition: background 0.3s, border-color 0.3s;
     }
 
     .brand {
-      font-size: 1.4rem;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      background: var(--gradient-text);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
+      font-size: 1.25rem; font-weight: 800; letter-spacing: -0.02em; color: var(--text-main);
+      display: flex; align-items: center; gap: 10px; text-decoration: none;
     }
-    
-    .brand-dot {
-      width: 8px; height: 8px; background: var(--accent);
-      border-radius: 50%; box-shadow: 0 0 12px var(--accent);
+    .brand-icon {
+        width: 10px; height: 10px; background: var(--accent); border-radius: 50%;
+        box-shadow: 0 0 12px var(--accent-glow);
     }
 
     .user-avatar-btn {
-      width: 40px; height: 40px;
-      border-radius: 50%;
-      background: var(--bg-surface-2);
-      border: 1px solid var(--border);
-      color: var(--text-main);
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 700;
-      font-size: 0.9rem;
-      cursor: pointer;
-      overflow: hidden;
-      position: relative;
+      width: 40px; height: 40px; border-radius: 10px; background: var(--bg-surface);
+      border: 1px solid var(--border); color: var(--text-main);
+      display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem;
+      cursor: pointer; overflow: hidden; transition: 0.2s;
     }
-    .user-avatar-btn img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
-    .user-avatar-btn.has-img { background: transparent; border: none; }
+    .user-avatar-btn img { width: 100%; height: 100%; object-fit: cover; }
 
-    /* Hero Section */
-    .hero { padding: 24px; position: relative; }
-    
+    /* Hero */
+    .hero { padding: 24px 24px 10px; }
     .hero-banner {
-      height: 220px;
-      border-radius: var(--radius-lg);
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      align-items: flex-end;
-      padding: 24px;
-      background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e);
-      background-size: 400% 400%;
-      animation: aurora 10s ease infinite;
-      box-shadow: var(--shadow-card);
+      border-radius: var(--radius-lg); overflow: hidden; position: relative;
+      padding: 32px 24px; display: flex; flex-direction: column; justify-content: flex-end;
+      background: var(--bg-surface); border: 1px solid var(--border);
+      min-height: 240px; box-shadow: var(--shadow-glow);
+      transition: box-shadow 0.3s, border-color 0.3s;
     }
-    
-    /* Adjust hero text color for light mode legibility inside the dark banner */
-    .hero-banner h2, .hero-banner p { color: white !important; }
-    
-    .hero-glow {
-      position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-      background: radial-gradient(circle, rgba(79,172,254,0.15) 0%, rgba(0,0,0,0) 60%);
-      pointer-events: none;
+    .hero-banner::before {
+        content: ''; position: absolute; inset: 0;
+        /* Dynamic gradient overlay that works in both modes */
+        background: linear-gradient(to bottom, rgba(0,0,0,0) 20%, rgba(0,0,0,0.6) 100%);
+        pointer-events: none; z-index: 1;
     }
-
-    .hero-content { position: relative; z-index: 2; width: 100%; }
+    .hero-img-bg {
+        position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; 
+        z-index: 0; filter: brightness(0.9);
+        transition: transform 10s ease; animation: slowPan 20s infinite alternate;
+    }
+    @keyframes slowPan { from { transform: scale(1); } to { transform: scale(1.1); } }
+    
     .hero-badge {
-      display: inline-block; padding: 6px 12px;
-      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
-      backdrop-filter: blur(10px); border-radius: 20px;
-      font-size: 0.75rem; font-weight: 700; color: #fff;
-      margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em;
+      font-family: var(--font-mono); font-size: 0.65rem; color: #fff;
+      background: var(--accent); padding: 4px 10px; border-radius: 4px;
+      display: inline-block; margin-bottom: 12px; font-weight: 700; width: fit-content;
+      position: relative; z-index: 2; letter-spacing: 0.05em; box-shadow: 0 4px 10px var(--accent-glow);
     }
-    .hero-title { font-size: 1.8rem; font-weight: 800; line-height: 1.1; margin-bottom: 6px; }
-    .hero-subtitle { font-size: 0.95rem; opacity: 0.9; max-width: 80%; }
+    .hero-title { font-size: 2.2rem; font-weight: 800; line-height: 1; margin-bottom: 8px; color: #fff; position: relative; z-index: 2; letter-spacing: -0.03em; text-shadow: 0 2px 20px rgba(0,0,0,0.3); }
+    .hero-subtitle { font-size: 1rem; color: rgba(255,255,255,0.9); max-width: 90%; position: relative; z-index: 2; font-weight: 500; }
 
     /* Filter Pills */
-    .filter-row {
-      display: flex; gap: 12px; padding: 0 24px 24px;
-      overflow-x: auto; scrollbar-width: none;
-    }
+    .filter-row { display: flex; gap: 12px; padding: 16px 24px; overflow-x: auto; scrollbar-width: none; }
     .filter-pill {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      padding: 10px 20px;
-      border-radius: 100px;
-      color: var(--text-muted);
-      font-weight: 600;
-      font-size: 0.9rem;
-      white-space: nowrap;
-      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-      cursor: pointer;
+      background: var(--bg-surface); border: 1px solid var(--border); padding: 10px 20px;
+      border-radius: 100px; color: var(--text-sec); font-weight: 600; font-size: 0.85rem;
+      white-space: nowrap; transition: 0.2s; cursor: pointer;
     }
-    .filter-pill.active {
-      background: var(--text-main);
-      color: var(--bg-surface); /* Inverted for contrast */
-      border-color: var(--text-main);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    .filter-pill.active { 
+        background: var(--text-main); color: var(--bg-body); border-color: var(--text-main); 
+        box-shadow: 0 4px 12px var(--shadow-sm);
     }
 
-    /* Ticket Style Club Cards */
-    .cards-grid { padding: 0 24px; display: flex; flex-direction: column; gap: 20px; }
+    /* --- TICKET STYLE (Adaptive) --- */
+    .cards-grid { padding: 0 24px 40px; display: flex; flex-direction: column; gap: 28px; }
     
-    .club-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      overflow: hidden;
+    .club-ticket {
+      filter: drop-shadow(var(--shadow-sm));
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
       position: relative;
-      transition: transform 0.2s;
-      box-shadow: var(--shadow-card);
+    }
+    .club-ticket:active { transform: scale(0.98); }
+
+    /* Main Ticket Container */
+    .ticket-container {
+      background: var(--bg-ticket);
+      border-radius: 16px;
+      position: relative;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
-    }
-    .club-card:active { transform: scale(0.98); }
-    
-    .card-top {
-      padding: 24px 24px 16px 24px;
-      display: flex; 
-      justify-content: space-between; 
-      align-items: flex-start;
-      gap: 16px;
-      position: relative;
-    }
-    
-    /* Side text decoration for Ticket Feel */
-    .card-top::after {
-        content: 'NO. 00142'; 
-        position: absolute; right: 14px; top: 50%; transform: translateY(-50%) rotate(90deg);
-        font-family: monospace; font-size: 0.6rem; letter-spacing: 0.1em; 
-        color: var(--text-muted); opacity: 0.3;
-    }
-    
-    .card-info { flex: 1; min-width: 0; padding-right: 20px; }
-    
-    .card-info h3 { 
-        font-size: 1.5rem; 
-        font-weight: 800; 
-        margin-bottom: 8px; 
-        color: var(--text-main); 
-        line-height: 1.1;
-        letter-spacing: -0.02em;
-        text-transform: uppercase;
-    }
-    .card-info p { 
-        font-size: 0.9rem; 
-        color: var(--text-muted); 
-        line-height: 1.5; 
-        display: -webkit-box; 
-        -webkit-line-clamp: 2; 
-        -webkit-box-orient: vertical; 
-        overflow: hidden;
-        font-family: monospace; 
-    }
-
-    /* Deep Perforated Line Effect */
-    .card-divider {
-      position: relative; 
-      height: 30px; 
-      display: flex; 
-      align-items: center;
-      margin: 0; 
-      overflow: hidden;
-    }
-    .card-divider::before, .card-divider::after {
-      content: ''; 
-      position: absolute; 
-      width: 30px; height: 30px; /* Bigger notches */
-      background: var(--bg-body); 
-      border-radius: 50%; 
-      top: 0;
-      z-index: 2;
-    }
-    .card-divider::before { left: -18px; box-shadow: inset -2px 0 4px rgba(0,0,0,0.2); }
-    .card-divider::after { right: -18px; box-shadow: inset 2px 0 4px rgba(0,0,0,0.2); }
-    
-    .card-divider-line { 
-        flex: 1; 
-        border-top: 2px dashed var(--border); 
-        margin: 0 20px; 
-        opacity: 0.4;
-    }
-
-    .card-bottom {
-      padding: 10px 24px 24px;
-      display: flex; justify-content: space-between; align-items: flex-end;
-    }
-    
-    .meta-column {
-        display: flex; flex-direction: column; gap: 8px;
-    }
-    .meta-row { display: flex; gap: 16px; font-size: 0.85rem; color: var(--text-muted); font-weight: 600; font-family: monospace; text-transform: uppercase;}
-    
-    .barcode-area {
-        font-family: var(--font-barcode);
-        font-size: 2.5rem;
-        line-height: 0.8;
-        color: var(--text-muted);
-        opacity: 0.5;
-        margin-top: 4px;
-    }
-
-    /* Floating Navigation */
-    .nav-wrapper {
-      position: fixed; bottom: 30px; left: 0; right: 0;
-      display: flex; justify-content: center; pointer-events: none; z-index: 100;
-    }
-    .nav-capsule {
-      background: var(--glass-nav);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--border);
-      padding: 6px 8px;
-      border-radius: 100px;
-      display: flex; gap: 8px;
-      pointer-events: auto;
-      box-shadow: var(--shadow-card);
+      
+      /* The Cutouts */
+      -webkit-mask-image: radial-gradient(circle at 0 72%, transparent 12px, black 12.5px), radial-gradient(circle at 100% 72%, transparent 12px, black 12.5px);
+      mask-image: radial-gradient(circle at 0 72%, transparent 12px, black 12.5px), radial-gradient(circle at 100% 72%, transparent 12px, black 12.5px);
     }
     
-    .nav-btn {
-      width: 50px; height: 50px;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      color: var(--text-muted);
-      cursor: pointer;
-      transition: all 0.3s;
+    /* Red Accent Strip on Left */
+    .ticket-strip {
+        position: absolute; left: 0; top: 0; bottom: 0; width: 6px;
+        background: var(--accent); opacity: 0.8; z-index: 5;
+    }
+    .club-ticket.joined .ticket-strip { box-shadow: 2px 0 15px var(--accent); opacity: 1; }
+
+    /* Top Section (Event Info) */
+    .ticket-body {
+      padding: 24px 24px 20px 30px; /* Extra left padding for strip */
       position: relative;
     }
-    .nav-btn.active { color: var(--text-main); background: var(--bg-surface-2); }
-    .nav-btn svg { width: 22px; height: 22px; }
+    
+    .ticket-id-watermark {
+        position: absolute; top: 20px; right: 20px;
+        font-family: var(--font-barcode); font-size: 3rem; color: var(--border);
+        opacity: 0.5; pointer-events: none; transform: rotate(-5deg);
+    }
 
-    .nav-btn-main {
-      width: 58px; height: 50px;
-      background: var(--gradient-primary);
-      border-radius: 20px;
-      color: #fff;
-      margin: 0 8px;
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 0 20px var(--accent-glow);
+    .ticket-title { font-size: 1.6rem; font-weight: 800; color: var(--text-main); margin-bottom: 8px; line-height: 1.1; letter-spacing: -0.03em; max-width: 85%; }
+    .ticket-desc { font-size: 0.95rem; color: var(--text-sec); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 24px; }
+
+    .ticket-meta {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+      padding-top: 16px; border-top: 2px dashed var(--border);
+    }
+    .meta-box { display: flex; flex-direction: column; gap: 4px; }
+    .meta-label { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; }
+    .meta-val { font-size: 0.9rem; font-weight: 700; color: var(--text-main); }
+    .meta-val.price { color: var(--accent); }
+
+    /* Perforation Line (Visual) */
+    .ticket-cut {
+      height: 2px; width: 100%;
+      background-image: linear-gradient(to right, var(--bg-body) 50%, transparent 50%);
+      background-size: 20px 100%;
+      opacity: 0.5; margin-top: 2px;
+    }
+
+    /* Stub Section (Actions) */
+    .ticket-stub {
+      padding: 20px 24px 24px 30px;
+      background: var(--bg-surface);
+      display: flex; justify-content: space-between; align-items: center;
+      min-height: 85px; position: relative;
+    }
+    .ticket-stub::before {
+        content: ''; position: absolute; inset: 0; 
+        background: linear-gradient(to bottom, rgba(0,0,0,0.02), transparent);
+        pointer-events: none;
     }
     
+    /* QR Code Area */
+    .stub-qr-container { display: flex; align-items: center; gap: 16px; width: 100%; position: relative; z-index: 2; }
+    .qr-img {
+        width: 64px; height: 64px;
+        border-radius: 6px; background: #fff; padding: 4px;
+        image-rendering: pixelated; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        border: 1px solid var(--border);
+    }
+    .qr-text {
+        font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-sec);
+        display: flex; flex-direction: column; gap: 2px;
+    }
+    .qr-text strong { font-size: 0.9rem; color: var(--text-main); text-transform: uppercase; letter-spacing: -0.02em; }
+
+    /* Barcode for Unjoined */
+    .stub-left { flex: 1; display: flex; align-items: center; position: relative; z-index: 2; }
+    .stub-barcode {
+      font-family: var(--font-barcode); font-size: 2.2rem; color: var(--text-muted);
+      opacity: 0.4; line-height: 1; transform: scaleY(1.2); letter-spacing: 2px;
+    }
+
     /* Buttons */
-    .btn {
-      height: 52px; border-radius: 16px;
-      font-weight: 700; font-size: 1rem;
-      border: none; cursor: pointer; width: 100%;
-      display: flex; align-items: center; justify-content: center; gap: 10px;
-      transition: 0.2s;
+    .btn-ticket {
+      height: 44px; padding: 0 24px;
+      background: var(--text-main); color: var(--bg-body);
+      border: none; border-radius: 8px;
+      font-family: var(--font-mono); font-size: 0.85rem; font-weight: 700;
+      cursor: pointer; transition: 0.2s; letter-spacing: -0.02em; text-transform: uppercase;
     }
-    .btn-glow {
-      background: var(--gradient-primary);
-      color: #fff;
-      box-shadow: 0 8px 24px -6px var(--accent-glow);
-    }
-    .btn-glow:active { transform: scale(0.97); }
+    .btn-ticket:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); opacity: 0.9; }
     
-    .btn-glass {
-      background: var(--bg-surface-2);
-      border: 1px solid var(--border);
-      color: var(--text-main);
+    .btn-icon {
+        width: 44px; height: 44px; border-radius: 8px;
+        border: 1px solid var(--border); background: rgba(127,127,127,0.05);
+        color: var(--text-main); display: flex; align-items: center; justify-content: center;
+        cursor: pointer; transition: 0.2s;
     }
-    .btn-glass:hover { background: var(--border); }
+    .btn-icon:hover { background: var(--bg-surface-glass); border-color: var(--text-sec); }
+    .btn-icon.danger { color: #ef4444; border-color: rgba(239, 68, 68, 0.3); }
+    .btn-icon.danger:hover { background: rgba(239, 68, 68, 0.1); border-color: #ef4444; }
 
     /* Modals */
     .modal-backdrop {
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.8);
-      backdrop-filter: blur(8px);
-      z-index: 200;
-      opacity: 0; pointer-events: none;
-      transition: opacity 0.3s;
+      position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
+      z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.2s;
     }
     .modal-backdrop.open { opacity: 1; pointer-events: auto; }
-    
-    /* Special Z-Index for Settings over Profile */
-    #settingsModal { z-index: 220; }
-    #editProfileModal { z-index: 215; }
     
     .sheet {
       position: fixed; bottom: 0; left: 0; width: 100%;
       background: var(--bg-surface);
       border-top: 1px solid var(--border);
-      border-radius: 32px 32px 0 0;
-      padding: 32px 24px calc(32px + var(--safe-bottom));
-      transform: translateY(100%);
-      transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-      z-index: 201;
-      max-height: 92vh; overflow-y: auto;
-      box-shadow: 0 -10px 40px rgba(0,0,0,0.2);
+      border-radius: 28px 28px 0 0;
+      padding: 0 0 calc(20px + var(--safe-bottom)); 
+      transform: translateY(100%); transition: transform 0.35s cubic-bezier(0.19, 1, 0.22, 1);
+      z-index: 201; max-height: 92vh; display: flex; flex-direction: column;
+      box-shadow: 0 -10px 50px rgba(0,0,0,0.2);
     }
     .modal-backdrop.open .sheet { transform: translateY(0); }
     
-    .drag-handle { width: 40px; height: 4px; background: var(--border); border-radius: 10px; margin: 0 auto 24px; }
+    .sheet-header { padding: 20px; display: flex; justify-content: center; align-items: center; position: relative; }
+    .drag-handle { width: 40px; height: 4px; background: var(--border-highlight); border-radius: 100px; }
+    .sheet-content { padding: 0 24px 24px; overflow-y: auto; }
 
-    /* Inputs */
-    .input-group label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+    /* Input Styling */
+    .input-group label { display: block; font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-sec); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
     .input-field {
-      width: 100%; height: 56px;
-      background: var(--bg-surface-2);
-      border: 1px solid transparent;
-      border-radius: 16px;
-      padding: 0 20px;
-      color: var(--text-main); font-size: 1rem; font-family: inherit;
-      transition: 0.2s;
+      width: 100%; height: 56px; background: var(--bg-body);
+      border: 1px solid var(--border); border-radius: 12px; padding: 0 16px;
+      color: var(--text-main); font-family: var(--font-main); font-size: 1rem;
+      transition: 0.2s; outline: none;
     }
-    .input-field:focus { border-color: var(--accent); background: var(--bg-surface); }
+    .input-field:focus { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-glow); }
+    
+    .btn-main {
+      width: 100%; height: 56px; background: var(--accent); color: #fff;
+      border: none; border-radius: 14px; font-weight: 700; font-size: 1rem;
+      cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px;
+      box-shadow: 0 4px 15px rgba(255, 59, 48, 0.3); text-transform: uppercase; letter-spacing: 0.02em;
+    }
+    .btn-main:hover { background: var(--accent-dark); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(255, 59, 48, 0.4); }
 
-    /* Chat */
-    .chat-bubble { padding: 14px 18px; border-radius: 20px; max-width: 80%; font-size: 0.95rem; line-height: 1.5; margin-bottom: 12px; }
-    .chat-bubble.them { background: var(--bg-surface-2); color: var(--text-main); border-bottom-left-radius: 4px; }
-    .chat-bubble.me { background: var(--gradient-primary); color: #fff; border-bottom-right-radius: 4px; align-self: flex-end; font-weight: 600; }
+    /* Nav Bar - Floating Dock */
+    .nav-wrapper { position: fixed; bottom: 32px; left: 0; right: 0; display: flex; justify-content: center; pointer-events: none; z-index: 100; }
+    .nav-capsule {
+      background: var(--nav-glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      padding: 8px; border-radius: 24px; display: flex; gap: 8px;
+      pointer-events: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+    }
+    .nav-btn {
+      width: 52px; height: 52px; border-radius: 18px; display: flex; align-items: center; justify-content: center;
+      color: var(--text-sec); cursor: pointer; transition: 0.2s;
+    }
+    .nav-btn.active { color: var(--accent); background: var(--bg-body); }
+    .nav-btn-main {
+      width: 52px; height: 52px; border-radius: 18px; background: var(--text-main); color: var(--bg-body);
+      display: flex; align-items: center; justify-content: center; margin: 0 4px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    /* Auth Styling */
+    .auth-container {
+        position: fixed; inset: 0; background: var(--bg-body); z-index: 2000;
+        display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px;
+        transition: transform 0.5s cubic-bezier(0.8, 0, 0.2, 1);
+    }
+    .auth-container.out { transform: translateY(-100%); }
 
     /* Toast */
-    .toast-box {
-      position: fixed; top: 20px; left: 50%; transform: translate(-50%, -100px);
-      background: var(--glass-nav); backdrop-filter: blur(10px);
-      border: 1px solid var(--border); color: var(--text-main);
-      padding: 12px 24px; border-radius: 100px;
-      display: flex; align-items: center; gap: 10px;
-      z-index: 1000; transition: 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    .toast {
+      position: fixed; top: 24px; left: 50%; transform: translate(-50%, -100px);
+      background: var(--bg-surface); border: 1px solid var(--border-highlight); 
+      padding: 12px 24px; border-radius: 100px; display: flex; align-items: center; gap: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1); z-index: 3000;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .toast-box.show { transform: translate(-50%, 0); }
+    .toast.show { transform: translate(-50%, 0); }
+    .toast-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 10px var(--accent); }
+    .toast-msg { font-size: 0.9rem; font-weight: 600; color: var(--text-main); }
 
-    /* Settings List */
-    .setting-row {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 18px 0; border-bottom: 1px solid var(--border);
-      cursor: pointer;
-    }
-    .setting-left { display: flex; align-items: center; gap: 14px; color: var(--text-main); font-weight: 500; }
-    .setting-icon { width: 36px; height: 36px; background: var(--bg-surface-2); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--accent); }
+    /* Chat Styling */
+    .chat-bubble.me { background: var(--accent); color: white; border: none; }
     
-    /* Toggle Switch */
-    .toggle-switch {
-      width: 44px; height: 24px;
-      background: var(--bg-surface-2);
-      border-radius: 20px;
-      position: relative;
-      transition: 0.3s;
-      border: 1px solid var(--border);
-    }
-    .toggle-switch::after {
-      content: ''; position: absolute; left: 2px; top: 2px;
-      width: 18px; height: 18px; background: #fff; border-radius: 50%;
-      transition: 0.3s;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    }
-    .toggle-switch.active { background: var(--accent); border-color: var(--accent); }
-    .toggle-switch.active::after { transform: translateX(20px); }
-
-    /* Auth Screen specific */
-    .auth-bg {
-        position: fixed; inset: 0; background: var(--bg-body); z-index: 2000;
-        display: flex; flex-direction: column; align-items: center; justify-content: center;
-        padding: 30px;
-        transition: transform 0.6s cubic-bezier(0.7,0,0.3,1);
-    }
-    .auth-bg.out { transform: translateY(-100%); }
+    /* Edit Profile */
+    .avatar-upload { width: 100px; height: 100px; border-radius: 50%; background: var(--bg-surface); border: 2px dashed var(--border); margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; cursor: pointer; }
     
-    .glow-circle {
-        width: 120px; height: 120px; border-radius: 50%;
-        background: var(--gradient-glow);
-        filter: blur(40px); opacity: 0.5;
-        position: absolute; top: 20%;
-    }
-    
-    /* Creation Map Styles */
-    #createMap {
-        width: 100%; height: 200px; 
-        background: var(--bg-surface-2); 
-        border-radius: 16px; 
-        margin-bottom: 32px;
-        display: none; /* Hidden until verified */
-        border: 2px solid var(--accent);
-        z-index: 10;
-        overflow: hidden;
-    }
+    /* Map */
+    #createMap { width: 100%; height: 200px; background: var(--bg-surface); border-radius: 16px; margin-bottom: 24px; display: none; overflow: hidden; border: 1px solid var(--border); }
     #createMap.visible { display: block; }
+    
+    /* Event Image */
+    .event-cover-upload { width: 100%; height: 150px; border-radius: 16px; background: var(--bg-surface); border: 2px dashed var(--border); display: flex; align-items: center; justify-content: center; margin-bottom: 24px; overflow: hidden; cursor: pointer; position: relative; }
+    .event-cover-upload img { width: 100%; height: 100%; object-fit: cover; display: none; }
+    .details-image { width: 100%; height: 220px; object-fit: cover; border-radius: 16px; margin-bottom: 24px; box-shadow: var(--shadow-sm); }
 
-    /* Attendee List in Details */
-    .attendee-list-container {
-        margin-top: 24px;
-        background: var(--bg-surface-2);
-        border-radius: 16px;
-        padding: 16px;
-        display: none; /* Hidden by default unless host */
-    }
-    .attendee-list-container.visible { display: block; }
-    
-    .attendee-row {
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 10px 0;
-        border-bottom: 1px solid var(--border);
-    }
-    .attendee-row:last-child { border-bottom: none; }
-    
-    .attendee-info { display: flex; align-items: center; gap: 12px; }
-    .attendee-avatar {
-        width: 32px; height: 32px; border-radius: 50%;
-        background: var(--gradient-primary);
-        display: flex; align-items: center; justify-content: center;
-        font-weight: 700; color: #fff; font-size: 0.8rem;
-        overflow: hidden;
-    }
-    .attendee-avatar img { width: 100%; height: 100%; object-fit: cover; }
-    
-    /* Profile Edit Avatar */
-    .avatar-upload {
-        width: 100px; height: 100px;
-        border-radius: 50%;
-        background: var(--bg-surface-2);
-        border: 2px dashed var(--border);
-        margin: 0 auto 20px;
-        display: flex; align-items: center; justify-content: center;
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-    }
-    .avatar-upload img { width: 100%; height: 100%; object-fit: cover; display: none; }
-    .avatar-upload.has-img img { display: block; }
-    .avatar-upload.has-img .upload-icon { display: none; }
-    
   </style>
 </head>
 <body>
 
-  <!-- Splash Screen -->
+  <!-- Splash -->
   <div id="splashScreen">
-    <div class="splash-glow"></div>
-    <div class="splash-content">
-        <h1 class="splash-title">WATERETTE</h1>
-        <div class="splash-subtitle">BY KENBRISELLERIS</div>
-    </div>
+    <div class="splash-logo">FIDA</div>
   </div>
 
-  <!-- Auth Screen -->
-  <div id="authScreen" class="auth-bg">
-    <div class="glow-circle"></div>
-    <div style="position: relative; z-index: 2; width: 100%; max-width: 360px; text-align: center;">
-        <h1 class="brand" style="justify-content: center; font-size: 2.5rem; margin-bottom: 8px;">
-            WATERETTE <div class="brand-dot" style="width: 12px; height: 12px;"></div>
-        </h1>
-        <p style="color: var(--text-muted); margin-bottom: 40px;">Curated communities.</p>
+  <!-- Auth -->
+  <div id="authScreen" class="auth-container">
+    <div class="auth-card">
+        <h1 class="auth-title">FIDA</h1>
+        <p class="auth-subtitle">Access the grid.</p>
         
-        <form id="authForm" onsubmit="handleAuth(event)" style="display: flex; flex-direction: column; gap: 16px;">
-            <div id="nameGroup" class="hidden">
-                <input type="text" id="authName" class="input-field" placeholder="Full Name" style="text-align: center;">
+        <form id="authForm" onsubmit="handleAuth(event)">
+            <div id="nameGroup" class="auth-input-group hidden">
+                <input type="text" id="authName" class="auth-input" placeholder="Codename">
             </div>
-            <input type="email" id="authEmail" class="input-field" placeholder="Email Address" required style="text-align: center;">
-            <input type="password" id="authPass" class="input-field" placeholder="Password" required style="text-align: center;">
+            <div class="auth-input-group">
+                <input type="email" id="authEmail" class="auth-input" placeholder="Email Address" required>
+            </div>
+            <div class="auth-input-group">
+                <input type="password" id="authPass" class="auth-input" placeholder="Passkey" required>
+            </div>
             
-            <button class="btn btn-glow" style="margin-top: 10px;">Enter The Club</button>
+            <button class="btn-auth">Initialize</button>
         </form>
         
-        <div style="margin-top: 30px; font-size: 0.9rem; color: var(--text-muted);">
-            <span id="authSwitchLabel">First time? </span>
-            <span onclick="toggleAuthMode()" style="color: var(--accent); cursor: pointer; font-weight: 700;">Get Access</span>
+        <div class="auth-footer">
+            <span id="authSwitchLabel">New user?</span>
+            <a onclick="toggleAuthMode()" class="auth-link">Create Identity</a>
         </div>
     </div>
   </div>
@@ -616,57 +496,53 @@
   <!-- Header -->
   <header class="app-header">
     <a href="#" class="brand">
-      WATERETTE <div class="brand-dot"></div>
+      <div class="brand-icon"></div>
+      FIDA
     </a>
     <div class="user-avatar-btn" id="headerAvatar" onclick="openProfile()">
       <span id="userInitials">G</span>
     </div>
   </header>
 
-  <!-- Main View -->
+  <!-- Main -->
   <main id="mainView">
-    <!-- Hero -->
     <section class="hero">
       <div class="hero-banner">
-        <div class="hero-glow"></div>
-        <div class="hero-content">
-          <span class="hero-badge">Featured</span>
-          <h2 class="hero-title">Find Your<br>Inner Circle.</h2>
-          <p class="hero-subtitle">Real connections in a digital world.</p>
-        </div>
+        <span class="hero-badge">FEATURED EVENT</span>
+        <h2 class="hero-title">Neon Nights<br>Tokyo Drift.</h2>
+        <p class="hero-subtitle">Experience the unseen underground racing culture.</p>
+        <img src="https://images.unsplash.com/photo-1555685812-4b943f3e9942?q=80&w=2070&auto=format&fit=crop" class="hero-img-bg" alt="Hero">
       </div>
     </section>
 
-    <!-- Filter Pills -->
     <div class="filter-row">
-      <div class="filter-pill active" onclick="filterClubs('all', this)">All Access</div>
-      <div class="filter-pill" onclick="filterClubs('joined', this)">My List</div>
-      <div class="filter-pill" onclick="filterClubs('new', this)">Fresh Drops</div>
+      <div class="filter-pill active" onclick="filterClubs('all', this)">All Events</div>
+      <div class="filter-pill" onclick="filterClubs('joined', this)">My Pass</div>
+      <div class="filter-pill" onclick="filterClubs('new', this)">Latest</div>
     </div>
 
-    <!-- Cards Grid -->
     <div id="clubsContainer" class="cards-grid">
-      <!-- Injected via JS -->
+      <!-- Injected -->
     </div>
   </main>
 
-  <!-- Navigation -->
+  <!-- Nav -->
   <div class="nav-wrapper">
     <div class="nav-capsule">
       <div class="nav-btn active" onclick="switchTab('home')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
       </div>
       <div class="nav-btn" onclick="switchTab('explore')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
       </div>
       <div class="nav-btn-main" onclick="openCreateModal()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
       </div>
       <div class="nav-btn" onclick="switchTab('chats')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
       </div>
       <div class="nav-btn" onclick="openProfile()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
       </div>
     </div>
   </div>
@@ -674,849 +550,315 @@
   <!-- Create Modal -->
   <div id="createModal" class="modal-backdrop">
     <div class="sheet">
-      <div class="drag-handle"></div>
-      <h2 style="font-size: 1.5rem; margin-bottom: 24px;">New Drop</h2>
-      <form onsubmit="handleCreate(event)">
-        <div class="input-group" style="margin-bottom: 16px;">
-            <label>Title</label>
-            <input type="text" id="cName" class="input-field" placeholder="Ex: Midnight Run" required>
-        </div>
-        <div class="input-group" style="margin-bottom: 16px;">
-            <label>Manifesto</label>
-            <textarea id="cDesc" class="input-field" style="height: 100px; padding-top: 16px; resize: none;" placeholder="What's the vibe?" required></textarea>
-        </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
-            <div class="input-group">
-                <label>Date</label>
-                <input type="date" id="cDate" class="input-field" required>
-            </div>
-            <div class="input-group">
-                <label>Time</label>
-                <input type="time" id="cTime" class="input-field" required>
-            </div>
-        </div>
+      <div class="sheet-header"><div class="drag-handle"></div></div>
+      <div class="sheet-content">
+        <h2 style="font-size: 1.5rem; margin-bottom: 24px; color: var(--text-main); font-weight:800;">Create Event</h2>
         
-        <!-- Updated Location Logic -->
-        <div class="input-group" style="margin-bottom: 16px;">
-            <label>Location Name</label>
-            <div style="display: flex; gap: 10px;">
-                <input type="text" id="cLoc" class="input-field" placeholder="Ex: Central Park, NY" required style="border-radius: 16px 4px 4px 16px;">
-                <button type="button" class="btn btn-glass" onclick="verifyLocation()" style="width: auto; padding: 0 20px; border-radius: 4px 16px 16px 4px; font-size: 0.9rem;">
-                    Verify On Map
-                </button>
+        <label for="cImageInput">
+            <div class="event-cover-upload" id="cImagePreview">
+                <div style="text-align:center; color:var(--text-sec);">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin:0 auto 8px; display:block;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                    <span style="font-family:var(--font-mono); font-size:0.7rem;">ADD COVER PHOTO</span>
+                </div>
+                <img id="cImageDisplay">
             </div>
-        </div>
-        
-        <div id="createMap"></div>
-        
-        <button class="btn btn-glow">Launch Club</button>
-      </form>
+        </label>
+        <input type="file" id="cImageInput" accept="image/*" style="display:none;" onchange="handleEventImage(this)">
+
+        <form onsubmit="handleCreate(event)">
+            <div class="input-group"><label>Event Title</label><input type="text" id="cName" class="input-field" placeholder="Ex: Cyber Punk Party" required></div>
+            <div class="input-group"><label>Details</label><textarea id="cDesc" class="input-field" style="height: 120px; padding-top: 14px; resize: none;" placeholder="Full event description..." required></textarea></div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div class="input-group"><label>Date</label><input type="date" id="cDate" class="input-field" required></div>
+                <div class="input-group"><label>Time</label><input type="time" id="cTime" class="input-field" required></div>
+            </div>
+            <div class="input-group"><label>Ticket Price ($)</label><input type="number" id="cPrice" class="input-field" placeholder="0 for Free" min="0"></div>
+            <div class="input-group"><label>Location</label><div style="display: flex; gap: 10px;"><input type="text" id="cLoc" class="input-field" placeholder="Search..." required><button type="button" class="btn-ticket" style="width:auto;" onclick="verifyLocation()">Map</button></div></div>
+            <div id="createMap"></div>
+            <button class="btn-main">Publish Drop</button>
+        </form>
+      </div>
     </div>
   </div>
 
   <!-- Details Modal -->
   <div id="detailsModal" class="modal-backdrop">
-    <div class="sheet" style="height: 90vh;">
-      <div class="drag-handle"></div>
-      <div id="detailsContent"></div>
+    <div class="sheet">
+      <div class="sheet-header"><div class="drag-handle"></div></div>
+      <div class="sheet-content" id="detailsContent"></div>
     </div>
   </div>
 
   <!-- Chat Modal -->
   <div id="chatModal" class="modal-backdrop">
-    <div class="sheet" style="height: 90vh; display: flex; flex-direction: column;">
-      <div class="drag-handle"></div>
-      <div style="display: flex; justify-content: space-between; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 16px;">
-        <h3 id="chatTitle">Club Chat</h3>
-        <span style="color: var(--accent); font-size: 0.8rem; font-weight: 700;">● Live</span>
+    <div class="sheet" style="height: 90vh;">
+      <div class="sheet-header" style="border-bottom:1px solid var(--border); justify-content:space-between;">
+        <div class="drag-handle" style="position:absolute; left:50%; transform:translateX(-50%);"></div>
+        <div style="font-weight:700;" id="chatTitle">Chat</div>
       </div>
-      <div id="chatHistory" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; padding-bottom: 20px;"></div>
-      <form onsubmit="sendChat(event)" style="display: flex; gap: 10px; margin-top: auto;">
-        <input type="text" id="chatInput" class="input-field" placeholder="Message..." autocomplete="off">
-        <button class="btn btn-glow" style="width: 56px; border-radius: 16px;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-        </button>
+      <div id="chatHistory" class="chat-container" style="flex:1; overflow-y:auto; padding:20px;"></div>
+      <form onsubmit="sendChat(event)" style="padding:16px; border-top:1px solid var(--border); display:flex; gap:12px;">
+        <input type="text" id="chatInput" class="input-field" placeholder="Message..." style="height:48px;" autocomplete="off">
+        <button class="btn-main" style="width:48px; height:48px; border-radius:50%; padding:0;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg></button>
       </form>
     </div>
   </div>
 
-  <!-- Profile Modal -->
+  <!-- Profile/Settings Modals -->
   <div id="profileModal" class="modal-backdrop">
     <div class="sheet">
-      <div class="drag-handle"></div>
-      <div style="text-align: center; margin-bottom: 30px;">
-        <div style="width: 80px; height: 80px; border-radius: 50%; background: var(--gradient-primary); display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 800; color: #fff; margin: 0 auto 16px; overflow:hidden; position:relative;" id="profileAvatarBig">
-            <span id="profileAvatarInitial">G</span>
-            <img id="profileAvatarImg" style="width:100%; height:100%; object-fit:cover; display:none;">
-        </div>
-        <h2 id="profileName" style="margin-bottom: 4px;">Guest</h2>
-        <p style="color: var(--text-muted); font-size: 0.9rem;">Club Member</p>
-      </div>
-      
-      <div>
-        <div class="setting-row" onclick="openEditProfile()">
-            <div class="setting-left">
-                <div class="setting-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></div>
-                Edit Profile
-            </div>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-muted)"><polyline points="9 18 15 12 9 6"></polyline></svg>
-        </div>
-
-        <!-- New Settings Entry Point -->
-        <div class="setting-row" onclick="openSettings()">
-            <div class="setting-left">
-                <div class="setting-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
-                App Settings
-            </div>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-muted)"><polyline points="9 18 15 12 9 6"></polyline></svg>
-        </div>
-
-        <div class="setting-row" onclick="logout()">
-            <div class="setting-left" style="color: #ff5252;">
-                <div class="setting-icon" style="color: #ff5252; background: rgba(255,82,82,0.1);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg></div>
-                Disconnect
-            </div>
-        </div>
-      </div>
-      <div style="text-align: center; color: var(--text-muted); opacity: 0.5; font-size: 0.75rem; margin-top: 40px; line-height: 1.6;">
-        WATERETTE 2.1<br>
-        <span style="font-weight: 600; letter-spacing: 0.05em;">Made by KENBRISELLERIS</span>
+      <div class="sheet-header"><div class="drag-handle"></div></div>
+      <div class="sheet-content">
+          <div style="text-align: center; margin-bottom: 32px;">
+            <div style="width: 90px; height: 90px; border-radius: 50%; background: var(--bg-surface); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: 800; color: var(--text-main); margin: 0 auto 16px; overflow:hidden;" id="profileAvatarBig"><span id="profileAvatarInitial">G</span><img id="profileAvatarImg" style="width:100%; height:100%; object-fit:cover; display:none;"></div>
+            <h2 id="profileName" style="margin-bottom: 4px; font-size: 1.5rem; font-weight: 800;">Guest</h2>
+            <p style="color: var(--text-sec); font-size: 0.8rem; font-family: var(--font-mono);">MEMBER ID: #8291</p>
+          </div>
+          <div onclick="openEditProfile()" style="padding:16px; border-bottom:1px solid var(--border); cursor:pointer; display:flex; justify-content:space-between; align-items:center;"><span>Edit Profile</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg></div>
+          <div onclick="openSettings()" style="padding:16px; border-bottom:1px solid var(--border); cursor:pointer; display:flex; justify-content:space-between; align-items:center;"><span>Settings</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg></div>
+          <div onclick="logout()" style="padding:16px; color:#ef4444; cursor:pointer; display:flex; justify-content:space-between; align-items:center;"><span>Log Out</span></div>
       </div>
     </div>
   </div>
+
+  <div id="editProfileModal" class="modal-backdrop"><div class="sheet"><div class="sheet-header"><div class="drag-handle"></div></div><div class="sheet-content"><h2 style="font-size:1.2rem; margin-bottom:24px; text-align:center; font-weight:800;">Edit Profile</h2><label for="avatarInput"><div class="avatar-upload" id="editAvatarPreview"><img id="editAvatarImg" style="display:none; width:100%; height:100%; object-fit:cover;"></div></label><input type="file" id="avatarInput" accept="image/*" style="display:none;" onchange="handleImageUpload(this)"><form onsubmit="saveProfile(event)"><div class="input-group"><label>Display Name</label><input type="text" id="editName" class="input-field" required></div><button class="btn-main">Save</button></form></div></div></div>
   
-  <!-- Edit Profile Modal -->
-  <div id="editProfileModal" class="modal-backdrop">
-    <div class="sheet">
-        <div class="drag-handle"></div>
-        <h2 style="font-size: 1.5rem; margin-bottom: 24px; text-align: center;">Update Profile</h2>
-        
-        <label for="avatarInput">
-            <div class="avatar-upload" id="editAvatarPreview">
-                <div class="upload-icon">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
-                </div>
-                <img id="editAvatarImg" src="">
-            </div>
-        </label>
-        <input type="file" id="avatarInput" accept="image/*" style="display: none;" onchange="handleImageUpload(this)">
-        
-        <form onsubmit="saveProfile(event)">
-            <div class="input-group" style="margin-bottom: 24px;">
-                <label>Display Name</label>
-                <input type="text" id="editName" class="input-field" required>
-            </div>
-            <button class="btn btn-glow">Save Changes</button>
-            <button type="button" class="btn btn-glass" style="margin-top: 12px;" onclick="closeModal('editProfileModal')">Cancel</button>
-        </form>
-    </div>
-  </div>
+  <div id="settingsModal" class="modal-backdrop"><div class="sheet" style="height:100vh; border-radius:0;"><div style="padding:20px; display:flex; align-items:center; border-bottom:1px solid var(--border);"><div onclick="closeSettings()" style="margin-right:16px; cursor:pointer;">Back</div><h2 style="font-size:1.2rem; font-weight:800;">Settings</h2></div><div class="sheet-content" style="padding-top:24px;"><h3 style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px; text-transform:uppercase; letter-spacing:0.05em;">Preferences</h3><div class="input-group" onclick="toggleTheme()" style="padding:16px 0; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; cursor:pointer;"><div style="color:var(--text-main); font-weight:500;">Dark Mode</div><div style="color:var(--text-sec);" id="themeStatus">On</div></div><h3 style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px; margin-top:32px; text-transform:uppercase; letter-spacing:0.05em;">Account</h3><div style="padding:16px 0;">Email: <span id="settingsEmail" style="color:var(--text-sec);"></span></div></div></div></div>
 
-  <!-- Settings Page Modal -->
-  <div id="settingsModal" class="modal-backdrop">
-    <div class="sheet" style="height: 100vh; max-height: 100vh; border-radius: 0;">
-        <!-- Settings Header -->
-        <div style="display: flex; align-items: center; margin-bottom: 30px;">
-            <div onclick="closeSettings()" style="width: 40px; height: 40px; border-radius: 12px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; margin-right: 16px;">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-            </div>
-            <h2 style="font-size: 1.5rem;">Settings</h2>
-        </div>
-
-        <h3 style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px; letter-spacing: 0.05em;">Preferences</h3>
-        
-        <!-- Theme Toggle Row -->
-        <div class="setting-row" onclick="toggleTheme()">
-            <div class="setting-left">
-                <div class="setting-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></div>
-                <div>
-                    <div>Dark Mode</div>
-                    <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 400;" id="themeLabel">Active</div>
-                </div>
-            </div>
-            <div class="toggle-switch" id="themeToggle"></div>
-        </div>
-
-        <div class="setting-row">
-            <div class="setting-left">
-                <div class="setting-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg></div>
-                Notifications
-            </div>
-            <div class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
-        </div>
-
-        <h3 style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px; margin-top: 30px; letter-spacing: 0.05em;">Account</h3>
-        
-        <div class="setting-row">
-            <div class="setting-left">
-                <div class="setting-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></div>
-                <div>
-                    <div>Email</div>
-                    <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 400;" id="settingsEmail">user@email.com</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="setting-row">
-            <div class="setting-left">
-                <div class="setting-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
-                Security
-            </div>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-muted)"><polyline points="9 18 15 12 9 6"></polyline></svg>
-        </div>
-
-        <h3 style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px; margin-top: 30px; letter-spacing: 0.05em;">About</h3>
-        
-        <div class="setting-row">
-            <div class="setting-left">
-                <div class="setting-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg></div>
-                Terms & Privacy
-            </div>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-muted)"><polyline points="9 18 15 12 9 6"></polyline></svg>
-        </div>
-
-    </div>
-  </div>
-
-  <!-- Toast -->
-  <div id="toast" class="toast-box">
-    <div style="color: var(--accent);">●</div>
-    <span id="toastMsg" style="font-weight: 600; font-size: 0.9rem;">Action Successful</span>
-  </div>
+  <div id="toast" class="toast"><div class="toast-dot"></div><span id="toastMsg" class="toast-msg">Success</span></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
     /* =========================================
        APP LOGIC
        ========================================= */
-    const MOCK_USERS = [
-        { name: "Kiera", color: "#f472b6" }, { name: "Jaxon", color: "#60a5fa" },
-        { name: "Zane", color: "#34d399" }, { name: "Nia", color: "#fbbf24" }
-    ];
-    
-    // Generate some fake attendees for the demo clubs so the Host View has something to show
-    const FAKE_ATTENDEES_DATA = [
-        { name: "Alice M.", avatar: null, initial: "A" },
-        { name: "Bob C.", avatar: null, initial: "B" },
-        { name: "Charlie", avatar: null, initial: "C" },
-        { name: "Dana S.", avatar: null, initial: "D" },
-        { name: "Evan", avatar: null, initial: "E" }
-    ];
-    
-    const BOT_RESPONSES = [
-        "Vibes are immaculate.", "Omg yes.", "What time we meeting?", 
-        "Count me in.", "Is there food?", "Sent invite to the crew.",
-        "Let's gooo!", "Anyone driving?"
-    ];
-
+    const MOCK_USERS = [{name:"Kiera"},{name:"Jaxon"},{name:"Zane"},{name:"Nia"}];
     const DEFAULT_CLUBS = [
-        { id: 'c1', title: 'Neon Runners', desc: 'Midnight 5K through the city center. Pace is casual, outfits are bright.', date: '2025-10-15', time: '23:00', location: 'New York, NY', lat: 40.7128, lng: -74.0060, attendees: 42, capacity: 50 },
-        { id: 'c2', title: 'Film Grain', desc: 'Analog photography walk. Capture the brutalist structures at sunset.', date: '2025-10-18', time: '18:30', location: 'London, UK', lat: 51.5074, lng: -0.1278, attendees: 8, capacity: 12 },
-        { id: 'c3', title: 'Synthwave Yoga', desc: 'Deep stretching to heavy synth beats. Roof access included.', date: '2025-10-20', time: '19:00', location: 'Tokyo, Japan', lat: 35.6762, lng: 139.6503, attendees: 15, capacity: 20 }
+        { id: 'c1', title: 'Midnight Run', desc: '5K through the city center. Casual pace for night owls.', date: '2025-10-15', time: '23:00', location: 'New York, NY', lat: 40.7128, lng: -74.0060, attendees: 42, capacity: 50, price: 'Free', image: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=2070&auto=format&fit=crop' },
+        { id: 'c2', title: 'Analog Walk', desc: 'Photography walk focusing on brutalist structures and shadows.', date: '2025-10-18', time: '18:30', location: 'London, UK', lat: 51.5074, lng: -0.1278, attendees: 8, capacity: 12, price: '$25', image: 'https://images.unsplash.com/photo-1542204165-65bf26472b9b?q=80&w=1974&auto=format&fit=crop' },
+        { id: 'c3', title: 'Synth Yoga', desc: 'Deep stretching to heavy synth beats on a rooftop.', date: '2025-10-20', time: '19:00', location: 'Tokyo, Japan', lat: 35.6762, lng: 139.6503, attendees: 15, capacity: 20, price: '$15', image: 'https://images.unsplash.com/photo-1575052814086-f385e2e2ad1b?q=80&w=2070&auto=format&fit=crop' }
     ];
 
-    let clubs = JSON.parse(localStorage.getItem('waterette_clubs')) || DEFAULT_CLUBS;
-
-    // --- DATA MIGRATION FIXES ---
-    let needsSave = false;
+    let clubs = JSON.parse(localStorage.getItem('fida_clubs')) || DEFAULT_CLUBS;
     
-    // Fix 2: Missing Attendee List (Generate mocks for display)
-    if (clubs.some(c => !c.attendeesList)) {
-        clubs = clubs.map(c => {
-            if(c.attendeesList) return c;
-            // Generate basic fake attendees based on count
-            const list = [];
-            const count = Math.min(c.attendees, 5); // Just generate up to 5 fakes
-            for(let i=0; i<count; i++) {
-                list.push(FAKE_ATTENDEES_DATA[i % FAKE_ATTENDEES_DATA.length]);
-            }
-            return { ...c, attendeesList: list };
-        });
-        needsSave = true;
-    }
+    // Ensure data integrity
+    clubs = clubs.map(c => ({
+        ...c,
+        attendeesList: c.attendeesList || [],
+        chat: c.chat || [],
+        price: c.price || 'Free',
+        image: c.image || 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=2070&auto=format&fit=crop' // fallback
+    }));
     
-    if(needsSave) localStorage.setItem('waterette_clubs', JSON.stringify(clubs));
+    localStorage.setItem('fida_clubs', JSON.stringify(clubs));
 
-    let currentUser = JSON.parse(localStorage.getItem('waterette_user')) || null;
-    let myJoinedIds = JSON.parse(localStorage.getItem('waterette_joined')) || ['c1'];
-    let activeClubId = null;
-    let map = null;
-    
-    // Create Map Variables
-    let createMap = null;
-    let createMarker = null;
-    let tempCoordinates = null;
+    let currentUser = JSON.parse(localStorage.getItem('fida_user')) || null;
+    let myJoinedIds = JSON.parse(localStorage.getItem('fida_joined')) || ['c1'];
+    let activeClubId = null; let map = null; let createMap = null; let createMarker = null; let tempCoordinates = null; let isSignUp = false; 
+    let tempAvatarBase64 = null;
+    let tempEventImageBase64 = null;
 
-    let isSignUp = false;
-    let tempAvatarBase64 = null; // For editing profile
-
-    // --- Init ---
     document.addEventListener('DOMContentLoaded', () => {
-        setTimeout(() => { document.getElementById('splashScreen').classList.add('hide'); }, 2200);
-
-        if(!localStorage.getItem('waterette_clubs')) localStorage.setItem('waterette_clubs', JSON.stringify(DEFAULT_CLUBS));
-        
-        initializeTheme(); 
-        checkAuth();
-        renderClubs();
-        updateProfileUI();
-        
-        document.querySelectorAll('.modal-backdrop').forEach(m => {
-            m.addEventListener('click', e => { if(e.target === m) closeModal(m.id); });
-        });
+        setTimeout(() => { document.getElementById('splashScreen').classList.add('hide'); }, 2000);
+        initializeTheme(); checkAuth(); renderClubs(); updateProfileUI();
+        document.querySelectorAll('.modal-backdrop').forEach(m => { m.addEventListener('click', e => { if(e.target === m) closeModal(m.querySelector('.sheet').parentElement.id); }); });
     });
     
-    // --- Theme Logic ---
-    function initializeTheme() {
-        const savedTheme = localStorage.getItem('waterette_theme');
-        const themeLabel = document.getElementById('themeLabel');
-        const themeToggle = document.getElementById('themeToggle');
-        
-        if (savedTheme === 'light') {
-            document.documentElement.setAttribute('data-theme', 'light');
-            themeLabel.textContent = 'Disabled';
-            themeToggle.classList.remove('active');
-        } else {
-            themeLabel.textContent = 'Active';
-            themeToggle.classList.add('active');
-        }
-    }
-
+    function initializeTheme() { if(localStorage.getItem('fida_theme')==='light') document.documentElement.setAttribute('data-theme', 'light'); }
     function toggleTheme() {
-        const current = document.documentElement.getAttribute('data-theme');
-        const themeLabel = document.getElementById('themeLabel');
-        const themeToggle = document.getElementById('themeToggle');
-        
-        if (current === 'light') {
-            document.documentElement.removeAttribute('data-theme');
-            localStorage.setItem('waterette_theme', 'dark');
-            themeLabel.textContent = 'Active';
-            themeToggle.classList.add('active');
-        } else {
-            document.documentElement.setAttribute('data-theme', 'light');
-            localStorage.setItem('waterette_theme', 'light');
-            themeLabel.textContent = 'Disabled';
-            themeToggle.classList.remove('active');
-        }
+        const curr = document.documentElement.getAttribute('data-theme');
+        if(curr==='light') { document.documentElement.removeAttribute('data-theme'); localStorage.setItem('fida_theme', 'dark'); }
+        else { document.documentElement.setAttribute('data-theme', 'light'); localStorage.setItem('fida_theme', 'light'); }
     }
-
-    // --- Auth ---
-    function checkAuth() {
-        if (!currentUser) {
-            document.getElementById('authScreen').classList.remove('out');
-        } else {
-            document.getElementById('authScreen').classList.add('out');
-            updateProfileUI();
-        }
-    }
-
-    function toggleAuthMode() {
-        isSignUp = !isSignUp;
-        const nameGroup = document.getElementById('nameGroup');
-        const btn = document.querySelector('#authForm button');
-        const switchLabel = document.getElementById('authSwitchLabel');
-        
-        if (isSignUp) {
-            nameGroup.classList.remove('hidden');
-            btn.textContent = 'Join The Club';
-            switchLabel.innerHTML = "Have an account? <span onclick='toggleAuthMode()' style='color: var(--accent); cursor: pointer; font-weight: 700;'>Sign In</span>";
-        } else {
-            nameGroup.classList.add('hidden');
-            btn.textContent = 'Enter The Club';
-            switchLabel.innerHTML = "First time? <span onclick='toggleAuthMode()' style='color: var(--accent); cursor: pointer; font-weight: 700;'>Get Access</span>";
-        }
-    }
-
+    function checkAuth() { if (!currentUser) document.getElementById('authScreen').classList.remove('out'); else { document.getElementById('authScreen').classList.add('out'); updateProfileUI(); } }
+    function toggleAuthMode() { isSignUp=!isSignUp; const n=document.getElementById('nameGroup'); const b=document.querySelector('#authForm button'); const s=document.getElementById('authSwitchLabel'); if(isSignUp){n.classList.remove('hidden');b.textContent='REGISTER ID';s.innerHTML="LOGIN";}else{n.classList.add('hidden');b.textContent='INITIALIZE';s.innerHTML="REGISTER ID";} }
     function handleAuth(e) {
-        e.preventDefault();
-        const email = document.getElementById('authEmail').value;
-        const nameInput = document.getElementById('authName').value;
-        
-        let finalName = (isSignUp && nameInput.trim()) ? nameInput : email.split('@')[0];
-        finalName = finalName.charAt(0).toUpperCase() + finalName.slice(1);
-        
-        currentUser = { email, name: finalName, initial: finalName.charAt(0).toUpperCase(), avatar: null };
-        localStorage.setItem('waterette_user', JSON.stringify(currentUser));
-        
-        checkAuth();
-        showToast(`Welcome in, ${currentUser.name}`);
+        e.preventDefault(); currentUser = { email:document.getElementById('authEmail').value, name:document.getElementById('authName').value||"Guest", initial:(document.getElementById('authName').value||"G").charAt(0).toUpperCase(), avatar:null };
+        localStorage.setItem('fida_user', JSON.stringify(currentUser)); checkAuth(); showToast("ACCESS GRANTED");
     }
+    function logout() { localStorage.removeItem('fida_user'); currentUser=null; closeModal('profileModal'); checkAuth(); }
+    function updateProfileUI() { if(currentUser) { if(currentUser.avatar){document.getElementById('headerAvatar').innerHTML=`<img src="${currentUser.avatar}">`;}else{document.getElementById('headerAvatar').innerText=currentUser.initial;} document.getElementById('profileName').innerText=currentUser.name; document.getElementById('settingsEmail').innerText=currentUser.email; } }
+    
+    function openEditProfile(){ closeModal('profileModal'); document.getElementById('editName').value=currentUser.name; openModal('editProfileModal'); }
+    function handleImageUpload(i){ if(i.files[0]){const r=new FileReader();r.onload=e=>{document.getElementById('editAvatarImg').src=e.target.result;document.getElementById('editAvatarImg').style.display='block';tempAvatarBase64=e.target.result;};r.readAsDataURL(i.files[0]);} }
+    function saveProfile(e){ e.preventDefault(); currentUser.name=document.getElementById('editName').value; if(tempAvatarBase64)currentUser.avatar=tempAvatarBase64; localStorage.setItem('fida_user',JSON.stringify(currentUser)); updateProfileUI(); closeModal('editProfileModal'); showToast("ID UPDATED"); }
 
-    function logout() {
-        localStorage.removeItem('waterette_user');
-        currentUser = null;
-        closeModal('profileModal');
-        checkAuth();
-    }
-
-    // --- Profile & Avatar Handling ---
-    function updateProfileUI() {
-        if(currentUser) {
-            const initials = document.getElementById('userInitials');
-            const bigInitials = document.getElementById('profileAvatarInitial');
-            const bigImg = document.getElementById('profileAvatarImg');
-            
-            // Header Avatar
-            if (currentUser.avatar) {
-                document.getElementById('headerAvatar').innerHTML = `<img src="${currentUser.avatar}">`;
-                document.getElementById('headerAvatar').classList.add('has-img');
-            } else {
-                document.getElementById('headerAvatar').innerHTML = `<span id="userInitials">${currentUser.initial}</span>`;
-                document.getElementById('headerAvatar').classList.remove('has-img');
-            }
-
-            // Profile Modal Avatar
-            document.getElementById('profileName').textContent = currentUser.name;
-            document.getElementById('settingsEmail').textContent = currentUser.email;
-            
-            if (currentUser.avatar) {
-                bigInitials.style.display = 'none';
-                bigImg.src = currentUser.avatar;
-                bigImg.style.display = 'block';
-            } else {
-                bigInitials.style.display = 'block';
-                bigInitials.textContent = currentUser.initial;
-                bigImg.style.display = 'none';
-            }
-        }
-    }
-
-    function openEditProfile() {
-        closeModal('profileModal');
-        document.getElementById('editName').value = currentUser.name;
-        
-        const preview = document.getElementById('editAvatarPreview');
-        const img = document.getElementById('editAvatarImg');
-        
-        if (currentUser.avatar) {
-            img.src = currentUser.avatar;
-            preview.classList.add('has-img');
-            tempAvatarBase64 = currentUser.avatar;
-        } else {
-            preview.classList.remove('has-img');
-            tempAvatarBase64 = null;
-        }
-        
-        openModal('editProfileModal');
-    }
-
-    function handleImageUpload(input) {
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = document.getElementById('editAvatarImg');
-                const preview = document.getElementById('editAvatarPreview');
-                
-                // Basic compression/resize logic could go here to save space
-                img.src = e.target.result;
-                preview.classList.add('has-img');
-                tempAvatarBase64 = e.target.result;
-            }
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-
-    function saveProfile(e) {
-        e.preventDefault();
-        const newName = document.getElementById('editName').value;
-        
-        if(newName) {
-            currentUser.name = newName;
-            currentUser.initial = newName.charAt(0).toUpperCase();
-        }
-        if(tempAvatarBase64) {
-            currentUser.avatar = tempAvatarBase64;
-        }
-        
-        localStorage.setItem('waterette_user', JSON.stringify(currentUser));
-        updateProfileUI();
-        closeModal('editProfileModal');
-        showToast("Profile Updated");
-    }
-
-    // --- Main UI ---
-    function renderClubs(filter = 'all') {
-        const container = document.getElementById('clubsContainer');
-        container.innerHTML = '';
-        
+    function renderClubs(filter='all') {
+        const container = document.getElementById('clubsContainer'); container.innerHTML = '';
         let filtered = clubs;
         if(filter === 'joined') filtered = clubs.filter(c => myJoinedIds.includes(c.id));
         if(filter === 'new') filtered = [...clubs].reverse();
-        
-        if(filtered.length === 0) {
-            container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-muted);">No clubs found here.</div>`;
-            return;
-        }
+        if(filtered.length === 0) { container.innerHTML = `<div style="text-align:center; padding:40px; color:var(--text-muted); font-family:var(--font-data);">NO DATA FOUND</div>`; return; }
 
         filtered.forEach(club => {
             const isJoined = myJoinedIds.includes(club.id);
             const isFull = club.attendees >= club.capacity;
             const isHost = club.hostEmail === (currentUser ? currentUser.email : '');
             
+            // GENERATE QR URL
+            const qrData = `${club.id}-${currentUser ? currentUser.email : 'guest'}`;
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrData)}&color=000000&bgcolor=ffffff`;
+
             const html = `
-                <div class="club-card" onclick="openDetails('${club.id}')">
-                    <div class="card-top">
-                        <div class="card-info">
-                            ${isHost ? '<span style="color:var(--accent); font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:0.1em; display:block; margin-bottom:4px;">Hosted by You</span>' : ''}
-                            <h3>${club.title}</h3>
-                            <p>${club.desc}</p>
-                        </div>
-                    </div>
-                    
-                    <div class="card-divider">
-                        <div class="card-divider-line"></div>
-                    </div>
-                    
-                    <div class="card-bottom">
-                        <div class="meta-column">
-                            <div class="meta-row">
-                                <div class="meta-point">
-                                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                                    ${new Date(club.date).toLocaleDateString('en-US', {month:'short', day:'numeric'})}
-                                </div>
-                                <div class="meta-point">
-                                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                                    ${club.time}
-                                </div>
+                <div class="club-ticket ${isJoined ? 'joined' : ''}" onclick="openDetails('${club.id}')">
+                    <div class="ticket-container">
+                        <div class="ticket-strip"></div>
+                        <div class="ticket-body">
+                            <div class="ticket-id-watermark">NO.${club.id.toUpperCase()}</div>
+                            <div class="ticket-status-pill">${isJoined ? 'PASS ACTIVE' : (isFull ? 'SOLD OUT' : 'AVAILABLE')}</div>
+                            <div style="min-height: 90px;">
+                                ${isHost ? '<span style="color:var(--accent); font-size:0.7rem; font-weight:700; display:block; margin-bottom:4px;">HOST</span>' : ''}
+                                <h3 class="ticket-title">${club.title}</h3>
+                                <p class="ticket-desc">${club.desc}</p>
                             </div>
-                            <div class="barcode-area">
-                                *${club.id.toUpperCase()}*
+                            <div class="ticket-meta">
+                                <div class="meta-box"><span class="meta-label">Date</span><span class="meta-val">${new Date(club.date).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</span></div>
+                                <div class="meta-box"><span class="meta-label">Time</span><span class="meta-val">${club.time}</span></div>
+                                <div class="meta-box"><span class="meta-label">Price</span><span class="meta-val price">${club.price}</span></div>
                             </div>
                         </div>
-                        
-                        <div style="width: 140px; display: flex; justify-content: flex-end;">
-                        ${isJoined 
-                            ? `<div style="display:flex; gap:8px; width:100%;">
-                                 <button class="btn-glass" onclick="event.stopPropagation(); openChat('${club.id}')" style="flex:1; padding: 0 16px; border-radius: 14px; font-size: 0.9rem; font-weight:700;">Chat</button>
-                                 <button class="btn-glass" onclick="event.stopPropagation(); leaveClub('${club.id}')" style="flex:1; color:#ff5252; padding: 0 16px; border-radius: 14px; font-size: 0.9rem; font-weight:700;">Unjoin</button>
-                               </div>`
-                            : `<button class="btn-glow" style="width:100%; height:46px; border-radius: 14px; font-size: 0.95rem; font-weight:800;" onclick="event.stopPropagation(); joinClub('${club.id}')" ${isFull?'disabled':''}>${isFull?'FULL':'JOIN'}</button>`
-                        }
+                        <div class="ticket-cut"></div>
+                        <div class="ticket-stub">
+                            ${isJoined 
+                                ? `<div class="stub-qr-container">
+                                     <img src="${qrUrl}" class="qr-img" alt="Entry QR">
+                                     <div class="qr-text"><strong>Scan Entry</strong><span>${club.id.toUpperCase()}</span></div>
+                                     <div style="flex:1;"></div>
+                                     <button class="btn-icon" onclick="event.stopPropagation(); openChat('${club.id}')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg></button>
+                                     <button class="btn-icon danger" onclick="event.stopPropagation(); leaveClub('${club.id}')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg></button>
+                                   </div>`
+                                : `<div class="stub-left"><div class="stub-barcode">*${club.id.toUpperCase()}*</div></div>
+                                   <button class="btn-ticket" onclick="event.stopPropagation(); joinClub('${club.id}')" ${isFull?'disabled':''}>${isFull?'Sold Out':'Get Pass'}</button>`
+                            }
                         </div>
                     </div>
-                </div>
-            `;
+                </div>`;
             container.insertAdjacentHTML('beforeend', html);
         });
     }
 
-    function filterClubs(type, el) {
-        document.querySelectorAll('.filter-pill').forEach(c => c.classList.remove('active'));
-        el.classList.add('active');
-        renderClubs(type);
-    }
-    
-    function switchTab(tab) {
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        event.currentTarget.classList.add('active');
-        
-        if(tab === 'home') {
-            document.getElementById('mainView').classList.remove('hidden');
-            renderClubs('all');
-            window.scrollTo({top:0, behavior:'smooth'});
-        } else if(tab === 'explore') {
-            renderClubs('new');
-            window.scrollTo({top:0, behavior:'smooth'});
-        } else if(tab === 'chats') {
-            renderClubs('joined');
-            showToast('Your Access List');
-        }
+    function filterClubs(t, el) { document.querySelectorAll('.filter-pill').forEach(c=>c.classList.remove('active')); el.classList.add('active'); renderClubs(t); }
+    function switchTab(t) { 
+        document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); event.currentTarget.classList.add('active');
+        if(t==='home'){document.getElementById('mainView').classList.remove('hidden'); renderClubs('all');}
+        else if(t==='explore'){renderClubs('new');}
+        else if(t==='chats'){renderClubs('joined'); showToast('ACCESS GRANTED');}
     }
 
-    // --- Actions ---
     function joinClub(id) {
         if(myJoinedIds.includes(id)) return;
-        
-        const club = clubs.find(c => c.id === id);
-        if(!club) return;
-        
-        myJoinedIds.push(id);
-        club.attendees++;
-        
-        // Add current user to attendee list
-        if(!club.attendeesList) club.attendeesList = [];
-        club.attendeesList.push({
-            name: currentUser.name,
-            avatar: currentUser.avatar,
-            initial: currentUser.initial,
-            email: currentUser.email
-        });
-        
-        localStorage.setItem('waterette_joined', JSON.stringify(myJoinedIds));
-        localStorage.setItem('waterette_clubs', JSON.stringify(clubs));
-        
-        renderClubs();
-        showToast('Ticket Confirmed');
-        
-        setTimeout(() => {
-            if(!club.chat) club.chat = [];
-            club.chat.push({ user: 'Bot', text: 'Welcome to the inner circle.', type: 'them' });
-            localStorage.setItem('waterette_clubs', JSON.stringify(clubs));
-        }, 1000);
+        const c = clubs.find(c=>c.id===id); c.attendees++;
+        c.attendeesList.push({name:currentUser.name, avatar:currentUser.avatar, email:currentUser.email});
+        myJoinedIds.push(id); localStorage.setItem('fida_joined', JSON.stringify(myJoinedIds)); localStorage.setItem('fida_clubs', JSON.stringify(clubs));
+        renderClubs(); showToast('TICKET PRINTED');
+        setTimeout(() => { c.chat.push({user:'System', text:'Welcome to the grid.'}); localStorage.setItem('fida_clubs', JSON.stringify(clubs)); }, 1000);
     }
-
     function leaveClub(id) {
-        if(!myJoinedIds.includes(id)) return;
-        
-        // Remove ID
-        myJoinedIds = myJoinedIds.filter(itemId => itemId !== id);
-        
-        // Update count and remove user from list
-        const club = clubs.find(c => c.id === id);
-        if(club) {
-            club.attendees--;
-            if(club.attendeesList) {
-                club.attendeesList = club.attendeesList.filter(u => u.email !== currentUser.email);
+        myJoinedIds=myJoinedIds.filter(i=>i!==id); const c=clubs.find(c=>c.id===id); c.attendees--;
+        c.attendeesList=c.attendeesList.filter(u=>u.email!==currentUser.email);
+        localStorage.setItem('fida_joined', JSON.stringify(myJoinedIds)); localStorage.setItem('fida_clubs', JSON.stringify(clubs));
+        renderClubs(); showToast('TICKET VOIDED');
+    }
+
+    function openCreateModal(){
+        openModal('createModal');
+        document.getElementById('cImageDisplay').style.display = 'none';
+        document.getElementById('cImageInput').value = '';
+        tempEventImageBase64 = null;
+    }
+    function handleEventImage(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.getElementById('cImageDisplay');
+                img.src = e.target.result;
+                img.style.display = 'block';
+                tempEventImageBase64 = e.target.result;
             }
-        }
-        
-        localStorage.setItem('waterette_joined', JSON.stringify(myJoinedIds));
-        localStorage.setItem('waterette_clubs', JSON.stringify(clubs));
-        
-        renderClubs();
-        showToast('Left Club');
-    }
-
-    // --- New Create Logic ---
-    function initCreateMap() {
-        if (!createMap) {
-            createMap = L.map('createMap', { zoomControl: false }).setView([51.505, -0.09], 13);
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { attribution: '' }).addTo(createMap);
-            createMap.on('click', function(e) {
-                setCreateMarker(e.latlng.lat, e.latlng.lng);
-            });
+            reader.readAsDataURL(input.files[0]);
         }
     }
-    
-    function verifyLocation() {
-        const query = document.getElementById('cLoc').value;
-        if(!query) { showToast("Enter a location first"); return; }
-        
-        const mapDiv = document.getElementById('createMap');
-        mapDiv.classList.add('visible');
-        if(!createMap) initCreateMap();
-        
-        setTimeout(() => {
-            createMap.invalidateSize();
-            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}`)
-                .then(r => r.json())
-                .then(d => {
-                    if(d[0]) {
-                        setCreateMarker(parseFloat(d[0].lat), parseFloat(d[0].lon));
-                        showToast("Location Found");
-                    } else {
-                        showToast("Location not found");
-                    }
-                })
-                .catch(() => showToast("Error finding location"));
-        }, 200);
-    }
-    
-    function setCreateMarker(lat, lng) {
-        if(createMarker) createMap.removeLayer(createMarker);
-        createMarker = L.marker([lat, lng], {draggable: true}).addTo(createMap);
-        createMap.setView([lat, lng], 14);
-        tempCoordinates = { lat, lng };
-        createMarker.on('dragend', function(event) {
-            var position = event.target.getLatLng();
-            tempCoordinates = { lat: position.lat, lng: position.lng };
-        });
-    }
-
-    function handleCreate(e) {
+    function initCreateMap(){if(!createMap){createMap=L.map('createMap').setView([51.5,-0.09],13);L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{attribution:''}).addTo(createMap);createMap.on('click',e=>{if(createMarker)createMap.removeLayer(createMarker);createMarker=L.marker(e.latlng).addTo(createMap);tempCoordinates=e.latlng;});}}
+    function verifyLocation(){const q=document.getElementById('cLoc').value;if(!q)return;document.getElementById('createMap').classList.add('visible');if(!createMap)initCreateMap();setTimeout(()=>{createMap.invalidateSize();fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${q}`).then(r=>r.json()).then(d=>{if(d[0]){const lat=parseFloat(d[0].lat),lon=parseFloat(d[0].lon);if(createMarker)createMap.removeLayer(createMarker);createMarker=L.marker([lat,lon]).addTo(createMap);createMap.setView([lat,lon],13);tempCoordinates={lat,lng:lon};}});},300);}
+    function handleCreate(e){
         e.preventDefault();
-        
-        const finalLat = tempCoordinates ? tempCoordinates.lat : 51.5074;
-        const finalLng = tempCoordinates ? tempCoordinates.lng : -0.1278;
-
-        const newClub = {
-            id: 'c' + Date.now(),
-            title: document.getElementById('cName').value,
-            desc: document.getElementById('cDesc').value,
-            date: document.getElementById('cDate').value,
-            time: document.getElementById('cTime').value,
-            location: document.getElementById('cLoc').value,
-            lat: finalLat,
-            lng: finalLng,
-            attendees: 1, 
-            capacity: 20, 
-            chat: [],
-            hostEmail: currentUser.email, // MARK AS HOST
-            attendeesList: [{
-                name: currentUser.name,
-                avatar: currentUser.avatar,
-                initial: currentUser.initial,
-                email: currentUser.email
-            }]
+        const n={
+            id:'c'+Date.now(),
+            title:document.getElementById('cName').value,
+            desc:document.getElementById('cDesc').value,
+            date:document.getElementById('cDate').value,
+            time:document.getElementById('cTime').value,
+            location:document.getElementById('cLoc').value,
+            lat:tempCoordinates?tempCoordinates.lat:0,
+            lng:tempCoordinates?tempCoordinates.lng:0,
+            attendees:1,
+            capacity:50,
+            chat:[],
+            hostEmail:currentUser.email,
+            price:document.getElementById('cPrice').value>0?`$${document.getElementById('cPrice').value}`:'Free',
+            attendeesList:[currentUser],
+            image: tempEventImageBase64 || 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=2070&auto=format&fit=crop'
         };
-        
-        clubs.unshift(newClub);
-        myJoinedIds.push(newClub.id);
-        
-        localStorage.setItem('waterette_clubs', JSON.stringify(clubs));
-        localStorage.setItem('waterette_joined', JSON.stringify(myJoinedIds));
-        
+        clubs.unshift(n);
+        myJoinedIds.push(n.id);
+        localStorage.setItem('fida_clubs',JSON.stringify(clubs));
+        localStorage.setItem('fida_joined',JSON.stringify(myJoinedIds));
         closeModal('createModal');
-        
-        document.getElementById('createMap').classList.remove('visible');
-        tempCoordinates = null;
-        if(createMarker && createMap) { createMap.removeLayer(createMarker); createMarker = null; }
-
         renderClubs();
-        showToast('Club Launched');
+        showToast("DROP LIVE");
         e.target.reset();
     }
 
-    // --- Details & Map (Including Host View) ---
     function openDetails(id) {
-        const club = clubs.find(c => c.id === id);
-        activeClubId = id;
-        const isJoined = myJoinedIds.includes(id);
-        const isHost = club.hostEmail === currentUser.email;
-
-        // Generate Attendee List HTML if Host
-        let attendeeHtml = '';
-        if (isHost && club.attendeesList && club.attendeesList.length > 0) {
-            attendeeHtml = `
-                <div class="attendee-list-container visible">
-                    <h3 style="font-size:0.9rem; text-transform:uppercase; color:var(--text-muted); margin-bottom:12px; letter-spacing:0.05em;">Guest List (${club.attendeesList.length})</h3>
-                    ${club.attendeesList.map(u => `
-                        <div class="attendee-row">
-                            <div class="attendee-info">
-                                <div class="attendee-avatar">
-                                    ${u.avatar ? `<img src="${u.avatar}">` : u.initial}
-                                </div>
-                                <span style="font-weight:600; font-size:0.9rem;">${u.name}</span>
-                            </div>
-                            ${u.email === currentUser.email ? '<span style="font-size:0.7rem; color:var(--accent); font-weight:700;">YOU</span>' : ''}
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        } else if (isHost) {
-            attendeeHtml = `<div class="attendee-list-container visible" style="text-align:center; color:var(--text-muted);">No guests yet.</div>`;
-        }
-
-        const html = `
-            ${isHost ? '<div style="background:var(--accent); color:#fff; display:inline-block; padding:4px 12px; border-radius:100px; font-size:0.75rem; font-weight:700; margin-bottom:12px;">YOU ARE HOSTING</div>' : ''}
-            <h1 style="font-size: 2rem; margin-bottom: 12px; line-height: 1.1;">${club.title}</h1>
-            <p style="color: var(--text-muted); font-size: 1.1rem; line-height: 1.6; margin-bottom: 32px;">${club.desc}</p>
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;">
-                <div style="background: var(--bg-surface-2); padding: 16px; border-radius: 16px;">
-                    <div style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 4px;">DATE</div>
-                    <div style="font-weight: 700;">${new Date(club.date).toLocaleDateString()}</div>
-                </div>
-                <div style="background: var(--bg-surface-2); padding: 16px; border-radius: 16px;">
-                    <div style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 4px;">LOC</div>
-                    <div style="font-weight: 700;">${club.location}</div>
-                </div>
+        const c = clubs.find(c => c.id === id); const isJoined = myJoinedIds.includes(id); activeClubId = id;
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(c.id+'-'+currentUser.email)}&color=000000&bgcolor=ffffff`;
+        
+        let actions = isJoined ? `
+            <div style="text-align:center; margin-bottom:24px; background:var(--bg-ticket); padding:20px; border:1px solid var(--accent);">
+                <img src="${qrUrl}" style="width:160px; height:160px; border:2px solid #fff; padding:4px; background:white; margin-bottom:12px; image-rendering:pixelated;">
+                <div style="font-family:var(--font-mono); font-size:0.8rem; color:var(--text-sec);">TOKEN: ${c.id.toUpperCase()}</div>
             </div>
-
-            <div id="map" style="height: 200px; width: 100%; border-radius: 20px; margin-bottom: 24px; z-index: 1;"></div>
+            <div style="display:flex; gap:12px;">
+                <button class="btn-main" onclick="openChat('${id}')" style="flex:1; background:var(--bg-surface); border:1px solid var(--accent); color:var(--accent); box-shadow:none;">CHAT</button>
+                <button class="btn-icon danger" style="width:56px; height:56px;" onclick="leaveClub('${id}'); closeModal('detailsModal')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"></path></svg></button>
+            </div>` 
+            : `<button class="btn-main" onclick="joinClub('${id}'); closeModal('detailsModal')">ACQUIRE TICKET • ${c.price}</button>`;
             
-            ${isJoined 
-              ? `<div style="display:flex; gap:12px;">
-                    <button class="btn btn-glass" style="flex:1" onclick="openChat('${id}')">Chat</button>
-                    <button class="btn btn-glass" style="flex:1; color:#ff5252; border-color:rgba(255,82,82,0.3);" onclick="leaveClub('${id}'); closeModal('detailsModal')">Unjoin</button>
-                 </div>`
-              : `<button class="btn btn-glow" onclick="joinClub('${id}'); closeModal('detailsModal')">Join Club</button>`
-            }
-            
-            ${attendeeHtml}
-        `;
-        
-        document.getElementById('detailsContent').innerHTML = html;
+        document.getElementById('detailsContent').innerHTML = `
+            ${c.image ? `<img src="${c.image}" class="details-image">` : ''}
+            <h1 style="font-family:var(--font-main); font-size:2rem; font-weight:700; line-height:1.1; margin-bottom:12px; color:var(--text-main); text-shadow:2px 2px 0 var(--nav-glass);">${c.title}</h1>
+            <p style="color:var(--text-sec); line-height:1.6; margin-bottom:32px; font-family:var(--font-mono); white-space: pre-wrap;">${c.desc}</p>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:32px;">
+                <div style="background:rgba(0,0,0,0.5); padding:12px; border:1px solid var(--border);"><div style="font-family:var(--font-main); font-size:0.6rem; color:var(--accent);">DATE</div><div style="font-weight:700;">${new Date(c.date).toLocaleDateString()}</div></div>
+                <div style="background:rgba(0,0,0,0.5); padding:12px; border:1px solid var(--border);"><div style="font-family:var(--font-main); font-size:0.6rem; color:var(--accent);">LOC</div><div style="font-weight:700;">${c.location}</div></div>
+            </div>
+            ${actions}`;
         openModal('detailsModal');
-        
-        setTimeout(() => {
-            if(map) { map.remove(); map = null; }
-            map = L.map('map', {zoomControl: false}).setView([51.505, -0.09], 13);
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { attribution: '' }).addTo(map);
-            
-            if (club.lat && club.lng) {
-                map.setView([club.lat, club.lng], 14); 
-                L.marker([club.lat, club.lng]).addTo(map);
-            } else {
-                fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${club.location}`).then(r=>r.json()).then(d => {
-                    if(d[0]) { map.setView([d[0].lat, d[0].lon], 14); L.marker([d[0].lat, d[0].lon]).addTo(map); }
-                }).catch(()=>{});
-            }
-        }, 300);
     }
 
-    // --- Chat ---
-    function openChat(id) {
-        closeModal('detailsModal');
-        activeClubId = id;
-        document.getElementById('chatTitle').textContent = clubs.find(c => c.id === id).title;
-        renderChatMessages();
-        openModal('chatModal');
-    }
-
-    function renderChatMessages() {
-        const club = clubs.find(c => c.id === activeClubId);
-        const container = document.getElementById('chatHistory');
-        container.innerHTML = '';
-        
-        if(!club.chat || club.chat.length === 0) {
-            container.innerHTML = `<div style="text-align:center; padding-top: 40px; color: var(--text-muted);">Quiet in here...</div>`;
-            return;
-        }
-        
-        club.chat.forEach(m => {
-            const div = document.createElement('div');
-            div.className = `chat-bubble ${m.type}`;
-            div.textContent = m.type === 'them' ? `${m.user}: ${m.text}` : m.text;
-            container.appendChild(div);
+    function openChat(id) { closeModal('detailsModal'); activeClubId = id; document.getElementById('chatTitle').innerText = clubs.find(c=>c.id===id).title; renderChat(); openModal('chatModal'); }
+    function renderChat() {
+        const c = clubs.find(c=>c.id===activeClubId); const h = document.getElementById('chatHistory'); h.innerHTML = '';
+        if(!c.chat) c.chat=[];
+        c.chat.forEach(m => {
+            const d = document.createElement('div'); d.className = `chat-row ${m.user==='Me'?'me':'them'}`;
+            d.innerHTML = `${m.user!=='Me'?`<div class="chat-avatar">${m.user.charAt(0)}</div>`:''}<div class="chat-bubble ${m.user==='Me'?'me':''}">${m.text}</div>`;
+            h.appendChild(d);
         });
-        container.scrollTop = container.scrollHeight;
+        h.scrollTop = h.scrollHeight;
     }
-
     function sendChat(e) {
-        e.preventDefault();
-        const input = document.getElementById('chatInput');
-        const text = input.value.trim();
-        if(!text) return;
-        
-        const club = clubs.find(c => c.id === activeClubId);
-        if(!club.chat) club.chat = [];
-        
-        club.chat.push({ user: 'Me', text, type: 'me' });
-        localStorage.setItem('waterette_clubs', JSON.stringify(clubs));
-        renderChatMessages();
-        input.value = '';
-        
-        setTimeout(() => {
-            const rUser = MOCK_USERS[Math.floor(Math.random()*MOCK_USERS.length)];
-            const rResp = BOT_RESPONSES[Math.floor(Math.random()*BOT_RESPONSES.length)];
-            club.chat.push({ user: rUser.name, text: rResp, type: 'them' });
-            localStorage.setItem('waterette_clubs', JSON.stringify(clubs));
-            if(document.getElementById('chatModal').classList.contains('open')) renderChatMessages();
-            else showToast(`New msg: ${club.title}`);
-        }, 2500);
+        e.preventDefault(); const i = document.getElementById('chatInput'); if(!i.value.trim())return;
+        const c = clubs.find(x=>x.id===activeClubId);
+        c.chat.push({user:'Me', text:i.value}); localStorage.setItem('fida_clubs',JSON.stringify(clubs)); renderChat(); i.value='';
+        setTimeout(()=>{c.chat.push({user:'Bot', text:'Acknowledged.'}); localStorage.setItem('fida_clubs',JSON.stringify(clubs)); if(document.getElementById('chatModal').classList.contains('open'))renderChat();},1000);
     }
 
-    // --- Helpers ---
+    // Helpers
     function openModal(id) { document.getElementById(id).classList.add('open'); }
     function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-    function openCreateModal() { openModal('createModal'); }
-    function openProfile() { openModal('profileModal'); }
-    
-    // Settings Navigation Helpers
-    function openSettings() {
-        document.getElementById('settingsModal').classList.add('open');
-    }
-    function closeSettings() {
-        document.getElementById('settingsModal').classList.remove('open');
-    }
-    
-    function showToast(msg) {
-        const t = document.getElementById('toast');
-        document.getElementById('toastMsg').textContent = msg;
-        t.classList.add('show');
-        setTimeout(() => t.classList.remove('show'), 3000);
-    }
+    function openProfile(){openModal('profileModal');} function openSettings(){openModal('settingsModal');} function closeSettings(){closeModal('settingsModal');}
+    function showToast(m){const t=document.getElementById('toast');document.getElementById('toastMsg').innerText=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
   </script>
 </body>
 </html>
