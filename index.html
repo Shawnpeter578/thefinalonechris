@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>PROJECT FIDA | Ultra UI</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Libre+Barcode+128+Text&display=swap" rel="stylesheet">
+  
+  <style>
+    /* =========================================
+       THEME: PLATINUM & CRIMSON (LIGHT PERMANENT)
+       ========================================= */
+    :root {
+      --font-main: 'Space Grotesk', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-barcode: 'Libre Barcode 128 Text', cursive;
+      
+      /* --- PALETTE --- */
+      --bg-body: #F2F2F4;
+      --bg-dots: #E4E4E7;
+      
+      /* Glass & Surface */
+      --bg-surface: #FFFFFF;
+      --bg-surface-glass: rgba(255, 255, 255, 0.85);
+      --bg-card: #FFFFFF;
+      --bg-card-sub: #F8F8FA;
+      
+      /* Accents */
+      --accent: #E61919;
+      --accent-dim: #C41616;
+      --accent-glow: rgba(230, 25, 25, 0.2);
+      --accent-text: #FFFFFF;
+      
+      /* Text */
+      --text-main: #18181B;
+      --text-sec: #52525B;
+      --text-muted: #A1A1AA;
+      
+      /* Borders & Depth */
+      --border: rgba(0,0,0,0.06);
+      --border-strong: rgba(0,0,0,0.1);
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+      --shadow-md: 0 12px 24px -6px rgba(0,0,0,0.08);
+      --shadow-lg: 0 20px 40px -10px rgba(0,0,0,0.12);
+      
+      /* UI Measurements */
+      --nav-glass: rgba(255, 255, 255, 0.9);
+      --blur-strength: blur(20px);
+      --radius-sm: 14px;
+      --radius-md: 24px;
+      --radius-lg: 32px;
+      
+      --safe-top: env(safe-area-inset-top, 20px);
+      --safe-bottom: env(safe-area-inset-bottom, 20px);
+      --header-height: calc(64px + var(--safe-top));
+      
+      /* Animation */
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+    
+    body {
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      font-family: var(--font-main);
+      overflow-x: hidden;
+      padding-bottom: calc(120px + var(--safe-bottom));
+      transition: background 0.4s var(--ease-out), color 0.4s;
+      
+      /* Premium Noise Texture & Dot Grid */
+      background-image: 
+        radial-gradient(var(--bg-dots) 1px, transparent 1px),
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+      background-size: 24px 24px, 200px 200px;
+      background-attachment: fixed;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 0px; display: none; }
+
+    .hidden { display: none !important; }
+
+    /* =========================================
+       ANIMATIONS
+       ========================================= */
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+    @keyframes scanline { 0% { transform: translateX(-100%) skewX(-15deg); } 100% { transform: translateX(200%) skewX(-15deg); } }
+    @keyframes pulseSoft { 0% { box-shadow: 0 0 0 0 var(--accent-glow); } 70% { box-shadow: 0 0 0 12px rgba(0,0,0,0); } 100% { box-shadow: 0 0 0 0 rgba(0,0,0,0); } }
+    @keyframes bgDrift { from { transform: scale(1.1); } to { transform: scale(1); } }
+    @keyframes blobFloat { 0% { transform: translate(0, 0); } 100% { transform: translate(40px, 40px); } }
+
+    /* =========================================
+       COMPONENTS
+       ========================================= */
+    
+    /* Splash */
+    #splashScreen {
+      position: fixed; inset: 0; background: var(--bg-body); z-index: 9999;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      transition: opacity 0.6s ease, visibility 0.6s;
+    }
+    .splash-logo {
+      font-size: 5rem; font-weight: 800; letter-spacing: -0.06em;
+      background: linear-gradient(135deg, var(--text-main), var(--text-muted)); 
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 20px;
+    }
+    .splash-loader {
+      width: 40px; height: 4px; background: var(--border-strong); border-radius: 4px;
+      overflow: hidden; position: relative;
+    }
+    .splash-loader::after {
+      content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 50%;
+      background: var(--accent); animation: scanline 1s infinite linear;
+    }
+
+    /* Header */
+    .app-header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+      height: var(--header-height); padding: var(--safe-top) 24px 10px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: linear-gradient(to bottom, var(--bg-body) 20%, rgba(0,0,0,0) 100%);
+      pointer-events: none;
+    }
+    .app-header > * { pointer-events: auto; }
+
+    .brand {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 800; font-size: 1.35rem; letter-spacing: -0.04em; 
+      color: var(--text-main); text-decoration: none;
+    }
+    .brand-mark {
+      width: 10px; height: 10px; background: var(--accent); 
+      border-radius: 2px; transform: rotate(45deg);
+      box-shadow: 0 0 15px var(--accent);
+    }
+
+    .user-pill {
+      background: var(--bg-surface-glass); backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border-strong);
+      padding: 5px 5px 5px 14px; border-radius: 100px;
+      display: flex; align-items: center; gap: 10px;
+      cursor: pointer; transition: 0.2s var(--ease-spring);
+      box-shadow: var(--shadow-sm);
+    }
+    .user-pill:active { transform: scale(0.96); }
+    .user-pill span { font-size: 0.85rem; font-weight: 600; font-family: var(--font-mono); color: var(--text-main); }
+    
+    .avatar-circle {
+      width: 34px; height: 34px; border-radius: 50%; 
+      background: var(--bg-card-sub); border: 1px solid var(--border);
+      overflow: hidden; display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem; font-weight: 700; color: var(--text-sec);
+    }
+    .avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* Views */
+    .view-section { display: none; padding-top: calc(var(--header-height) + 10px); animation: fadeIn 0.4s ease-out; }
+    .view-section.active { display: block; }
+
+    /* Search Bar */
+    .search-wrap { padding: 0 20px 16px; position: sticky; top: var(--header-height); z-index: 40; }
+    .search-bar {
+        width: 100%; height: 50px; background: var(--bg-surface-glass);
+        backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--border-strong); border-radius: 100px;
+        display: flex; align-items: center; padding: 0 20px;
+        box-shadow: var(--shadow-sm); transition: 0.3s;
+    }
+    .search-bar:focus-within { box-shadow: var(--shadow-md); border-color: var(--accent); }
+    .search-input {
+        flex: 1; border: none; background: transparent; height: 100%;
+        font-family: var(--font-main); font-size: 1rem; color: var(--text-main); margin-left: 10px;
+    }
+
+    /* Hero */
+    .hero { padding: 0 20px 24px; }
+    .hero-card {
+        height: 380px; border-radius: var(--radius-lg); position: relative; overflow: hidden;
+        display: flex; flex-direction: column; justify-content: flex-end; padding: 32px;
+        box-shadow: var(--shadow-lg);
+        border: 1px solid rgba(255,255,255,0.1);
+        transition: transform 0.5s var(--ease-out);
+        transform-style: preserve-3d;
+    }
+    .hero-card:active { transform: scale(0.98); }
+    
+    .hero-bg {
+        position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+        transition: transform 8s ease; z-index: 0;
+    }
+    .hero-card:hover .hero-bg { transform: scale(1.08); }
+    .hero-overlay {
+        position: absolute; inset: 0; z-index: 1;
+        background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0) 100%);
+    }
+    .hero-shine {
+        position: absolute; inset: 0; z-index: 2;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+        transform: skewX(-20deg) translateX(-150%);
+        animation: shineMove 6s infinite; pointer-events: none;
+    }
+    @keyframes shineMove { 0%, 80% { transform: skewX(-20deg) translateX(-150%); } 100% { transform: skewX(-20deg) translateX(250%); } }
+
+    .hero-content { position: relative; z-index: 3; }
+    .live-badge {
+        display: inline-flex; align-items: center; gap: 8px;
+        background: rgba(255, 42, 42, 0.2); border: 1px solid rgba(255, 42, 42, 0.4);
+        color: #ff5555; padding: 6px 14px; border-radius: 100px;
+        font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700;
+        margin-bottom: 16px; backdrop-filter: blur(8px);
+    }
+    .pulse-dot { width: 6px; height: 6px; background: currentColor; border-radius: 50%; box-shadow: 0 0 10px currentColor; animation: pulseSoft 2s infinite; }
+    .hero-title {
+        font-size: 2.8rem; line-height: 0.95; font-weight: 800; margin-bottom: 12px;
+        letter-spacing: -0.05em; color: white; text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    .hero-desc { font-size: 1.05rem; color: rgba(255,255,255,0.85); max-width: 90%; line-height: 1.4; font-weight: 400; }
+
+    /* Feed & Tickets */
+    .feed { display: flex; flex-direction: column; gap: 28px; padding: 0 20px 40px; }
+    
+    .ticket {
+        position: relative; perspective: 1000px; cursor: pointer;
+        animation: fadeIn 0.6s backwards;
+    }
+    .ticket-inner {
+        background: var(--bg-card); border-radius: 24px; overflow: hidden;
+        border: 1px solid var(--border); box-shadow: var(--shadow-md);
+        transition: transform 0.4s var(--ease-spring), box-shadow 0.4s;
+        display: flex; flex-direction: column; position: relative;
+    }
+    .ticket:active .ticket-inner { transform: scale(0.98); }
+
+    .ticket-inner::before {
+        content: ""; position: absolute; inset: 0; opacity: 0.03; pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    .ticket-status-bar { height: 6px; width: 100%; background: var(--bg-dots); position: relative; }
+    .ticket.joined .ticket-status-bar { background: var(--accent); box-shadow: 0 0 20px var(--accent); }
+
+    .ticket-content { padding: 28px 28px 24px; position: relative; }
+    .ticket-bg-num {
+        position: absolute; right: 20px; top: 20px;
+        font-family: var(--font-barcode); font-size: 3.5rem; color: var(--text-main); opacity: 0.06;
+        pointer-events: none;
+    }
+
+    .t-header { margin-bottom: 16px; }
+    .t-title { font-size: 1.6rem; font-weight: 800; line-height: 1.05; letter-spacing: -0.04em; margin-bottom: 8px; color: var(--text-main); }
+    .t-loc { 
+        display: inline-flex; align-items: center; gap: 6px; 
+        font-size: 0.8rem; color: var(--text-sec); font-family: var(--font-mono); font-weight: 600;
+        background: var(--bg-card-sub); padding: 4px 10px; border-radius: 6px;
+    }
+    .t-desc {
+        color: var(--text-sec); font-size: 0.95rem; line-height: 1.6;
+        display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+
+    .t-info-grid {
+        display: grid; grid-template-columns: auto 1fr auto; gap: 24px; align-items: center;
+        margin-top: 24px; padding-top: 20px; border-top: 1px dashed var(--border-strong);
+    }
+    .t-cell label { display: block; font-size: 0.7rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; margin-bottom: 4px; letter-spacing: 0.05em; }
+    .t-cell div { font-size: 1rem; font-weight: 600; font-family: var(--font-mono); color: var(--text-main); }
+    .t-price { color: var(--accent); text-align: right; }
+
+    /* Rip Section */
+    .ticket-rip {
+        height: 24px; position: relative; background: var(--bg-card-sub); margin: 0 12px;
+        border-left: 2px dashed rgba(0,0,0,0.05); border-right: 2px dashed rgba(0,0,0,0.05);
+    }
+    .ticket-rip::before, .ticket-rip::after {
+        content: ''; position: absolute; top: 50%; transform: translateY(-50%);
+        width: 20px; height: 20px; background: var(--bg-body); border-radius: 50%;
+        border: 1px solid var(--border); z-index: 2;
+    }
+    .ticket-rip::before { left: -10px; box-shadow: inset -2px 0 4px rgba(0,0,0,0.05); }
+    .ticket-rip::after { right: -10px; box-shadow: inset 2px 0 4px rgba(0,0,0,0.05); }
+    .rip-line { position: absolute; top: 50%; left: 10px; right: 10px; border-top: 2px dashed var(--border-strong); }
+
+    /* Stub */
+    .ticket-stub {
+        background: var(--bg-card-sub); padding: 20px 28px;
+        display: flex; align-items: center; justify-content: space-between;
+    }
+    .stub-code { font-family: var(--font-barcode); font-size: 2.2rem; color: var(--text-muted); opacity: 0.7; }
+    
+    .btn-action {
+        height: 44px; padding: 0 24px; background: var(--text-main); color: var(--bg-body);
+        border-radius: 12px; font-weight: 700; font-size: 0.85rem; border: none; cursor: pointer;
+        text-transform: uppercase; font-family: var(--font-mono); letter-spacing: -0.02em;
+        transition: 0.2s var(--ease-spring);
+    }
+    .btn-action:hover { transform: scale(1.05); }
+    .btn-action:active { transform: scale(0.95); }
+    .ticket.joined .btn-action { background: transparent; border: 2px solid var(--border-strong); color: var(--text-main); }
+
+    /* Host & Passes Views */
+    .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); font-family: var(--font-mono); opacity: 0.6; }
+    
+    .attendee-row {
+        display: flex; align-items: center; gap: 12px; padding: 12px;
+        background: var(--bg-card-sub); border-radius: 12px; margin-bottom: 8px;
+        border: 1px solid var(--border);
+    }
+    .at-avatar {
+        width: 32px; height: 32px; border-radius: 50%; background: var(--bg-dots);
+        display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem;
+    }
+    
+    /* Navigation Dock */
+    .dock-container {
+        position: fixed; bottom: 32px; left: 0; right: 0;
+        display: flex; justify-content: center; pointer-events: none; z-index: 100;
+    }
+    .dock {
+        background: var(--nav-glass); backdrop-filter: var(--blur-strength);
+        -webkit-backdrop-filter: var(--blur-strength);
+        border: 1px solid rgba(255,255,255,0.6);
+        padding: 8px; border-radius: 32px;
+        display: flex; gap: 6px; pointer-events: auto;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    }
+    .dock-item {
+        width: 52px; height: 52px; border-radius: 24px;
+        display: flex; align-items: center; justify-content: center;
+        color: var(--text-muted); cursor: pointer; transition: 0.4s var(--ease-spring);
+        position: relative;
+    }
+    .dock-item.active { background: var(--bg-surface); color: var(--text-main); box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+    .dock-item:active { transform: scale(0.9); }
+    .dock-fab {
+        width: 52px; height: 52px; border-radius: 24px;
+        background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%); 
+        color: var(--accent-text);
+        display: flex; align-items: center; justify-content: center;
+        margin: 0 10px; box-shadow: 0 8px 25px var(--accent-glow);
+        cursor: pointer; transition: 0.4s var(--ease-spring);
+    }
+    .dock-fab:hover { transform: translateY(-4px); box-shadow: 0 12px 30px var(--accent-glow); }
+    .dock-fab:active { transform: scale(0.92); }
+
+    /* Modals / Sheets */
+    .overlay {
+        position: fixed; inset: 0; background: rgba(0,0,0,0.3); backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.4s;
+    }
+    .overlay.visible { opacity: 1; pointer-events: auto; }
+    
+    .sheet {
+        position: fixed; bottom: 0; left: 0; right: 0;
+        background: var(--bg-surface);
+        border-top: 1px solid var(--border-strong);
+        border-radius: 36px 36px 0 0;
+        transform: translateY(110%); transition: transform 0.5s var(--ease-spring);
+        z-index: 201; display: flex; flex-direction: column;
+        max-height: 92vh;
+        box-shadow: 0 -10px 60px rgba(0,0,0,0.2);
+    }
+    .overlay.visible .sheet { transform: translateY(0); }
+    
+    .sheet-handle { width: 48px; height: 5px; background: var(--border-strong); border-radius: 100px; margin: 16px auto; flex-shrink: 0; }
+    .sheet-body { padding: 0 28px 48px; overflow-y: auto; }
+
+    /* Auth Screen */
+    .auth-wrap {
+        position: fixed; inset: 0; background: #F2F2F4; z-index: 5000;
+        display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px;
+        transition: transform 0.6s cubic-bezier(0.8, 0, 0.2, 1);
+    }
+    .auth-wrap.hide { transform: translateY(-100%); }
+    
+    /* Professional BG Image */
+    .auth-bg {
+        position: absolute; inset: 0; z-index: -1; overflow: hidden;
+    }
+    .auth-bg img {
+        width: 100%; height: 100%; object-fit: cover;
+        animation: bgDrift 25s infinite alternate ease-in-out;
+        transform-origin: center;
+        filter: saturate(0.8); /* Slightly desaturated for professional look */
+    }
+    .auth-overlay {
+        position: absolute; inset: 0;
+        background: rgba(244, 244, 245, 0.6); /* Frosted Platinum Overlay */
+        backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    }
+
+    .auth-card { 
+        width: 100%; max-width: 400px; 
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+        padding: 48px 40px; border-radius: 32px;
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        box-shadow: 0 20px 60px rgba(0,0,0,0.08), inset 0 0 0 1px rgba(255,255,255,0.5);
+        position: relative;
+    }
+    .auth-header { margin-bottom: 40px; text-align: center; }
+    .auth-logo { 
+        font-size: 4rem; font-weight: 800; letter-spacing: -0.06em; 
+        color: var(--text-main); margin-bottom: 8px;
+        background: linear-gradient(135deg, var(--text-main) 0%, var(--text-sec) 100%);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    
+    .inp-group { margin-bottom: 20px; position: relative; }
+    .inp {
+        width: 100%; height: 64px; background: rgba(255,255,255,0.6);
+        border: 1px solid rgba(0,0,0,0.08); border-radius: 20px;
+        padding: 0 24px; font-size: 1.05rem; color: var(--text-main);
+        transition: 0.3s; font-family: var(--font-main);
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.01);
+    }
+    .inp:focus { 
+        border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-glow); 
+        background: #fff; transform: translateY(-2px); 
+    }
+    
+    .btn-main {
+        width: 100%; height: 64px; background: var(--text-main); color: var(--bg-body);
+        border: none; border-radius: 20px; font-size: 1.05rem; font-weight: 700;
+        margin-top: 12px; cursor: pointer; transition: 0.2s var(--ease-spring);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    .btn-main:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(0,0,0,0.15); }
+    .btn-main:active { transform: scale(0.97); }
+
+    .auth-toggle { margin-top: 32px; text-align: center; font-size: 0.95rem; color: var(--text-sec); display: flex; justify-content: center; gap: 8px; align-items: center; }
+    .btn-text { background: none; border: none; padding: 0; margin: 0; font-family: var(--font-main); font-weight: 700; font-size: 0.95rem; color: var(--text-main); cursor: pointer; text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 4px; }
+
+    .icon { width: 24px; height: 24px; stroke: currentColor; stroke-width: 2.2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .icon-sm { width: 16px; height: 16px; stroke-width: 2.5; }
+
+    .detail-cover {
+        width: 100%; height: 260px; object-fit: cover; border-radius: 24px;
+        margin-bottom: 28px; border: 1px solid var(--border);
+        box-shadow: var(--shadow-md);
+    }
+
+    .toast {
+        position: fixed; top: 20px; left: 50%; transform: translate(-50%, -100px);
+        background: var(--bg-surface-glass); backdrop-filter: blur(16px);
+        border: 1px solid var(--border-strong); padding: 14px 28px;
+        border-radius: 100px; display: flex; align-items: center; gap: 12px;
+        z-index: 6000; box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+        transition: transform 0.6s var(--ease-spring);
+    }
+    .toast.show { transform: translate(-50%, 0); }
+    .toast-icon { width: 12px; height: 12px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 12px var(--accent); }
+  </style>
+</head>
+<body>
+
+  <!-- SPLASH -->
+  <div id="splashScreen">
+    <div class="splash-logo">FIDA</div>
+    <div class="splash-loader"></div>
+  </div>
+
+  <!-- AUTH -->
+  <div id="authScreen" class="auth-wrap">
+    
+    <!-- Professional Background -->
+    <div class="auth-bg">
+        <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop" alt="Abstract Office">
+        <div class="auth-overlay"></div>
+    </div>
+
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="auth-logo">FIDA</div>
+            <p id="authSubtitle" style="color:var(--text-sec); font-size:1.1rem; font-weight:500;">Access the grid.</p>
+        </div>
+        <form onsubmit="handleAuth(event)">
+            <div class="inp-group" id="nameContainer">
+                <input type="text" id="authName" class="inp" placeholder="Name" required>
+            </div>
+            <div class="inp-group">
+                <input type="email" id="authEmail" class="inp" placeholder="Email" required>
+            </div>
+            <div class="inp-group">
+                <input type="password" id="authPass" class="inp" placeholder="Password" required>
+            </div>
+            <button class="btn-main" id="authBtn">JOIN NOW</button>
+        </form>
+        <div class="auth-toggle">
+            <span id="authToggleText">Already in the system?</span>
+            <button class="btn-text" onclick="toggleAuthMode()">Login</button>
+        </div>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="app-header">
+    <a href="#" class="brand">
+      <div class="brand-mark"></div>
+      FIDA
+    </a>
+    <div class="user-pill" onclick="switchView('settings', document.querySelector('.dock-item:last-child'))">
+        <span id="headerName">GUEST</span>
+        <div class="avatar-circle" id="headerAvatar">G</div>
+    </div>
+  </header>
+
+  <!-- HOME FEED VIEW -->
+  <div id="viewHome" class="view-section active">
+    
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-card">
+            <div class="hero-shine"></div>
+            <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=2070&auto=format&fit=crop" class="hero-bg" alt="Event">
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <div class="live-badge"><div class="pulse-dot"></div> LIVE NOW</div>
+                <h2 class="hero-title">NEON<br>HORIZON</h2>
+                <p class="hero-desc">The underground racing season finale. Don't miss the start.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search & Filters -->
+    <div class="search-wrap">
+        <div class="search-bar">
+            <svg class="icon icon-sm" viewBox="0 0 24 24" style="color:var(--text-muted)"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="searchInput" class="search-input" placeholder="Search events, locations..." onkeyup="handleSearch(this.value)">
+        </div>
+    </div>
+
+    <!-- Feed -->
+    <div id="clubsContainer" class="feed"></div>
+  </div>
+
+  <!-- MY PASSES VIEW -->
+  <div id="viewPasses" class="view-section">
+      <div style="padding: 20px; font-size:1.8rem; font-weight:800; letter-spacing:-0.03em;">My Passes</div>
+      <div id="passesContainer" class="feed"></div>
+  </div>
+
+  <!-- HOST DASHBOARD VIEW -->
+  <div id="viewHost" class="view-section">
+      <div style="padding: 20px; font-size:1.8rem; font-weight:800; letter-spacing:-0.03em;">Host Dashboard</div>
+      <div id="hostContainer" class="feed"></div>
+  </div>
+
+  <!-- SETTINGS VIEW -->
+  <div id="viewSettings" class="view-section">
+      <div style="padding: 20px; font-size:1.8rem; font-weight:800; letter-spacing:-0.03em;">Settings</div>
+      <div style="padding: 0 20px;">
+          <!-- Profile Card -->
+          <div style="background: white; border-radius: 24px; padding: 24px; text-align: center; border: 1px solid var(--border); box-shadow: var(--shadow-sm); margin-bottom: 24px;">
+              <div style="width: 80px; height: 80px; background: var(--bg-dots); border-radius: 50%; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 700; overflow:hidden;" id="settingsAvatar"></div>
+              <h3 id="settingsName" style="font-size: 1.4rem; margin-bottom: 4px; font-weight:700;"></h3>
+              <p id="settingsEmail" style="color: var(--text-sec); font-family: var(--font-mono); font-size: 0.9rem; margin-bottom: 16px;"></p>
+              <label class="btn-main" style="display: inline-flex; width: auto; padding: 0 24px; height: 44px; align-items: center; justify-content: center; font-size: 0.9rem; margin-top:0;">
+                  Update Avatar <input type="file" hidden accept="image/*" onchange="updateAvatar(this)">
+              </label>
+          </div>
+
+          <!-- Actions -->
+          <div style="background: white; border-radius: 24px; overflow: hidden; border: 1px solid var(--border);">
+              <div style="padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+                  <span style="font-weight:600;">App Version</span>
+                  <span style="color: var(--text-muted); font-family: var(--font-mono);">v2.4.0</span>
+              </div>
+               <div onclick="logout()" style="padding: 16px 20px; color: #ef4444; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: space-between;">
+                  <span>Log Out</span>
+                  <svg class="icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <!-- DOCK -->
+  <div class="dock-container">
+    <div class="dock">
+        <!-- Home -->
+        <div class="dock-item active" onclick="switchView('home', this)">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        </div>
+        <!-- My Passes -->
+        <div class="dock-item" onclick="switchView('passes', this)">
+            <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+        </div>
+        <!-- Create -->
+        <div class="dock-fab" onclick="openCreateModal()">
+            <svg class="icon" viewBox="0 0 24 24" style="stroke:white;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        </div>
+        <!-- Host Dashboard -->
+        <div class="dock-item" onclick="switchView('host', this)">
+            <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+        </div>
+        <!-- Profile / Settings -->
+        <div class="dock-item" onclick="switchView('settings', this)">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        </div>
+    </div>
+  </div>
+
+  <!-- MODALS -->
+
+  <!-- Details Sheet -->
+  <div id="detailsModal" class="overlay">
+    <div class="sheet">
+        <div class="sheet-handle"></div>
+        <div class="sheet-body" id="detailsContent"></div>
+    </div>
+  </div>
+
+  <!-- Host Details Sheet -->
+  <div id="hostDetailModal" class="overlay">
+    <div class="sheet">
+        <div class="sheet-handle"></div>
+        <div class="sheet-body" id="hostDetailContent"></div>
+    </div>
+  </div>
+
+  <!-- Create Sheet -->
+  <div id="createModal" class="overlay">
+    <div class="sheet">
+        <div class="sheet-handle"></div>
+        <div class="sheet-body">
+            <h2 style="font-size:1.8rem; margin-bottom:24px; font-weight:800; letter-spacing: -0.03em;">New Drop</h2>
+            <form onsubmit="handleCreate(event)">
+                <div style="width:100%; height:140px; background:var(--bg-card-sub); border-radius:20px; border:2px dashed var(--border-strong); display:flex; align-items:center; justify-content:center; margin-bottom:24px; cursor:pointer; position:relative; overflow:hidden; transition:0.3s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border-strong)'">
+                    <input type="file" id="cImageInput" accept="image/*" style="opacity:0; position:absolute; inset:0; z-index:2; cursor:pointer;" onchange="previewImage(this)">
+                    <img id="cImagePreview" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:none; z-index:1;">
+                    <div style="text-align:center; color:var(--text-sec); pointer-events:none; font-weight:600;">+ Cover Art</div>
+                </div>
+                <div class="inp-group"><input type="text" id="cName" class="inp" placeholder="Event Title" required></div>
+                <div class="inp-group"><textarea id="cDesc" class="inp" style="height:120px; padding-top:18px; resize:none;" placeholder="Details..." required></textarea></div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                    <div class="inp-group"><input type="date" id="cDate" class="inp" required></div>
+                    <div class="inp-group"><input type="time" id="cTime" class="inp" required></div>
+                </div>
+                <div class="inp-group"><input type="text" id="cLoc" class="inp" placeholder="Location"></div>
+                <div class="inp-group"><input type="number" id="cPrice" class="inp" placeholder="Price ($0 for Free)"></div>
+                <button class="btn-main">PUBLISH DROP</button>
+            </form>
+        </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast">
+      <div class="toast-icon"></div>
+      <span id="toastMsg" style="font-weight:600; font-size:0.95rem;">Notification</span>
+  </div>
+
+  <script>
+    /* =========================================
+       LOGIC CORE
+       ========================================= */
+    
+    // Initial mock data with a predefined host email for testing
+    const MOCK_DATA = [
+        { id: 'c1', title: 'Midnight Velocity', desc: '5K night run through the neon district.', date: '2025-10-15', time: '23:00', loc: 'Sector 7, NY', price: 'Free', attendees: 42, image: 'https://images.unsplash.com/photo-1542204165-65bf26472b9b?q=80&w=1974', host: 'system@fida.net', attendeesList: [{name:'System Admin', email:'admin@fida.net'}] },
+        { id: 'c2', title: 'Brutalist Frame', desc: 'Architecture photography walk.', date: '2025-10-18', time: '18:30', loc: 'London, UK', price: '$25', attendees: 8, image: 'https://images.unsplash.com/photo-1486718448742-163732cd1544?q=80&w=1974', host: 'guest@fida.net', attendeesList: [{name:'Alice', email:'alice@test.com'}, {name:'Bob', email:'bob@test.com'}] },
+        { id: 'c3', title: 'Cyber Zen', desc: 'Rooftop yoga with synthwave ambience.', date: '2025-10-20', time: '19:00', loc: 'Shibuya, JP', price: '$15', attendees: 15, image: 'https://images.unsplash.com/photo-1599447421405-0e5a106d8803?q=80&w=1935', host: 'system@fida.net', attendeesList: [] }
+    ];
+
+    let clubs = JSON.parse(localStorage.getItem('fida_clubs')) || MOCK_DATA;
+    // Normalize data structure
+    clubs = clubs.map(c => ({
+        ...c, 
+        host: c.host || 'system@fida.net',
+        attendeesList: c.attendeesList || []
+    }));
+
+    let user = JSON.parse(localStorage.getItem('fida_user'));
+    let joined = JSON.parse(localStorage.getItem('fida_joined')) || [];
+    let activeId = null;
+    let isRegister = true; 
+    let currentSearch = '';
+
+    // Init
+    window.addEventListener('load', () => {
+        setTimeout(() => document.getElementById('splashScreen').style.opacity = '0', 1200);
+        setTimeout(() => document.getElementById('splashScreen').style.visibility = 'hidden', 1800);
+        
+        checkAuth();
+        renderFeed();
+        
+        document.querySelectorAll('.overlay').forEach(o => {
+            o.addEventListener('click', e => { if(e.target === o) o.classList.remove('visible'); });
+        });
+    });
+
+    // Auth
+    function checkAuth() {
+        if(!user) document.getElementById('authScreen').classList.remove('hide');
+        else {
+            document.getElementById('authScreen').classList.add('hide');
+            updateUserUI();
+            renderFeed();
+        }
+    }
+    
+    function toggleAuthMode() {
+        isRegister = !isRegister;
+        const nameField = document.getElementById('nameContainer');
+        const btn = document.getElementById('authBtn');
+        const title = document.getElementById('authSubtitle');
+        const toggleText = document.getElementById('authToggleText');
+        const toggleBtn = document.querySelector('.auth-toggle button');
+        
+        if (isRegister) {
+            nameField.style.display = 'block';
+            document.getElementById('authName').setAttribute('required', 'true');
+            btn.innerText = 'JOIN NOW';
+            title.innerText = 'Enter the grid.';
+            toggleText.innerText = 'Already in the system?';
+            toggleBtn.innerText = 'Login';
+        } else {
+            nameField.style.display = 'none';
+            document.getElementById('authName').removeAttribute('required');
+            btn.innerText = 'ACCESS SYSTEM';
+            title.innerText = 'Welcome back.';
+            toggleText.innerText = 'New user?';
+            toggleBtn.innerText = 'Create ID';
+        }
+    }
+
+    function handleAuth(e) {
+        e.preventDefault();
+        const email = document.getElementById('authEmail').value;
+        const pass = document.getElementById('authPass').value;
+        let name = "Agent " + Math.floor(Math.random()*1000);
+
+        if (isRegister) {
+            name = document.getElementById('authName').value;
+            user = { name, email, avatar: null };
+            localStorage.setItem('fida_user', JSON.stringify(user));
+            toast('Welcome, ' + name);
+        } else {
+            const existing = JSON.parse(localStorage.getItem('fida_user'));
+            if(existing && existing.email === email) {
+                user = existing;
+                toast('Welcome back, ' + user.name);
+            } else {
+                user = { name: email.split('@')[0], email, avatar: null };
+                localStorage.setItem('fida_user', JSON.stringify(user));
+                toast('Access Granted');
+            }
+        }
+        checkAuth();
+    }
+
+    function logout() {
+        user = null; localStorage.removeItem('fida_user');
+        // Reset View
+        document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+        document.getElementById('viewHome').classList.add('active');
+        checkAuth();
+    }
+    
+    function updateUserUI() {
+        if(!user) return;
+        document.getElementById('headerName').innerText = user.name.split(' ')[0].toUpperCase();
+        document.getElementById('headerAvatar').innerHTML = user.avatar ? `<img src="${user.avatar}">` : user.name.charAt(0);
+        
+        // Settings Page UI Updates
+        document.getElementById('settingsName').innerText = user.name;
+        document.getElementById('settingsEmail').innerText = user.email;
+        document.getElementById('settingsAvatar').innerHTML = user.avatar ? `<img src="${user.avatar}" style="width:100%;height:100%;object-fit:cover;">` : user.name.charAt(0);
+    }
+    
+    function updateAvatar(input) {
+        if(input.files[0]) {
+            const r = new FileReader();
+            r.onload = e => {
+                user.avatar = e.target.result;
+                localStorage.setItem('fida_user', JSON.stringify(user));
+                updateUserUI();
+            };
+            r.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // SEARCH
+    function handleSearch(val) {
+        currentSearch = val.toLowerCase();
+        renderFeed();
+    }
+
+    // Navigation Switcher
+    function switchView(viewName, el) {
+        // Update dock icons
+        document.querySelectorAll('.dock-item').forEach(i => i.classList.remove('active'));
+        if(el) el.classList.add('active');
+        
+        // Hide all views
+        document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+        
+        // Show selected view
+        if(viewName === 'home') {
+            document.getElementById('viewHome').classList.add('active');
+            renderFeed();
+        } else if (viewName === 'passes') {
+            document.getElementById('viewPasses').classList.add('active');
+            renderPasses();
+        } else if (viewName === 'host') {
+            document.getElementById('viewHost').classList.add('active');
+            renderHostDashboard();
+        } else if (viewName === 'settings') {
+            document.getElementById('viewSettings').classList.add('active');
+            updateUserUI(); // Ensure data is fresh
+        }
+        
+        window.scrollTo({top:0, behavior:'smooth'});
+    }
+
+    // --- HOME FEED RENDER ---
+    function renderFeed() {
+        const c = document.getElementById('clubsContainer'); c.innerHTML = '';
+        
+        // Filter by search
+        let data = clubs.filter(item => 
+            item.title.toLowerCase().includes(currentSearch) || 
+            (item.loc && item.loc.toLowerCase().includes(currentSearch))
+        );
+
+        if(data.length === 0) {
+            c.innerHTML = `<div class="empty-state">NO SIGNALS FOUND</div>`;
+            return;
+        }
+
+        data.forEach(item => {
+            const isJoined = joined.includes(item.id);
+            const html = `
+            <div class="ticket ${isJoined ? 'joined' : ''}" onclick="openDetail('${item.id}')">
+                <div class="ticket-inner">
+                    <div class="ticket-status-bar"></div>
+                    <div class="ticket-content">
+                        <div class="ticket-bg-num">${item.id.substring(1)}</div>
+                        <div class="t-header">
+                            <h3 class="t-title">${item.title}</h3>
+                            <div class="t-loc">
+                                <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> 
+                                ${item.loc || 'Unknown Loc'}
+                            </div>
+                        </div>
+                        <p class="t-desc">${item.desc}</p>
+                        <div class="t-info-grid">
+                            <div class="t-cell"><label>DATE</label><div>${new Date(item.date).toLocaleDateString('en-US',{month:'short', day:'numeric'})}</div></div>
+                            <div class="t-cell"><label>TIME</label><div>${item.time}</div></div>
+                            <div class="t-cell t-price">${item.price}</div>
+                        </div>
+                    </div>
+                    <div class="ticket-rip"><div class="rip-line"></div></div>
+                    <div class="ticket-stub">
+                        <div class="stub-code">*${item.id.toUpperCase()}*</div>
+                        <button class="btn-action" onclick="event.stopPropagation(); ${isJoined ? `openDetail('${item.id}')` : `joinClub('${item.id}')`}">${isJoined ? 'View Pass' : 'Join Drop'}</button>
+                    </div>
+                </div>
+            </div>`;
+            c.insertAdjacentHTML('beforeend', html);
+        });
+    }
+
+    // --- MY PASSES RENDER ---
+    function renderPasses() {
+        const c = document.getElementById('passesContainer'); c.innerHTML = '';
+        // Only get joined events
+        const data = clubs.filter(x => joined.includes(x.id));
+        
+        if(data.length === 0) {
+            c.innerHTML = `<div class="empty-state">NO PASSES ACQUIRED<br>Join events to populate this grid.</div>`;
+            return;
+        }
+
+        data.forEach(item => {
+            // Reusing ticket design but emphasizing it's a pass
+            const html = `
+            <div class="ticket joined" onclick="openDetail('${item.id}')">
+                <div class="ticket-inner">
+                    <div class="ticket-status-bar"></div>
+                    <div class="ticket-content">
+                        <div class="ticket-bg-num">${item.id.substring(1)}</div>
+                        <h3 class="t-title">${item.title}</h3>
+                        <div class="t-loc">${item.loc || 'Unknown Loc'}</div>
+                        <div style="margin-top:20px; text-align:center; padding:10px; background:var(--bg-card-sub); border-radius:12px; border:1px dashed var(--border-strong);">
+                             <div style="font-family:var(--font-barcode); font-size:1.5rem; opacity:0.5;">${item.id.toUpperCase()}</div>
+                             <div style="font-size:0.8rem; font-weight:700; color:var(--accent);">ACCESS GRANTED</div>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+            c.insertAdjacentHTML('beforeend', html);
+        });
+    }
+
+    // --- HOST DASHBOARD RENDER ---
+    function renderHostDashboard() {
+        const c = document.getElementById('hostContainer'); c.innerHTML = '';
+        // Filter by events hosted by current user email
+        const hostedEvents = clubs.filter(x => x.host === user.email);
+
+        if(hostedEvents.length === 0) {
+            c.innerHTML = `<div class="empty-state">NO HOSTED EVENTS<br>Create a drop to track attendees here.</div>`;
+            return;
+        }
+
+        hostedEvents.forEach(item => {
+            const html = `
+            <div class="ticket" onclick="openHostDetail('${item.id}')">
+                <div class="ticket-inner">
+                    <div class="ticket-content">
+                        <h3 class="t-title">${item.title}</h3>
+                        <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-top:10px;">
+                            <div>
+                                <div style="font-size:0.8rem; color:var(--text-muted); font-weight:700;">DATE</div>
+                                <div style="font-family:var(--font-mono); font-weight:600;">${item.date}</div>
+                            </div>
+                            <div style="text-align:right;">
+                                <div style="font-size:2.5rem; font-weight:700; color:var(--text-main); line-height:1;">${item.attendeesList ? item.attendeesList.length : 0}</div>
+                                <div style="font-size:0.8rem; color:var(--accent); font-weight:700;">MEMBERS JOINED</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+            c.insertAdjacentHTML('beforeend', html);
+        });
+    }
+
+    function openHostDetail(id) {
+        const item = clubs.find(x => x.id === id);
+        const list = item.attendeesList || [];
+        
+        let listHtml = '';
+        if(list.length === 0) {
+            listHtml = '<div style="text-align:center; padding:20px; color:var(--text-muted);">No attendees yet.</div>';
+        } else {
+            list.forEach(att => {
+                listHtml += `
+                <div class="attendee-row">
+                    <div class="at-avatar">${att.name.charAt(0)}</div>
+                    <div>
+                        <div style="font-weight:700; font-size:0.95rem;">${att.name}</div>
+                        <div style="font-size:0.8rem; color:var(--text-sec); font-family:var(--font-mono);">${att.email}</div>
+                    </div>
+                </div>`;
+            });
+        }
+
+        document.getElementById('hostDetailContent').innerHTML = `
+            <h2 style="font-size:1.5rem; font-weight:800; margin-bottom:4px;">${item.title}</h2>
+            <div style="color:var(--text-sec); margin-bottom:24px;">Guest List</div>
+            <div style="max-height:400px; overflow-y:auto;">
+                ${listHtml}
+            </div>
+        `;
+        document.getElementById('hostDetailModal').classList.add('visible');
+    }
+
+    // --- EVENT DETAILS MODAL ---
+    function openDetail(id) {
+        activeId = id;
+        const item = clubs.find(x => x.id === id);
+        const isJoined = joined.includes(id);
+        // Only generate QR URL if joined
+        const qrUrl = isJoined ? `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${id}-${user?.email}` : '';
+        
+        document.getElementById('detailsContent').innerHTML = `
+            ${item.image ? `<img src="${item.image}" class="detail-cover">` : ''}
+            <h1 style="font-size:2.2rem; font-weight:800; line-height:1; margin-bottom:16px; letter-spacing: -0.04em;">${item.title}</h1>
+            <p style="color:var(--text-sec); line-height:1.6; margin-bottom:32px; font-size:1.05rem;">${item.desc}</p>
+            
+            <div style="background:var(--bg-card-sub); padding:20px; border-radius:20px; border:1px solid var(--border-strong); margin-bottom:32px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+                    <span style="color:var(--text-muted); font-weight:600; font-size:0.9rem;">LOCATION</span>
+                    <span style="font-weight:600; font-family:var(--font-mono);">${item.loc || 'TBA'}</span>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                    <span style="color:var(--text-muted); font-weight:600; font-size:0.9rem;">START TIME</span>
+                    <span style="font-weight:600; font-family:var(--font-mono);">${item.time}</span>
+                </div>
+            </div>
+
+            ${isJoined ? `
+                <div style="text-align:center; padding:24px; border:1px dashed var(--accent); background:rgba(255, 42, 42, 0.04); border-radius:24px; margin-bottom:32px;">
+                    <img src="${qrUrl}" style="width:140px; height:140px; background:white; padding:8px; margin-bottom:16px; border-radius:8px;">
+                    <div style="font-family:var(--font-barcode); font-size:2rem; opacity:0.8; letter-spacing:0.05em;">${id.toUpperCase()}</div>
+                    <div style="font-size:0.8rem; color:var(--text-sec); margin-top:8px; font-weight:600;">ACCESS GRANTED</div>
+                </div>
+                <button class="btn-main" style="background:var(--bg-card); color:var(--text-muted); border:1px solid var(--border-strong); box-shadow:none;" onclick="leaveClub('${id}')">UNJOIN EVENT</button>
+            ` : `
+                <div style="text-align:center; padding:20px; color:var(--text-sec); font-size:0.9rem; margin-bottom:20px;">Join to reveal entry code.</div>
+                <button class="btn-main" onclick="joinClub('${id}')">JOIN DROP • ${item.price}</button>
+            `}
+        `;
+        document.getElementById('detailsModal').classList.add('visible');
+    }
+
+    function joinClub(id) {
+        if(!joined.includes(id)) {
+            // Add ID to joined list
+            joined.push(id);
+            localStorage.setItem('fida_joined', JSON.stringify(joined));
+            
+            // Add User to Event's Attendee List
+            const c = clubs.find(x => x.id === id);
+            c.attendees++;
+            if(!c.attendeesList) c.attendeesList = [];
+            c.attendeesList.push({
+                name: user.name,
+                email: user.email,
+                joinedAt: new Date().toISOString()
+            });
+            
+            localStorage.setItem('fida_clubs', JSON.stringify(clubs));
+            toast('Pass Generated');
+            
+            // Refresh view
+            if(document.getElementById('detailsModal').classList.contains('visible')) openDetail(id);
+            else renderFeed();
+        }
+    }
+
+    function leaveClub(id) {
+        // Remove ID from joined list
+        joined = joined.filter(x => x !== id);
+        localStorage.setItem('fida_joined', JSON.stringify(joined));
+        
+        // Remove User from Event's Attendee List
+        const c = clubs.find(x => x.id === id);
+        c.attendees--;
+        if(c.attendeesList) {
+            c.attendeesList = c.attendeesList.filter(u => u.email !== user.email);
+        }
+        
+        localStorage.setItem('fida_clubs', JSON.stringify(clubs));
+        toast('Pass Revoked');
+        document.getElementById('detailsModal').classList.remove('visible');
+        renderFeed();
+        
+        // Refresh passes view if active
+        if(document.getElementById('viewPasses').classList.contains('active')) renderPasses();
+    }
+
+    // Creating Event
+    function openCreateModal() { document.getElementById('createModal').classList.add('visible'); }
+    function previewImage(inpt) {
+        if(inpt.files[0]) {
+            const r = new FileReader();
+            r.onload = e => {
+                document.getElementById('cImagePreview').src = e.target.result;
+                document.getElementById('cImagePreview').style.display = 'block';
+            };
+            r.readAsDataURL(inpt.files[0]);
+        }
+    }
+    
+    function handleCreate(e) {
+        e.preventDefault();
+        const newItem = {
+            id: 'c' + Date.now(),
+            title: document.getElementById('cName').value,
+            desc: document.getElementById('cDesc').value,
+            date: document.getElementById('cDate').value,
+            time: document.getElementById('cTime').value,
+            loc: document.getElementById('cLoc').value,
+            price: document.getElementById('cPrice').value ? '$'+document.getElementById('cPrice').value : 'Free',
+            image: document.getElementById('cImagePreview').src || null,
+            attendees: 1, // Start with 1 (the creator)
+            host: user.email, // Set Host
+            attendeesList: [{ // Add host to list
+                name: user.name,
+                email: user.email,
+                joinedAt: new Date().toISOString()
+            }]
+        };
+        
+        clubs.unshift(newItem);
+        joined.push(newItem.id); // Auto join creator
+        
+        localStorage.setItem('fida_clubs', JSON.stringify(clubs));
+        localStorage.setItem('fida_joined', JSON.stringify(joined));
+        
+        document.getElementById('createModal').classList.remove('visible');
+        e.target.reset();
+        document.getElementById('cImagePreview').style.display='none';
+        
+        renderFeed();
+        toast('Drop Published');
+        
+        // Switch to host view to see it
+        switchView('host', document.querySelectorAll('.dock-item')[2]);
+    }
+
+    // Utils
+    function toast(msg) {
+        const t = document.getElementById('toast');
+        document.getElementById('toastMsg').innerText = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 3000);
+    }
+  </script>
+</body>
+</html>
