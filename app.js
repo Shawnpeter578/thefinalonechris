@@ -79,7 +79,7 @@ async function verifyGoogleToken(token) {
     const ticket = await g_client.verifyIdToken({
          idToken: token,
          // The Gatekeeper shall now open for both the Web Lords and the Android Knights
-         audience: [GOOGLE_CLIENT_ID, ANDROID_CLIENT_ID],  
+         audience: [GOOGLE_CLIENT_ID],  
     });
     return ticket.getPayload();
 }

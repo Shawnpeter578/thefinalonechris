@@ -34,7 +34,7 @@ function initGoogleAuth() {
     // But since we need to handle the credential response in JS:
     if(window.google) {
         google.accounts.id.initialize({
-            client_id: "YOUR_GOOGLE_CLIENT_ID_HERE", // REPLACE THIS
+            client_id: "611302719944-4fn2hr7i1l9tn2chvu9719pngbcpgrau.apps.googleusercontent.com", // REPLACE THIS
             callback: handleGoogleResponse
         });
         google.accounts.id.renderButton(
