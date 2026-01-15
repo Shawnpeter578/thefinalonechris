@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="style.css">
     <!-- Main Script -->
     <script  src="script.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 
@@ -28,7 +29,6 @@
   <!-- AUTH -->
   <div id="authScreen" class="auth-wrap">
     
-    <!-- Professional Background -->
     <div class="auth-bg">
         <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop" alt="Abstract Office">
         <div class="auth-overlay"></div>
@@ -39,22 +39,14 @@
             <div class="auth-logo">FIDA</div>
             <p id="authSubtitle" style="color:var(--text-sec); font-size:1.1rem; font-weight:500;">Access the grid.</p>
         </div>
-        <form onsubmit="handleAuth(event)">
-            <div class="inp-group" id="nameContainer">
-                <input type="text" id="authName" class="inp" placeholder="Name" required>
-            </div>
-            <div class="inp-group">
-                <input type="email" id="authEmail" class="inp" placeholder="Email" required>
-            </div>
-            <div class="inp-group">
-                <input type="password" id="authPass" class="inp" placeholder="Password" required>
-            </div>
-            <button class="btn-main" id="authBtn">JOIN NOW</button>
-        </form>
-        <div class="auth-toggle">
-            <span id="authToggleText">Already in the system?</span>
-            <button class="btn-text" onclick="toggleAuthMode()">Login</button>
+        
+        <div style="margin-top: 30px; margin-bottom: 20px;">
+            <div id="googleBtnContainer"></div>
         </div>
+
+        <p style="text-align:center; font-size:0.8rem; color:var(--text-muted); line-height:1.5;">
+            By entering the system, you agree to the<br>Protocol Standards & Data Policy.
+        </p>
     </div>
   </div>
 
