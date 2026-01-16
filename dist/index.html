@@ -1,22 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>PROJECT FIDA | Ultra UI</title>
-  
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Libre+Barcode+128+Text&display=swap" rel="stylesheet">
-  
-  <!-- QR Scanner Library -->
-  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>PROJECT FIDA | Ultra UI</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Libre+Barcode+128+Text&display=swap" rel="stylesheet">
+
+    <!-- QR Scanner Library -->
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    
+    <!-- QR Code Generator Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <!-- Cropper.js for Image Editing -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
     <!-- Stylesheet -->
     <link rel="stylesheet" href="style.css">
+
     <!-- Main Script -->
-    <script  src="script.js"></script>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script defer src="script.js"></script>
 </head>
 <body>
 
@@ -29,6 +37,7 @@
   <!-- AUTH -->
   <div id="authScreen" class="auth-wrap">
     
+    <!-- Professional Background -->
     <div class="auth-bg">
         <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop" alt="Abstract Office">
         <div class="auth-overlay"></div>
@@ -39,14 +48,22 @@
             <div class="auth-logo">FIDA</div>
             <p id="authSubtitle" style="color:var(--text-sec); font-size:1.1rem; font-weight:500;">Access the grid.</p>
         </div>
-        
-        <div style="margin-top: 30px; margin-bottom: 20px;">
-            <div id="googleBtnContainer"></div>
+        <form onsubmit="handleAuth(event)">
+            <div class="inp-group" id="nameContainer">
+                <input type="text" id="authName" class="inp" placeholder="Name" required>
+            </div>
+            <div class="inp-group">
+                <input type="email" id="authEmail" class="inp" placeholder="Email" required>
+            </div>
+            <div class="inp-group">
+                <input type="password" id="authPass" class="inp" placeholder="Password" required>
+            </div>
+            <button class="btn-main" id="authBtn">JOIN NOW</button>
+        </form>
+        <div class="auth-toggle">
+            <span id="authToggleText">Already in the system?</span>
+            <button class="btn-text" onclick="toggleAuthMode()">Login</button>
         </div>
-
-        <p style="text-align:center; font-size:0.8rem; color:var(--text-muted); line-height:1.5;">
-            By entering the system, you agree to the<br>Protocol Standards & Data Policy.
-        </p>
     </div>
   </div>
 
@@ -165,11 +182,11 @@
   <!-- MODALS -->
 
   <!-- Scanner Modal -->
-  <div id="scannerModal" class="overlay" style="display:flex; align-items:center; justify-content:center;">
-      <button class="btn-icon-back" onclick="stopScanner()">
-          <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-      </button>
-      <div style="width:100%; max-width:400px; padding:20px; position:relative;">
+  <div id="scannerModal" class="overlay">
+      <div style="width:100%; max-width:400px; padding:20px; position:relative; display:flex; flex-direction:column; align-items:center;">
+          <button class="btn-icon-back" onclick="stopScanner()">
+            <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+          </button>
           <div id="reader"></div>
           <button onclick="stopScanner()" style="margin-top:20px; width:100%; height:50px; background:white; color:black; border:none; border-radius:12px; font-weight:700;">CANCEL SCAN</button>
       </div>
@@ -178,12 +195,6 @@
   <!-- Scan Result Modal -->
   <div id="scanResultModal" class="overlay">
       <div class="scan-card">
-          <!-- Back button for result screen -->
-          <button onclick="closeResultAndScan()" style="position:absolute; top:20px; left:20px; background:transparent; border:none; color:var(--text-sec); font-weight:700; display:flex; align-items:center; gap:5px; cursor:pointer;">
-              <svg class="icon-sm" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg> 
-              BACK
-          </button>
-          
           <div id="scanIcon" class="scan-icon-circle"></div>
           <div id="scanStatus" class="scan-status"></div>
           <div id="scanName" class="scan-name"></div>
@@ -192,11 +203,31 @@
       </div>
   </div>
 
+  <!-- Crop Modal -->
+  <div id="cropModal" class="overlay" style="z-index: 6000; background: #000; align-items: center;">
+      <div style="position: absolute; top: 20px; right: 20px; z-index: 10; display: flex; gap: 10px;">
+          <button onclick="cancelCrop()" style="padding: 10px 20px; border-radius: 100px; border: none; background: rgba(255,255,255,0.2); color: white; font-weight: 700;">CANCEL</button>
+          <button onclick="saveCrop()" style="padding: 10px 20px; border-radius: 100px; border: none; background: var(--text-main); color: var(--bg-body); font-weight: 700;">USE PHOTO</button>
+      </div>
+      <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px; padding-top: 80px;">
+          <img id="imageToCrop" style="max-width: 100%; max-height: 80vh;">
+      </div>
+  </div>
+
+  <!-- QR Display Modal -->
+  <div id="qrDisplayModal" class="overlay" style="align-items:center; justify-content:center; background:rgba(0,0,0,0.9);">
+      <div style="background:white; padding:40px; border-radius:32px; text-align:center; max-width:90%; position:relative;">
+          <button onclick="document.getElementById('qrDisplayModal').classList.remove('visible')" style="position:absolute; top:16px; right:16px; background:transparent; border:none; font-weight:700; color:var(--text-muted); cursor:pointer;">CLOSE</button>
+          <h3 style="margin-bottom:24px; font-weight:800; font-size:1.5rem;" id="qrModalTitle">SCAN ME</h3>
+          <div id="qrModalTarget" style="display:flex; justify-content:center;"></div>
+          <p style="margin-top:24px; color:var(--text-sec); font-family:var(--font-mono);" id="qrModalCodeText">CODE</p>
+      </div>
+  </div>
+
   <!-- Details Sheet -->
   <div id="detailsModal" class="overlay">
     <div class="sheet">
         <div class="sheet-handle"></div>
-        <!-- Sticky Header added here -->
         <div class="sheet-header-sticky">
              <div style="display:flex; align-items:center;">
                  <button onclick="document.getElementById('detailsModal').classList.remove('visible')" style="background:transparent; border:1px solid var(--border); width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-main); margin-right:12px;">
@@ -213,7 +244,15 @@
   <div id="hostDetailModal" class="overlay">
     <div class="sheet">
         <div class="sheet-handle"></div>
-        <div class="sheet-body" id="hostDetailContent"></div>
+        <div class="sheet-header-sticky" style="padding-bottom: 10px;">
+             <div style="display:flex; align-items:center;">
+                 <button onclick="document.getElementById('hostDetailModal').classList.remove('visible')" style="background:transparent; border:1px solid var(--border); width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-main); margin-right:12px;">
+                    <svg class="icon" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                 </button>
+                 <span style="font-weight:700; font-size:0.9rem; color:var(--text-sec);">DASHBOARD</span>
+            </div>
+        </div>
+        <div class="sheet-body" id="hostDetailContent" style="padding-top:0;"></div>
     </div>
   </div>
 
@@ -221,31 +260,98 @@
   <div id="createModal" class="overlay">
     <div class="sheet">
         <div class="sheet-handle" id="createHandle"></div>
-        <!-- Sticky Header moved here -->
         <div class="sheet-header-sticky">
-            <div style="display:flex; align-items:center;">
-                 <button onclick="closeCreateModal()" style="background:transparent; border:1px solid var(--border); width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-main); margin-right:12px;">
-                    <svg class="icon" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-                 </button>
-                 <span style="font-weight:700; font-size:0.9rem; color:var(--text-sec);">BACK</span>
+            <div style="display:flex; align-items:center; justify-content:space-between; width:100%;">
+                 <div style="display:flex; align-items:center;">
+                     <button onclick="closeCreateModal()" style="background:transparent; border:1px solid var(--border); width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-main); margin-right:12px;">
+                        <svg class="icon" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                     </button>
+                     <span style="font-weight:700; font-size:0.9rem; color:var(--text-sec);">CANCEL</span>
+                 </div>
+                 <span style="font-weight:800; letter-spacing:-0.03em; font-size:1.1rem;">NEW DROP</span>
+                 <div style="width:40px;"></div> <!-- Spacer -->
             </div>
         </div>
         <div class="sheet-body">
-            <h2 style="font-size:1.8rem; margin-bottom:24px; font-weight:800; letter-spacing: -0.03em;">New Drop</h2>
             <form onsubmit="handleCreate(event)">
-                <div style="width:100%; height:140px; background:var(--bg-card-sub); border-radius:20px; border:2px dashed var(--border-strong); display:flex; align-items:center; justify-content:center; margin-bottom:24px; cursor:pointer; position:relative; overflow:hidden; transition:0.3s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border-strong)'">
-                    <input type="file" id="cImageInput" accept="image/*" style="opacity:0; position:absolute; inset:0; z-index:2; cursor:pointer;" onchange="previewImage(this)">
-                    <img id="cImagePreview" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:none; z-index:1;">
-                    <div style="text-align:center; color:var(--text-sec); pointer-events:none; font-weight:600;">+ Cover Art</div>
+                
+                <!-- Image Upload -->
+                <div class="upload-zone" id="uploadZone">
+                    <input type="file" id="cImageInput" accept="image/*" onchange="previewImage(this)">
+                    <img id="cImagePreview">
+                    <div class="upload-placeholder">
+                        <div class="upload-icon">
+                            <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                        </div>
+                        <span style="font-weight:600; color:var(--text-main);">Upload Cover</span>
+                        <span style="font-size:0.8rem; color:var(--text-muted);">16:9 Recommended</span>
+                    </div>
                 </div>
-                <div class="inp-group"><input type="text" id="cName" class="inp" placeholder="Event Title" required></div>
-                <div class="inp-group"><textarea id="cDesc" class="inp" style="height:120px; padding-top:18px; resize:none;" placeholder="Details..." required></textarea></div>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
-                    <div class="inp-group"><input type="date" id="cDate" class="inp" required></div>
-                    <div class="inp-group"><input type="time" id="cTime" class="inp" required></div>
+
+                <!-- Title & Type -->
+                <div class="form-section">
+                    <label class="form-label">Event Details</label>
+                    <input type="text" id="cName" class="inp" placeholder="Event Title" required style="font-size:1.2rem; font-weight:700; height:72px;">
+                    
+                    <!-- Category Pills -->
+                    <div class="category-scroll">
+                        <input type="hidden" id="cCategory" value="PARTY">
+                        <div class="chip active" onclick="selectCategory(this, 'PARTY')">PARTY</div>
+                        <div class="chip" onclick="selectCategory(this, 'RACE')">RACE</div>
+                        <div class="chip" onclick="selectCategory(this, 'SHOW')">SHOW</div>
+                        <div class="chip" onclick="selectCategory(this, 'MEET')">MEET</div>
+                    </div>
                 </div>
-                <div class="inp-group"><input type="text" id="cLoc" class="inp" placeholder="Location"></div>
-                <div class="inp-group"><input type="number" id="cPrice" class="inp" placeholder="Price ($0 for Free)"></div>
+
+                <div class="form-section">
+                    <label class="form-label">Description</label>
+                    <textarea id="cDesc" class="inp" style="height:120px; padding-top:18px; resize:none; line-height:1.6;" placeholder="What's the vibe?" required></textarea>
+                </div>
+
+                <div class="form-section">
+                    <label class="form-label">Logistics</label>
+                    
+                    <!-- Mode Selector -->
+                    <div class="segmented-control">
+                        <div class="segment-btn active" id="btnOffline" onclick="setEventMode('offline')">IN PERSON</div>
+                        <div class="segment-btn" id="btnOnline" onclick="setEventMode('online')">ONLINE</div>
+                    </div>
+                    <input type="hidden" id="cMode" value="offline">
+
+                    <div class="grid-2">
+                        <div class="inp-group-icon">
+                            <svg class="icon-sm" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                            <input type="date" id="cDate" class="inp-plain" required>
+                        </div>
+                        <div class="inp-group-icon">
+                            <svg class="icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            <input type="time" id="cTime" class="inp-plain" required>
+                        </div>
+                    </div>
+                    <div class="inp-group-icon" style="margin-top:12px;">
+                        <!-- Dynamic Icon -->
+                        <div id="cLocIcon">
+                            <svg class="icon-sm" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        </div>
+                        <input type="text" id="cLoc" class="inp-plain" placeholder="Location" required>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <label class="form-label">Access & Capacity</label>
+                    <div class="grid-2">
+                        <div class="inp-group-icon">
+                            <span style="font-weight:700; font-family:var(--font-mono); color:var(--text-muted);">$</span>
+                            <input type="number" id="cPrice" class="inp-plain" placeholder="Price">
+                        </div>
+                        <div class="inp-group-icon">
+                            <svg class="icon-sm" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                            <input type="number" id="cMax" class="inp-plain" placeholder="Max People">
+                        </div>
+                    </div>
+                </div>
+
+                <div style="height:20px;"></div>
                 <button class="btn-main">PUBLISH DROP</button>
             </form>
         </div>
@@ -258,7 +364,801 @@
   </div>
 
   <script>
-  
+    /* =========================================
+       APP LOGIC
+       ========================================= */
+    
+    // Initial data for fresh state
+    const defaultEvents = [
+        {
+            id: 'e1',
+            title: 'CYBER JAZZ',
+            desc: 'Late night smooth synth-jazz sessions in the lower district.',
+            date: '2023-11-24',
+            time: '22:00',
+            location: 'Sector 7, The Basement',
+            price: 25,
+            image: 'https://images.unsplash.com/photo-1514525253440-b393452e8d26?q=80&w=1974&auto=format&fit=crop',
+            attendees: [],
+            mode: 'offline',
+            maxAttendees: 50
+        },
+        {
+            id: 'e2',
+            title: 'RED PROTOCOL',
+            desc: 'Experimental tech showcase and visual art installation.',
+            date: '2023-11-26',
+            time: '18:00',
+            location: 'Gallery 404',
+            price: 0,
+            image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop',
+            attendees: [],
+            mode: 'offline',
+            maxAttendees: 100
+        },
+        {
+            id: 'e3',
+            title: 'NIGHT MARKET',
+            desc: 'Street food, rare parts, and neon lights.',
+            date: '2023-11-28',
+            time: '20:00',
+            location: 'Old Port District',
+            price: 10,
+            image: 'https://images.unsplash.com/photo-1555685812-4b943f1cb0eb?q=80&w=2070&auto=format&fit=crop',
+            attendees: [],
+            mode: 'offline',
+            maxAttendees: 200
+        },
+        {
+            id: 'e4',
+            title: 'MINECRAFT BUILD CLUB',
+            desc: 'Weekly survival server launch. Join the faction and build the ultimate base.',
+            date: '2023-12-01',
+            time: '16:00',
+            location: 'mc.fida.io',
+            price: 0,
+            image: 'https://images.unsplash.com/photo-1607513168936-96c2e027d7de?q=80&w=2070&auto=format&fit=crop',
+            attendees: [],
+            mode: 'online',
+            maxAttendees: 20
+        },
+        {
+            id: 'e5',
+            title: 'NEON RUNNERS',
+            desc: '5K Night Run through the neon district. All paces welcome.',
+            date: '2023-12-03',
+            time: '21:00',
+            location: 'Central Plaza Start',
+            price: 0,
+            image: 'https://images.unsplash.com/photo-1533561098132-753995fad2d8?q=80&w=2070&auto=format&fit=crop',
+            attendees: [],
+            mode: 'offline',
+            maxAttendees: Infinity
+        }
+    ];
+
+    // State
+    const state = {
+        user: JSON.parse(localStorage.getItem('fida_user')) || null,
+        isLoginMode: false,
+        // events now stores ALL events (default + user created) to persist attendee data
+        events: JSON.parse(localStorage.getItem('fida_all_events')) || defaultEvents,
+        passes: JSON.parse(localStorage.getItem('fida_passes')) || [],
+        hostEvents: JSON.parse(localStorage.getItem('fida_host')) || []
+    };
+
+    // Global variable to track current view
+    let currentHostEventId = null;
+
+    // Helper to persist master event list
+    function saveEvents() {
+        localStorage.setItem('fida_all_events', JSON.stringify(state.events));
+    }
+
+    // --- INIT ---
+    window.onload = () => {
+        setTimeout(() => {
+            document.getElementById('splashScreen').style.opacity = '0';
+            setTimeout(() => document.getElementById('splashScreen').classList.add('hidden'), 600);
+            
+            if(!state.user) {
+                document.getElementById('authScreen').classList.remove('hide');
+            } else {
+                document.getElementById('authScreen').classList.add('hide');
+                updateUserUI();
+            }
+            renderFeed();
+            renderPasses();
+            renderHost();
+        }, 1500);
+    };
+
+    // --- AUTH ---
+    function toggleAuthMode() {
+        state.isLoginMode = !state.isLoginMode;
+        const nameContainer = document.getElementById('nameContainer');
+        const title = document.getElementById('authSubtitle');
+        const btn = document.getElementById('authBtn');
+        const toggleText = document.getElementById('authToggleText');
+        
+        if(state.isLoginMode) {
+            nameContainer.classList.add('hidden');
+            document.getElementById('authName').required = false;
+            title.textContent = 'Welcome back, operative.';
+            btn.textContent = 'LOG IN';
+            toggleText.textContent = "New here?";
+        } else {
+            nameContainer.classList.remove('hidden');
+            document.getElementById('authName').required = true;
+            title.textContent = 'Access the grid.';
+            btn.textContent = 'JOIN NOW';
+            toggleText.textContent = "Already in the system?";
+        }
+    }
+
+    function handleAuth(e) {
+        e.preventDefault();
+        const name = document.getElementById('authName').value;
+        const email = document.getElementById('authEmail').value;
+        
+        state.user = {
+            name: state.isLoginMode ? 'Operative' : name,
+            email: email,
+            avatar: null
+        };
+        localStorage.setItem('fida_user', JSON.stringify(state.user));
+        
+        document.getElementById('authScreen').classList.add('hide');
+        updateUserUI();
+        showToast(`Welcome, ${state.user.name}`);
+    }
+
+    function updateUserUI() {
+        if(!state.user) return;
+        document.getElementById('headerName').textContent = state.user.name.toUpperCase();
+        document.getElementById('settingsName').textContent = state.user.name;
+        document.getElementById('settingsEmail').textContent = state.user.email;
+        if(state.user.avatar) {
+            const img = `<img src="${state.user.avatar}">`;
+            document.getElementById('headerAvatar').innerHTML = img;
+            document.getElementById('settingsAvatar').innerHTML = img;
+        } else {
+            const initial = state.user.name.charAt(0).toUpperCase();
+            document.getElementById('headerAvatar').textContent = initial;
+            document.getElementById('settingsAvatar').textContent = initial;
+        }
+    }
+
+    function logout() {
+        localStorage.removeItem('fida_user');
+        location.reload();
+    }
+
+    function updateAvatar(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                state.user.avatar = e.target.result;
+                localStorage.setItem('fida_user', JSON.stringify(state.user));
+                updateUserUI();
+                showToast('Identity updated');
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // --- NAVIGATION ---
+    function switchView(viewName, el) {
+        document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+        const targetId = viewName === 'home' ? 'viewHome' : 
+                         viewName === 'passes' ? 'viewPasses' :
+                         viewName === 'host' ? 'viewHost' : 'viewSettings';
+        document.getElementById(targetId).classList.add('active');
+        
+        document.querySelectorAll('.dock-item').forEach(i => i.classList.remove('active'));
+        if(el) el.classList.add('active');
+        
+        window.scrollTo(0,0);
+    }
+
+    // --- FEED & RENDERING ---
+    function renderFeed(query = '') {
+        const container = document.getElementById('clubsContainer');
+        container.innerHTML = '';
+        
+        const filtered = state.events.filter(e => 
+            e.title.toLowerCase().includes(query.toLowerCase()) || 
+            e.location.toLowerCase().includes(query.toLowerCase())
+        );
+
+        filtered.forEach(event => {
+            const isJoined = state.passes.includes(event.id);
+            // Default to offline if property missing
+            const isOnline = event.mode === 'online';
+            const locIcon = isOnline ? '🌐' : '📍';
+            
+            const count = event.attendees ? event.attendees.length : 0;
+            const max = event.maxAttendees || Infinity;
+            const isSoldOut = count >= max;
+
+            let badgeHtml = '';
+            if (isSoldOut && !isJoined) {
+                badgeHtml = '<div style="background:var(--text-main); color:var(--bg-body); font-size:0.7rem; font-weight:800; padding:4px 8px; border-radius:4px; position:absolute; top:20px; right:20px;">SOLD OUT</div>';
+            }
+
+            const html = `
+                <div class="ticket ${isJoined ? 'joined' : ''}" onclick="openDetails('${event.id}')">
+                    <div class="ticket-inner">
+                        <div class="ticket-status-bar"></div>
+                        ${badgeHtml}
+                        <div class="ticket-bg-num">0${event.id.replace('e','').replace('h','')}</div>
+                        <div class="ticket-content">
+                            <div class="t-header">
+                                <div class="t-title">${event.title}</div>
+                                <div class="t-loc">${locIcon} ${event.location}</div>
+                            </div>
+                            <div class="t-desc">${event.desc}</div>
+                            <div class="t-info-grid">
+                                <div class="t-cell"><label>Date</label><div>${formatDate(event.date)}</div></div>
+                                <div class="t-cell"><label>Time</label><div>${event.time}</div></div>
+                                <div class="t-cell t-price"><div>${event.price === 0 ? 'FREE' : '$'+event.price}</div></div>
+                            </div>
+                        </div>
+                        <div class="ticket-rip">
+                            <div class="rip-line"></div>
+                        </div>
+                        <div class="ticket-stub">
+                            <div class="stub-code">129394</div>
+                            <button class="btn-action ${isSoldOut && !isJoined ? 'sold-out' : ''}" onclick="event.stopPropagation(); toggleJoin('${event.id}')">
+                                ${isJoined ? 'GOT PASS' : (isSoldOut ? 'FULL' : 'GET PASS')}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.innerHTML += html;
+        });
+    }
+
+    function renderPasses() {
+        const container = document.getElementById('passesContainer');
+        
+        const myEvents = state.events.filter(e => state.passes.includes(e.id));
+        
+        if(myEvents.length === 0) {
+            container.innerHTML = '<div class="empty-state">No active passes.<br>Find an event in the feed.</div>';
+            return;
+        }
+
+        // Build HTML string first
+        let html = '';
+        myEvents.forEach(event => {
+            // Check status in attendee list for this specific user
+            let statusText = 'SCAN ENTRY';
+            let statusClass = '';
+            
+            if(!event.attendees) event.attendees = [];
+            
+            const attendeeRecord = event.attendees.find(a => a.name === state.user.name);
+            const isCheckedIn = attendeeRecord && attendeeRecord.status === 'checked-in';
+            
+            if (isCheckedIn) {
+                statusText = 'YOU ARE IN THE HALL';
+                statusClass = 'in-hall';
+            }
+            
+            const isOnline = event.mode === 'online';
+            const locIcon = isOnline ? '🌐' : '📍';
+
+            // QR Code Button
+            html += `
+                <div class="ticket joined ${statusClass}" onclick="openDetails('${event.id}')">
+                    <div class="ticket-inner">
+                        <div class="ticket-status-bar"></div>
+                         <div class="ticket-content">
+                            <div class="t-header">
+                                <div class="t-title">${event.title}</div>
+                                <div class="t-loc">${locIcon} ${event.location}</div>
+                            </div>
+                            <div style="text-align:center; padding:20px 0;">
+                                <button class="btn-action" style="width:100%; border:2px solid var(--text-main); color:var(--text-main); background:transparent;" onclick="event.stopPropagation(); showUserQR('${event.id}', '${event.title.replace(/'/g, "\\'")}')">
+                                    SHOW QR CODE
+                                </button>
+                                <div style="font-size:0.9rem; letter-spacing:0.1em; font-weight:700; color:${isCheckedIn ? 'var(--success)' : 'var(--text-muted)'}; margin-top:12px;">${statusText}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        container.innerHTML = html;
+    }
+
+    function showUserQR(eventId, eventTitle) {
+        const modal = document.getElementById('qrDisplayModal');
+        const target = document.getElementById('qrModalTarget');
+        const title = document.getElementById('qrModalTitle');
+        const codeText = document.getElementById('qrModalCodeText');
+        
+        target.innerHTML = ''; // Clear previous
+        title.textContent = eventTitle;
+        
+        // Data payload format: EventID-UserName
+        const payload = `${eventId}-${state.user.name}`;
+        codeText.textContent = payload;
+        
+        new QRCode(target, {
+            text: payload,
+            width: 250,
+            height: 250,
+            colorDark : "#000000",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
+        });
+        
+        modal.classList.add('visible');
+    }
+
+    function renderHost() {
+        const container = document.getElementById('hostContainer');
+        container.innerHTML = '';
+        
+        // Filter events created by this host. 
+        // Note: For this prototype we check 'hostEvents' array ids against the master 'events' array to get real time data
+        const myHostedIds = state.hostEvents.map(h => h.id);
+        const liveHostEvents = state.events.filter(e => myHostedIds.includes(e.id));
+        
+        if(liveHostEvents.length === 0) {
+            container.innerHTML = '<div class="empty-state">You haven\'t dropped any events.<br>Tap + to create.</div>';
+            return;
+        }
+
+        liveHostEvents.forEach(event => {
+            const total = event.attendees ? event.attendees.length : 0;
+            container.innerHTML += `
+                <div class="ticket" onclick="openHostDetails('${event.id}')">
+                    <div class="ticket-inner">
+                         <div class="ticket-content">
+                            <div class="t-header">
+                                <div class="t-title">${event.title}</div>
+                                <div class="t-loc">Guest List: ${total}</div>
+                            </div>
+                            <div class="t-desc">Tap to manage access & verify tickets.</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    function toggleJoin(id) {
+        // Find the event in the master list
+        const eventIndex = state.events.findIndex(e => e.id === id);
+        if (eventIndex === -1) return; 
+
+        const event = state.events[eventIndex];
+        if(!event.attendees) event.attendees = [];
+
+        if(state.passes.includes(id)) {
+            // LEAVE
+            state.passes = state.passes.filter(p => p !== id);
+            // Remove user from attendees list
+            event.attendees = event.attendees.filter(a => a.name !== state.user.name);
+            showToast('Pass removed');
+        } else {
+            // JOIN
+            // Check Capacity
+            const max = event.maxAttendees || Infinity;
+            if (event.attendees.length >= max) {
+                showToast('Event Sold Out');
+                return;
+            }
+
+            state.passes.push(id);
+            // Add user to attendees list
+            event.attendees.push({
+                name: state.user.name,
+                status: 'pending', // 'pending' or 'checked-in'
+                timestamp: Date.now()
+            });
+            showToast('Access granted');
+        }
+        
+        // Update state references
+        state.events[eventIndex] = event; 
+        
+        localStorage.setItem('fida_passes', JSON.stringify(state.passes));
+        saveEvents(); // Persist master list
+        
+        renderFeed();
+        renderPasses();
+        renderHost(); // Refresh host view if open
+    }
+
+    function handleSearch(val) {
+        renderFeed(val);
+    }
+
+    // --- MODALS & DETAILS ---
+    function openDetails(id) {
+        const event = state.events.find(e => e.id === id);
+        const isJoined = state.passes.includes(id);
+        const modal = document.getElementById('detailsModal');
+        const content = document.getElementById('detailsContent');
+        
+        const isOnline = event.mode === 'online';
+        const locIcon = isOnline ? '🌐' : '📍';
+        
+        const count = event.attendees ? event.attendees.length : 0;
+        const max = event.maxAttendees || Infinity;
+        const isSoldOut = count >= max;
+        
+        content.innerHTML = `
+            <img src="${event.image}" class="detail-cover">
+            <h2 style="font-size:2rem; font-weight:800; line-height:1; margin-bottom:8px;">${event.title}</h2>
+            <div style="display:flex; gap:12px; margin-bottom:24px;">
+                <span class="t-loc">${locIcon} ${event.location}</span>
+                <span class="t-loc">${formatDate(event.date)} @ ${event.time}</span>
+            </div>
+            
+            <div style="background:var(--bg-card-sub); padding:16px; border-radius:16px; margin-bottom:24px; display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-weight:700; color:var(--text-sec); font-size:0.9rem;">Spots Left</span>
+                <span style="font-weight:700; font-family:var(--font-mono);">${max === Infinity ? 'Unlimited' : (max - count) + ' / ' + max}</span>
+            </div>
+
+            <p style="color:var(--text-sec); line-height:1.6; margin-bottom:32px;">${event.desc}</p>
+            <button class="btn-main ${isSoldOut && !isJoined ? 'sold-out' : ''}" onclick="toggleJoin('${event.id}'); if(!${isSoldOut} || ${isJoined}) document.getElementById('detailsModal').classList.remove('visible')">
+                ${isJoined ? 'DROP PASS' : (isSoldOut ? 'SOLD OUT' : `GET PASS • ${event.price === 0 ? 'FREE' : '$'+event.price}`)}
+            </button>
+        `;
+        
+        modal.classList.add('visible');
+    }
+
+    function openHostDetails(id) {
+        currentHostEventId = id;
+        const modal = document.getElementById('hostDetailModal');
+        const content = document.getElementById('hostDetailContent');
+        const event = state.events.find(e => e.id === id); 
+
+        // Set static content only once or re-write structure
+        content.innerHTML = `
+            <div style="margin-bottom:20px; text-align:center;">
+                <h2 style="font-size:1.8rem; font-weight:800; margin-bottom:4px;">${event.title}</h2>
+                <div style="font-size:0.8rem; color:var(--text-muted); font-weight:600;">TAP STATUS TO VERIFY MANUALLY</div>
+            </div>
+            
+            <!-- Real-time Stats Container -->
+            <div id="hostStatsContainer"></div>
+
+            <div class="search-bar" style="margin-bottom:20px;">
+                <svg class="icon icon-sm" viewBox="0 0 24 24" style="color:var(--text-muted)"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" class="search-input" placeholder="Search guests..." onkeyup="renderGuestList(this.value)">
+            </div>
+
+            <h3 style="font-size:1.1rem; font-weight:700; margin-bottom:12px;">Guest List</h3>
+            <div id="guestListContainer"></div>
+        `;
+        
+        // Initial Render
+        renderGuestList();
+        modal.classList.add('visible');
+    }
+
+    function renderGuestList(query = '') {
+        if(!currentHostEventId) return;
+        const event = state.events.find(e => e.id === currentHostEventId);
+        if(!event) return;
+
+        const attendees = event.attendees || [];
+        const soldCount = attendees.length;
+        const checkedInCount = attendees.filter(a => a.status === 'checked-in').length;
+
+        // 1. Update Stats (Fast)
+        const statsHtml = `
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:24px;">
+                <div style="background:var(--bg-card-sub); padding:16px; border-radius:16px; text-align:center;">
+                    <div style="font-size:1.5rem; font-weight:700;">${soldCount} / ${event.maxAttendees || '∞'}</div>
+                    <div style="font-size:0.7rem; color:var(--text-muted); font-weight:600;">SOLD</div>
+                </div>
+                <div style="background:var(--bg-card-sub); padding:16px; border-radius:16px; text-align:center;">
+                    <div style="font-size:1.5rem; font-weight:700; color:var(--success);">${checkedInCount}</div>
+                    <div style="font-size:0.7rem; color:var(--text-muted); font-weight:600;">CHECKED IN</div>
+                </div>
+            </div>
+        `;
+        document.getElementById('hostStatsContainer').innerHTML = statsHtml;
+
+        // 2. Filter List
+        let filtered = attendees;
+        if(query) {
+            filtered = attendees.filter(a => a.name.toLowerCase().includes(query.toLowerCase()));
+        }
+
+        // 3. Render Limited List (Virtualization Lite: Max 50)
+        const listContainer = document.getElementById('guestListContainer');
+        
+        if (filtered.length === 0) {
+            listContainer.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-muted);">No matching guests.</div>';
+            return;
+        }
+
+        const displayLimit = 50;
+        const displayList = filtered.slice(0, displayLimit);
+        
+        let html = displayList.map(a => {
+            const isChecked = a.status === 'checked-in';
+            return `
+                <div class="attendee-row ${isChecked ? 'checked-in' : ''}">
+                    <div class="at-avatar">${a.name.charAt(0).toUpperCase()}</div>
+                    <div style="font-weight:600;" class="at-name">${a.name}</div>
+                    <button class="btn-checkin-status" onclick="verifyManual('${event.id}', '${a.name}')">${isChecked ? 'IN HALL' : 'PENDING'}</button>
+                </div>
+            `;
+        }).join('');
+
+        if(filtered.length > displayLimit) {
+            html += `<div style="text-align:center; padding:10px; font-size:0.8rem; color:var(--text-muted);">+${filtered.length - displayLimit} more (search to find)</div>`;
+        }
+
+        listContainer.innerHTML = html;
+    }
+
+    function verifyManual(eventId, userName) {
+        // Optimistic update logic
+        const eventIndex = state.events.findIndex(e => e.id === eventId);
+        if (eventIndex !== -1) {
+            const attendee = state.events[eventIndex].attendees.find(a => a.name === userName);
+            if (attendee) {
+                attendee.status = attendee.status === 'checked-in' ? 'pending' : 'checked-in';
+                saveEvents();
+                
+                // Re-render list maintaining current search if any
+                // We find the active search input to preserve context
+                const searchInput = document.querySelector('#hostDetailModal .search-input');
+                const query = searchInput ? searchInput.value : '';
+                renderGuestList(query);
+                
+                showToast(`Status updated for ${userName}`);
+            }
+        }
+    }
+
+    // --- CREATE EVENT ---
+    let cropper;
+
+    function openCreateModal() {
+        document.getElementById('createModal').classList.add('visible');
+    }
+
+    function closeCreateModal() {
+        document.getElementById('createModal').classList.remove('visible');
+    }
+
+    function setEventMode(mode) {
+        document.getElementById('cMode').value = mode;
+        const btnOffline = document.getElementById('btnOffline');
+        const btnOnline = document.getElementById('btnOnline');
+        const locInput = document.getElementById('cLoc');
+        const iconContainer = document.getElementById('cLocIcon');
+        
+        if (mode === 'online') {
+            btnOnline.classList.add('active');
+            btnOffline.classList.remove('active');
+            locInput.placeholder = "Server URL / Link";
+            // Globe Icon
+            iconContainer.innerHTML = '<svg class="icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>';
+        } else {
+            btnOffline.classList.add('active');
+            btnOnline.classList.remove('active');
+            locInput.placeholder = "Location";
+            // Pin Icon
+            iconContainer.innerHTML = '<svg class="icon-sm" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>';
+        }
+    }
+
+    function previewImage(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('cropModal').classList.add('visible');
+                const image = document.getElementById('imageToCrop');
+                image.src = e.target.result;
+                if(cropper) cropper.destroy();
+                cropper = new Cropper(image, {
+                    aspectRatio: 16 / 9,
+                    viewMode: 1,
+                    autoCropArea: 1,
+                    background: false,
+                    responsive: true
+                });
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function saveCrop() {
+        if(!cropper) return;
+        const canvas = cropper.getCroppedCanvas({ width: 800, height: 450 });
+        const img = document.getElementById('cImagePreview');
+        img.src = canvas.toDataURL('image/jpeg', 0.85);
+        img.style.display = 'block';
+        document.getElementById('cropModal').classList.remove('visible');
+        cropper.destroy();
+        cropper = null;
+    }
+
+    function cancelCrop() {
+        document.getElementById('cropModal').classList.remove('visible');
+        document.getElementById('cImageInput').value = '';
+        if(cropper) { cropper.destroy(); cropper = null; }
+    }
+
+    function selectCategory(el, val) {
+        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('cCategory').value = val;
+    }
+
+    function handleCreate(e) {
+        e.preventDefault();
+        
+        const maxInput = document.getElementById('cMax').value;
+        const maxAttendees = maxInput ? parseInt(maxInput) : Infinity;
+
+        const newEvent = {
+            id: 'h' + Date.now(),
+            title: document.getElementById('cName').value,
+            desc: document.getElementById('cDesc').value,
+            date: document.getElementById('cDate').value,
+            time: document.getElementById('cTime').value,
+            location: document.getElementById('cLoc').value,
+            price: document.getElementById('cPrice').value || 0,
+            image: document.getElementById('cImagePreview').src || 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=2070',
+            mode: document.getElementById('cMode').value,
+            maxAttendees: maxAttendees,
+            attendees: []
+        };
+
+        state.hostEvents.push(newEvent);
+        // Add to the Master list of events
+        state.events.unshift(newEvent);
+        
+        localStorage.setItem('fida_host', JSON.stringify(state.hostEvents));
+        saveEvents(); // Save master list
+        
+        closeCreateModal();
+        e.target.reset();
+        const img = document.getElementById('cImagePreview');
+        img.src = '';
+        img.style.display = 'none';
+        // Reset mode
+        setEventMode('offline');
+        
+        renderHost();
+        renderFeed();
+        switchView('host', document.querySelectorAll('.dock-item')[3]);
+        showToast('Event Dropped Live');
+    }
+
+    // --- SCANNER ---
+    let html5QrcodeScanner = null;
+
+    function startScanner() {
+        document.getElementById('scannerModal').classList.add('visible');
+        if(html5QrcodeScanner) return; 
+
+        html5QrcodeScanner = new Html5Qrcode("reader");
+        const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+        
+        html5QrcodeScanner.start(
+            { facingMode: "environment" }, 
+            config, 
+            onScanSuccess
+        ).catch(err => {
+            console.log("Scanner Error", err);
+            // Simulate scan for testing on desktop
+            // setTimeout(() => onScanSuccess(`${state.hostEvents[0]?.id}-${state.user.name}`), 1500);
+        });
+    }
+
+    function stopScanner() {
+        document.getElementById('scannerModal').classList.remove('visible');
+        if(html5QrcodeScanner) {
+            html5QrcodeScanner.stop().then(() => {
+                html5QrcodeScanner.clear();
+                html5QrcodeScanner = null;
+            }).catch(err => console.log(err));
+        }
+    }
+
+    function onScanSuccess(decodedText, decodedResult) {
+        if(html5QrcodeScanner) html5QrcodeScanner.pause();
+        document.getElementById('scannerModal').classList.remove('visible');
+        
+        // Robust splitting logic for hyphenated names
+        let eventId, userName;
+        const firstHyphen = decodedText.indexOf('-');
+        
+        if(firstHyphen !== -1) {
+             eventId = decodedText.substring(0, firstHyphen);
+             userName = decodedText.substring(firstHyphen + 1);
+        } else {
+            // Fallback for simple testing
+            eventId = state.hostEvents[0]?.id || 'e1';
+            userName = decodedText; 
+        }
+
+        const resultModal = document.getElementById('scanResultModal');
+        const icon = document.getElementById('scanIcon');
+        const status = document.getElementById('scanStatus');
+        const nameEl = document.getElementById('scanName');
+        
+        // Find Event
+        const eventIndex = state.events.findIndex(e => e.id === eventId);
+        
+        let isValid = false;
+        let message = "INVALID TICKET";
+
+        if(eventIndex !== -1) {
+            const event = state.events[eventIndex];
+            // Find User
+            const attendee = event.attendees.find(a => a.name === userName);
+            
+            if(attendee) {
+                if(attendee.status === 'checked-in') {
+                    message = "ALREADY CHECKED IN";
+                    isValid = false; 
+                    status.style.color = 'var(--warning)';
+                    icon.style.color = 'var(--warning)';
+                    icon.style.border = '2px solid var(--warning)';
+                    icon.innerHTML = '!';
+                } else {
+                    // SUCCESS CHECK IN
+                    isValid = true;
+                    message = "ACCESS GRANTED";
+                    attendee.status = 'checked-in';
+                    saveEvents(); // Persist changes
+                    renderHost(); // Update dashboard if open behind
+                }
+            } else {
+                message = "USER NOT ON LIST";
+            }
+        } else {
+            message = "EVENT NOT FOUND";
+        }
+        
+        resultModal.classList.add('visible');
+        
+        if(isValid) {
+            icon.style.color = 'var(--success)';
+            icon.style.border = '2px solid var(--success)';
+            icon.innerHTML = '✓';
+            status.textContent = message;
+            status.style.color = 'var(--success)';
+        } else if (message !== "ALREADY CHECKED IN") {
+            icon.style.color = 'var(--accent)';
+            icon.style.border = '2px solid var(--accent)';
+            icon.innerHTML = '✕';
+            status.textContent = message;
+            status.style.color = 'var(--accent)';
+        }
+        nameEl.textContent = `${userName || 'Unknown'}`;
+    }
+
+    // --- UTILS ---
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        document.getElementById('toastMsg').textContent = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    function formatDate(dateStr) {
+        const options = { month: 'short', day: 'numeric' };
+        return new Date(dateStr).toLocaleDateString('en-US', options);
+    }
   </script>
 </body>
 </html>
