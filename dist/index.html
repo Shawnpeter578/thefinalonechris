@@ -13,7 +13,6 @@
     <!-- QR Code Generator Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-    <link rel="stylesheet" href="style.css">
     <style>
          /* =========================================
             THEME: PLATINUM & CRIMSON (LIGHT PERMANENT)
@@ -773,6 +772,8 @@
             padding: 32px;
             background: #fff;
             display: flex; justify-content: center; align-items: center;
+            flex-direction: column;
+            min-height: 250px;
         }
 
         .qr-pass-footer {
@@ -796,6 +797,11 @@
             transition: 0.2s;
         }
         .btn-close-qr:active { transform: scale(0.95); background: rgba(255,255,255,0.25); }
+
+        /* Manual Code Styling */
+        .manual-code-container { display: none; text-align: center; padding: 20px 0; animation: fadeIn 0.3s; }
+        .manual-code-text { font-family: var(--font-mono); font-size: 2rem; font-weight: 800; letter-spacing: 0.1em; color: var(--text-main); border: 2px dashed var(--border-strong); padding: 10px; border-radius: 12px; background: var(--bg-card-sub); word-break: break-all; }
+        .qr-help-btn { background: transparent; border: none; color: var(--text-sec); font-size: 0.85rem; font-weight: 600; text-decoration: underline; margin-top: 16px; cursor: pointer; }
 
         /* ONBOARDING UPDATED */
         #onboardingModal {
@@ -1136,16 +1142,30 @@
     </div>
   </div>
 
-  <!-- QR Display Modal (UPDATED PREMIUM UI) -->
+  <!-- QR Display Modal (UPDATED PREMIUM UI WITH FALLBACK) -->
   <div id="qrDisplayModal" class="overlay qr-overlay">
       <div class="qr-pass-card">
           <div class="qr-pass-header">
               <div id="qrPassTitle" class="qr-pass-title">EVENT TITLE</div>
               <div id="qrPassMeta" class="qr-pass-meta">DATE • TIME</div>
           </div>
+          
           <div class="qr-code-wrapper">
+              <!-- Default QR View -->
               <div id="qrModalTarget"></div>
+              
+              <!-- NEW: Fallback Manual Code View (Hidden by default) -->
+              <div id="manualCodeTarget" class="manual-code-container">
+                 <div style="font-size:0.8rem; text-transform:uppercase; color:var(--text-muted); margin-bottom:8px;">Manual Entry Code</div>
+                 <div class="manual-code-text" id="manualCodeText"></div>
+                 <div style="font-size:0.75rem; color:var(--text-muted); margin-top:8px;">Show this to security at the gate.</div>
+              </div>
           </div>
+          
+          <div style="text-align:center; padding-bottom:20px;">
+              <button class="qr-help-btn" id="qrHelpBtn" onclick="toggleQrManualMode()">Trouble scanning? Show Code</button>
+          </div>
+
           <div class="qr-pass-footer">
               <div class="qr-user-name" id="qrPassUser">USER NAME</div>
               <div class="qr-admit-label">ADMIT ONE</div>
@@ -1337,6 +1357,8 @@
             if(!state.user) {
                 document.getElementById('authScreen').classList.remove('hide');
             } else {
+                // If user exists in local storage (auto-login), HIDE auth screen.
+                // This ensures onboarding is skipped on refresh/return visits.
                 document.getElementById('authScreen').classList.add('hide');
                 updateUserUI();
             }
@@ -1535,7 +1557,7 @@
         document.getElementById('authScreen').classList.add('hide');
         updateUserUI();
         
-        // Check if this was a Sign Up (not login) to show onboarding
+        // Only show onboarding if this was a NEW sign up (not a login)
         if(!state.isLoginMode) {
             setTimeout(() => {
                 showOnboarding();
@@ -1774,7 +1796,17 @@
         const meta = document.getElementById('qrPassMeta');
         const userLabel = document.getElementById('qrPassUser');
         
-        target.innerHTML = ''; // Clear previous
+        // Manual Code Elements
+        const manualTarget = document.getElementById('manualCodeTarget');
+        const manualText = document.getElementById('manualCodeText');
+        const helpBtn = document.getElementById('qrHelpBtn');
+        
+        // Reset View to Default (Show QR, Hide Manual)
+        target.style.display = 'block';
+        manualTarget.style.display = 'none';
+        helpBtn.textContent = 'Trouble scanning? Show Code';
+        
+        target.innerHTML = ''; // Clear previous QR
         title.textContent = event.title;
         meta.textContent = `${formatDate(event.date)} • ${event.time}`;
         userLabel.textContent = state.user.name.toUpperCase();
@@ -1782,6 +1814,7 @@
         // Data payload format: EventID-UserName
         const payload = `${eventId}-${state.user.name}`;
         
+        // Generate QR
         new QRCode(target, {
             text: payload,
             width: 180,
@@ -1791,7 +1824,32 @@
             correctLevel : QRCode.CorrectLevel.H
         });
         
+        // Generate Manual Code fallback (e.g., E1-OPERATIVE-849)
+        const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+        // Use user name prefix
+        const userCode = state.user.name.substring(0,3).toUpperCase();
+        manualText.textContent = `${eventId.toUpperCase()}-${userCode}-${randomSuffix}`;
+        
         modal.classList.add('visible');
+    }
+    
+    // NEW FUNCTION: Toggle between QR and Manual Code
+    function toggleQrManualMode() {
+        const target = document.getElementById('qrModalTarget');
+        const manualTarget = document.getElementById('manualCodeTarget');
+        const helpBtn = document.getElementById('qrHelpBtn');
+        
+        if (target.style.display !== 'none') {
+            // Switch to Manual
+            target.style.display = 'none';
+            manualTarget.style.display = 'block';
+            helpBtn.textContent = 'Show QR Code';
+        } else {
+            // Switch to QR
+            target.style.display = 'block';
+            manualTarget.style.display = 'none';
+            helpBtn.textContent = 'Trouble scanning? Show Code';
+        }
     }
 
     function toggleJoin(id) {
